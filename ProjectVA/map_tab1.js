@@ -1,21 +1,3 @@
-<!--https://codepen.io/baris/pen/XVzGdL-->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>UNIVERSITY</title>
-    <style>
-    path {
-        stroke: white;
-        stroke-width: 0.5px;
-        fill: black;
-    }
-    </style>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="https://d3js.org/topojson.v2.min.js"></script>
-</head>
-<body>
-<script type="text/javascript">
 const width = 800;
 const height = 500;
 const svg = d3.select("body").append("svg")
@@ -44,6 +26,9 @@ function handleMouseOut(d, i) {  // Add interactivity
         // Select text by id and then remove
         d3.select("#t" + d.x + "-" + d.y + "-" + i).remove();  // Remove text location
         }
+function handleClick(d, i) { // Add interactivity 
+    
+}
 const path = d3.geoPath().projection(projection);
  
 d3.json("GeoMap/custom.geo.json", function(error, uState) {
@@ -58,6 +43,7 @@ function(csv) {
 .append("circle")
 .on("mouseover", handleMouseOver)
 .on("mouseout", handleMouseOut)
+.on("click", handleClick) 
 .attr("r",5).style("fill","red").attr("d",path)
 .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";});
 });
@@ -111,9 +97,3 @@ var data;
     //    return "translate(" + (x[0]+d3.event.transform.y)+","+(x[1]+d3.event.transform.x) + ")"+" scale("+1/d3.event.transform.k+")";})
    // svg.selectAll('path')
    //  .attr('transform', d3.event.transform);
-
-
-</script>
-</body>
-</html>
-
