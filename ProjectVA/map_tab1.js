@@ -9,34 +9,65 @@ const projection = d3.geoMercator()
     .translate([width / 2, height / 2]) // translate to center of screen
     .scale([100]); // scale things down so see entire US
  
-
+var div = d3.select("body").append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0);
 
       // Create Event Handlers for mouse
 function handleMouseOver(d, i) {  // Add interactivity
      // console.log(i);
-      d3.select(this).style("fill","orange");
-      g.append("text")
+     const index = selected.indexOf(i);
+     if (index <= -1) {
+         d3.select(this).style("fill","orange");
+     }
+      /*g.append("text")
       .attr("id", "t" + i.Institution )
       .attr("transform", this.attributes.transform.value)//"translate(" + projection([d.Longitude,d.Latitude]) + ")")
-      .text(i.Institution)
+      .text(i.Institution)*/
+
+      div.transition()		
+      .duration(200)		
+      .style("opacity", .9);		
+  div	.html(i.Institution + "<br/> Rank =" +i["Current Rank"])	
+      .style("left", (d.pageX) + "px")		
+      .style("top", (d.pageY - 28) + "px");
       }
 
 function handleMouseOut(d, i) {  // Add interactivity
     //console.log(i);
+    const index = selected.indexOf(i);
+    if (index <= -1) {
         d3.select(this).style("fill","red");
+    }
         // Select text by id and then remove
-        document.getElementById( "t" + i.Institution ).remove();  // Remove text location
-       
+       // document.getElementById( "t" + i.Institution ).remove();  // Remove text location
+        div.transition()		
+                .duration(500)		
+                .style("opacity", 0);	
         }
 function handleClick(d, i) { // Add interactivity 
-    
+    console.log(i);
+    const index = selected.indexOf(i);
+    if (index > -1) {
+      selected.splice(index, 1);
+      d3.select(this).style("fill","red");
+    }else{
+        if(selected.length<5){
+            selected.push(i);
+            d3.select(this).style("fill","blue");    
+        }
+    }
+    console.log(selected);
 }
 const path = d3.geoPath().projection(projection);
- 
-d3.json("GeoMap/custom.geo.json").then(function(uState) {
+ //https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/maps/mapdata/custom50.json
+d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/maps/mapdata/custom50.json").then(function(uState) {
+
+
 
 d3.csv("ProjectVA\\Ranking-2019-Coords-clean.csv").then(function(csv) {
   data = csv;
+  
   g.selectAll("circle")
 .data(data)
 .enter()
@@ -75,7 +106,9 @@ var zoom = d3.zoom()
       event.transform.y=old.y;
     }
     old=event.transform
-   g.attr("transform",old);
+   g.attr("transform",event.transform);
+
+
 g.selectAll("circle")
    //.attr("d", path.projection(projection))
    .attr("transform", function(d) {
@@ -84,11 +117,15 @@ g.selectAll("circle")
 
 //g.selectAll("path")  
   // .attr("d", path.projection(projection)); 
+;
+  
 });
 
 svg1.call(zoom);
 
 var data;
+
+
 
     //svg1.selectAll("circle")
      // .attr("transform", function(d) {
