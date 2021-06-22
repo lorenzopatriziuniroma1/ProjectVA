@@ -1,4 +1,4 @@
-Current Rank,Last Rank,Institution,Country,Size,Focus,Research,Age ,Status,Academic scorer score,Academic rank rank,Employer score,Employer rank,Faculty Student score,Faculty Student rank,CitationsPerFaculty score,CitationsPerFaculty  rank,InternationalFaculty score,InternationalFaculty rank,InternationalStudent score,InternationalStudent rank,Overall Score ,Latitude,Longitude,anno
+Current Rank,Last Rank,Institution,Country,Size,Focus,Research,Age ,Status,Academic scorer score,Academic rank rank,Employer score,Employer rank,Faculty Student score,Faculty Student rank,CitationsPerFaculty score,CitationsPerFaculty  rank,InternationalFaculty score,InternationalFaculty rank,InternationalStudent score,InternationalStudent rank,Overall Score,Latitude,Longitude,anno
 1,1,MASSACHUSETTS INSTITUTE OF TECHNOLOGY (MIT) ,United States,M,CO,VH,5.0,B,100,6,100,4,100,12,99.9,10,100,33,96.6,65,100,42.358984,-71.0935805,2016
 2,  3=,STANFORD UNIVERSITY,United States,L,FC,VH,5.0,A,100,5,100,5,100,20,99.7,14,99.7,52,74,170,98.7,37.424892,-122.168986,2016
 3,2,HARVARD UNIVERSITY,United States,L,FC,VH,5.0,B,100,1,100,1,98.5,42,100,8,100,47,70.4,184,98.3,42.3737614375,-71.1181085,2016

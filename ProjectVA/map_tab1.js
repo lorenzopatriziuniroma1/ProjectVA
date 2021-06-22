@@ -117,7 +117,12 @@ g.selectAll("circle")
 
 //g.selectAll("path")  
   // .attr("d", path.projection(projection)); 
-;
+  div.transition()		
+  .duration(500)		
+  .style("opacity", 10);
+  div.transition()		
+  .duration(500)		
+  .style("opacity", 0);
   
 });
 
