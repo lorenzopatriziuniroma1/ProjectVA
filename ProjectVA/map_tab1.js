@@ -77,13 +77,13 @@ var zoom = d3.zoom()
     old=event.transform
    g.attr("transform",old);
 g.selectAll("circle")
-   .attr("d", path.projection(projection))
+   //.attr("d", path.projection(projection))
    .attr("transform", function(d) {
     return "translate(" + projection([parseFloat(d["Longitude"]),parseFloat(d["Latitude"])]) + ")"+" scale("+1/event.transform.k+")";
    });
 
-g.selectAll("path")  
-   .attr("d", path.projection(projection)); 
+//g.selectAll("path")  
+  // .attr("d", path.projection(projection)); 
 });
 
 svg1.call(zoom);
