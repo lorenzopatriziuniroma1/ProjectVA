@@ -1,7 +1,10 @@
 //need thos variables in both graphs
 // ArrOfMEANS = array with all the (time) means of scores in decreasing order
 // d_means = dictionary with keys = name of university, value = mean
-let ArrOfMEANS;let d_mean;
+let ArrOfMEANS;let d_mean;  var arr_sorted=[];
+var d_2016,d_2018,d_2019,d_2020;
+var what_miss={};
+
 //colors of timeseries and Starplot in decreasing order using divergent palette - max 5 universities at once!
 
 const colors = ["#f22105",
@@ -9,9 +12,57 @@ const colors = ["#f22105",
       "#ffdbff",
       "#aed1ff",
       "#00cceb"];
-
+const supplement_colors=[
+        "#609732",
+         "#BAE397",
+         "#8ABD5F",
+         "#3E7213",
+         "#224C00" 
+      ].reverse();
 
 //calculate the mean per one university
+function format_info(s){
+  console.log(s);
+  var ris="";
+  function map_j_to_year(j){
+    switch(j){
+      case "0":
+        return "2016";
+      case "1":
+        return "2018";
+      case "2":
+        return "2019";
+      case "3":
+          return "2020";
+      default: 
+         return "N/A"
+
+    }
+  }
+  var a=s.split("/");
+  for(var i=0;i<a.length;i++){
+    if(a[i].includes("Overall")){
+      ris+="Overall "
+      ris+=map_j_to_year(a[i].split(" ")[1]);
+      
+
+    }
+    else if(a[i].includes("NotPresent")){
+      ris+="Not in Ranking ";
+      ris+=map_j_to_year(a[i].split(" ")[1]);
+
+    }
+    else{
+
+    }
+
+    if(i<a.length-1){
+      ris+=",";
+    }
+  }
+  return ris;
+
+}
 function mean_d(d,names){
   mean={};
 
@@ -31,6 +82,40 @@ function mean_d(d,names){
   return mean;
 }
 
+function format_number(s){
+  console.log(s);
+  if(s.includes("5.5")){
+    return "N/A"
+  }
+  return parseFloat(s).toFixed(2).toString();
+
+}
+
+function format_etichetta(s){
+  var r=s.toUpperCase().split(" ");
+
+  var x="";
+  for(var i=0;i<r.length;i++){
+    if(r[i].includes("UNIVERS")){
+      x+="UNI."
+    }
+    else if(r[i].includes("INSTITUTE")){
+      x+="INST."
+    }
+    else if(r[i].includes("COLLEGE")){
+      x+="COLL."
+    }
+    else{
+      x+=r[i];
+    }
+    x+=" "
+    if(i>3)break;
+  }
+  
+  
+  return x;
+}
+
 //from value to key
 function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
@@ -42,7 +127,7 @@ function name_index(name){
   
   var val = d_mean[name];
  
-  return ArrOfMEANS.indexOf(val);
+  return (val===undefined||isNaN(val))?-1:ArrOfMEANS.indexOf(val);
 }
 
 function sort_name_by_med(names){
@@ -50,7 +135,7 @@ function sort_name_by_med(names){
   for(var i=0;i<ArrOfMEANS.length;i++){
     a.push(getKeyByValue(d_mean,ArrOfMEANS[i]));
   }
-  console.log(a);
+
   return a;
 }
 
@@ -81,20 +166,151 @@ let dat4 = await d3.csv("ProjectVA/Ranking-2020-Coords-clean.csv").then(function
     return [dat1,dat2,dat3,dat4]
 }
 
-async function display_data(){
-    document.getElementById("show_data").remove();
-    ArrOfMEANS=[]
-    let dat = await load_data();
+function checkValidity(s){
+  return s==="-"?false:true;
+}
+
+
+function checkCompleteness(row){
+  function checkPresence(row){
+  if(row['Overall Score']===undefined){
     
-    // names will be replaced by an array that will contain all the selected university from the map (set names as parameter of display data function)
-    var items =["DUKE UNIVERSITY","THE UNIVERSITY OF TOKYO","UNIVERSITY OF TORONTO","UNIVERSITY OF BRISTOL"]
-    var name1 = items[Math.floor(Math.random()*items.length)];
-    var name2 = items[Math.floor(Math.random()*items.length)];
-    while(name1==name2){
-      name2 = items[Math.floor(Math.random()*items.length)];
+    if(row["Overall Score "]!=="-"&& row["Overall Score "]!==""){
+      
+      return true;
+    }
+  }
+  else{
+    //console.log(row["anno"])
+    if(row["Overall Score"]!=="-"&& row["Overall Score"]!==""){
+     
+      return true;
+      
+    }
+  }
+  return false;
+  }
+  function checkVal(row){
+    if(isNaN(row['Overall Score'])){
+    
+      if(row["Overall Score "]!=="-"&& row["Overall Score "]!==""){
+        
+        return true;
+      }
+    }
+    else{
+      //console.log(row["anno"])
+      if(row["Overall Score"]!=="-"&& row["Overall Score"]!==""){
+       
+        return true;
+        
+      }
+    }
+    return false;
+  }
+
+  return checkVal(row)&&checkPresence(row);
+}
+
+function checkCompletenessOverall(data,names){
+  var ris=[];
+  var skipped=true;
+  for(var j=0;j<4;j++){
+    for(var n=0;n<names.length;n++){
+      for(var i=0;i<data[j].length;i++){
+        if(names[n].toUpperCase()===data[j][i].Institution.toUpperCase()){
+          skipped=false;
+          if(checkCompleteness(data[j][i])===false ){
+            if (!ris.includes(names[n].toUpperCase())){
+              ris.push(names[n].toUpperCase());
+            }
+          what_miss[names[n]]+="Overall "+j+"/";
+
+          }
+          
+        }
+      }
+      if(skipped){
+        if(!ris.includes(names[n].toUpperCase())){
+        ris.push(names[n].toUpperCase());
+      }
+      if(what_miss[names[n]]!==undefined&&!what_miss[names[n].includes("Overall")]&&!what_miss[names[n]].includes("NotPresent")){
+        what_miss[names[n]]="NotPresent "+j+"/";
+      }else{
+        what_miss[names[n]]+="NotPresent "+j+"/";
+      }
+          
+      }
+      skipped=true;
+    }
+    
+  }
+  console.log(what_miss)
+  return ris;
+  
+}
+
+function removeArr(r,n){
+  var risultato=[];
+  var c=true;
+  for(var i=0;i<n.length;i++){
+    for(var j=0;j<r.length;j++){
+      if(r[j]===n[i]){
+        c=false;
+      }
+    }
+    if(c){
+      risultato.push(n[i]);
+      
+    }
+    c=true;
+  }
+  return risultato;
+}
+
+function format_Overall(stringScore){
+  
+  if(stringScore==='-'){
+    return '-';
+  }
+  let r="1.0"
+  if(stringScore.split("-").length==2){
+    let f=parseFloat(stringScore.split("-")[0])
+    f+=parseFloat(stringScore.split("-")[1])
+    f=f/2
+    r=""+f
+  }
+  else{
+    r=stringScore;
+  }
+  return r+="/"
+}
+
+async function display_data(selected_on_map){
+    
+    //document.getElementById("show_data").remove();
+    what_miss={};
+    if(selected_on_map.length===0){
+      document.getElementById("data1").innerHTML="";
+    return;
+    }
+    var names = [];var original_selection_names=[];
+    for(var t=0;t<selected_on_map.length;t++){
+        names.push(selected_on_map[t]['Institution'].toUpperCase());
+        original_selection_names.push(selected_on_map[t]['Institution'].toUpperCase());
     }
 
-    var names = [name1,name2];
+    ArrOfMEANS=[]
+    let dat = await load_data();
+
+    let remove=[] 
+
+    //no data --> remove from names
+    remove=checkCompletenessOverall(dat,names);
+    
+    names=removeArr(remove,names);
+ 
+    
     for(let k=0;k<names.length;k++){
       ArrOfMEANS.push(0.);
     }
@@ -102,33 +318,82 @@ async function display_data(){
     names.forEach((e)=>{
       d[e]="";
     })
+    
+    
+   
+
     for(let j=0;j<4;j++){
+      switch(j){
+        case 0:
+          d_2016={}
+          break;
+        case 1:
+          d_2018={}
+          break;
+        case 2:
+          d_2019={}
+          break;
+        case 3:
+          d_2020={}
+          break;
+        default:
+          break;
+      }
       for(let i=0;i<dat[j].length;i++){
         for(let k=0;k<names.length;k++){
           if(dat[j][i].Institution.toUpperCase()===names[k].toUpperCase()){
-             isNaN(dat[j][i]["Overall Score "])==true?d[names[k]]+=dat[j][i]["Overall Score"]+"/":d[names[k]]+=dat[j][i]["Overall Score "]+"/"; // little bug with blank space in csv
-          
+            
+              
+              (dat[j][i]["Overall Score "]===undefined)===true?d[names[k]]+=format_Overall(dat[j][i]["Overall Score"]):d[names[k]]+=format_Overall(dat[j][i]["Overall Score "]); // little bug with blank space in csv
+            
+            
           }
         }
       }
     }
+    d3.select("#missingData").remove()
+    d3.select("#errorData").remove()
+    d3.selectAll('#timeseries').remove(); 
     
-
+    d3.selectAll('text #LegendLabel').remove(); 
+    d3.selectAll('rect #LegendDot').remove(); 
+    
+    if(names.length===0 && remove.length!==original_selection_names.length){
+      var missing_info=format_info(what_miss[remove[0]]);
+      d3.select("#data1").append("div").attr("id","errorData");
+      document.getElementById("errorData").innerHTML="<h3 style='color:blue'> Missing info for timeseries! "+remove[0]+ 
+      " "+missing_info+"</h3>";
+      
+     
+    }
+    else if(names.length<original_selection_names.length||remove.length===original_selection_names.length){
+      
+      
+      var stamp="";
+      remove.forEach(r=>{
+        stamp+=r+" "+ format_info(what_miss[r])
+      
+      })
+  
+      d3.select("#data1").append("div").attr("id","missingData");
+      document.getElementById("missingData").innerHTML="<h4 style='color:blue'> Some info missing : "+stamp+"</h4>";
+      }
+    
     d_mean=mean_d(d,names);
     ArrOfMEANS.sort().reverse();
           
-    d3.selectAll('#timeseries').remove(); 
-    d3.selectAll('text #LegendLabel').remove(); 
-    d3.selectAll('rect #LegendDot').remove(); 
+    
 
 var margin = {top: 50, right: 20, bottom: 60, left: 90},
     widthT = 600 - margin.left - margin.right,
     heightT = 500 - margin.top - margin.bottom;
 
+if(names.length===0){starPlot(); return;}
+
     var svgT= d3.select("#data1")
     .append("svg")
     .attr("id","timeseries")
-    .attr("width",800)
+    .attr("width",1000)
     .attr("height",500);
   
     var g = svgT.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -193,11 +458,11 @@ for(let n=0;n< names.length;n++){
   }
   
  
-  console.log(position_wrt_selected)
+  
   var line = d3.line()
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.rating); })
-  console.log(dataDone);
+  
 
   let Index=3;
 
@@ -209,7 +474,7 @@ for(let n=0;n< names.length;n++){
     .append("circle").attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("id",""+names[n])
 	.attr("cx",function(d,i){
         var p;
-        console.log(i)
+        
         p=xCoords[i]
         
         return x(p);
@@ -257,7 +522,7 @@ for(let n=0;n< names.length;n++){
   
 }
 
-    var arr_sorted=[];
+    arr_sorted=[];
     arr_sorted=sort_name_by_med(names);
 
     var size = 20
@@ -280,7 +545,7 @@ svgT.selectAll("mylabels")
     .attr("x", 100 + size*1.2).attr("transform", "translate(" + (widthT+20) + "," + -10 + ")")
     .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
     .style("fill", function(d){ return colors[name_index(d)]})
-    .text(function(d){ return d +" ("+d_mean[d].toFixed(2)+")"})
+    .text(function(d){ return format_etichetta(d) +" ("+d_mean[d].toFixed(2)+")"})
     .attr("text-anchor", "left")
     .style("alignment-baseline", "middle")
 
@@ -300,6 +565,8 @@ svgT.selectAll("mylabels")
     .attr("x", 30)
     .text("Rating");
 
+
+  starPlot();
 /*
 #
 #
@@ -309,6 +576,29 @@ svgT.selectAll("mylabels")
 #
 #
 */
+
+
+//AGGIUSTARE ETICHETTA
+
+
+function starPlot(){
+function make_graph_possible(arr){
+  for(var i=0;i<arr.length;i++){
+    if(i<arr.length-1 && (arr[i]==="-"||arr[i]==="")){
+      arr[i]="5.5" // not avaliable value
+    }
+    if(i===arr.length-1){
+    
+      if(arr[i]==="-"){
+      arr[i]="N/A";
+      }
+      else{
+        arr[i]=arr[i].replace("/","");
+      }
+    }
+  }
+}
+
 function angleToCoordinate(angle, value){
   let x = Math.cos(angle) * radialScale(value);
   let y = Math.sin(angle) * radialScale(value);
@@ -316,37 +606,23 @@ function angleToCoordinate(angle, value){
 }
 
 d3.select("#starplot").remove();
+d3.select("#yearSel").remove();
 
 var svgS= d3.select("#data1")
 .append("svg")
 .attr("id","starplot")
-.attr("width",800)
-.attr("height",600);
-var d_2016,d_2018,d_2019,d_2020;
+.attr("width",1000)
+.attr("height",800);
+
 //prepare data
 var arr_of_stats =[]; //Academic scorer score,Employer score,Faculty Student score,CitationsPerFaculty score,InternationalFaculty score,InternationalStudent score,Overall Score 
 for(let j=0;j<4;j++){  // years loop
-  switch(j){
-    case 0:
-      d_2016={}
-      break;
-    case 1:
-      d_2018={}
-      break;
-    case 2:
-      d_2019={}
-      break;
-    case 3:
-      d_2020={}
-      break;
-    default:
-      break;
-  }
+  
   for(let i=0;i<dat[j].length;i++){  // single year loop
     
-    for(let k=0;k<names.length;k++){  //list of names loop
+    for(let k=0;k<original_selection_names.length;k++){  //list of names loop
       arr_of_stats=[];
-      if(dat[j][i].Institution.toUpperCase()===names[k].toUpperCase()){
+      if(dat[j][i].Institution.toUpperCase()===original_selection_names[k].toUpperCase()){
         arr_of_stats.push(dat[j][i]["Academic score"]);
         arr_of_stats.push(dat[j][i]["Employer score"]);
         arr_of_stats.push(dat[j][i]["Faculty Student score"]);
@@ -355,19 +631,21 @@ for(let j=0;j<4;j++){  // years loop
         arr_of_stats.push(dat[j][i]["InternationalStudent score"]);
 
         
-         isNaN(dat[j][i]["Overall Score "])==true?arr_of_stats.push(dat[j][i]["Overall Score"]):arr_of_stats.push(dat[j][i]["Overall Score "]); // little bug with blank space in csv
+        (dat[j][i]["Overall Score "] ===undefined)===true?arr_of_stats.push(format_Overall(dat[j][i]["Overall Score"])):arr_of_stats.push(format_Overall(dat[j][i]["Overall Score "])); // little bug with blank space in csv
+         
+         make_graph_possible(arr_of_stats);
          switch(j){
           case 0:
-            d_2016[names[k].toUpperCase()]=arr_of_stats;
+            d_2016[original_selection_names[k].toUpperCase()]=arr_of_stats;
             break;
           case 1:
-            d_2018[names[k].toUpperCase()]=arr_of_stats;
+            d_2018[original_selection_names[k].toUpperCase()]=arr_of_stats;
             break;
           case 2:
-            d_2019[names[k].toUpperCase()]=arr_of_stats;
+            d_2019[original_selection_names[k].toUpperCase()]=arr_of_stats;
             break;
           case 3:
-            d_2020[names[k].toUpperCase()]=arr_of_stats;
+            d_2020[original_selection_names[k].toUpperCase()]=arr_of_stats;
             break;
           default:
             break;
@@ -379,7 +657,7 @@ for(let j=0;j<4;j++){  // years loop
 }
 
 
-
+console.log(d_2016,d_2018,d_2019,d_2020)
 
 svgS.append("text")
   .attr("x", 275) 
@@ -391,7 +669,7 @@ let features = ["Academic score","Employer score","Faculty Student score","Citat
 let radialScale = d3.scaleLinear()
     .domain([0,100])
     .range([0,250]);
-let ticks = [20,40,60,80,100];
+let ticks = [5.5,20,40,60,80,100];
 
 ticks.forEach(t =>
   svgS.append("circle").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
@@ -405,13 +683,19 @@ ticks.forEach(t =>
   svgS.append("text").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
   .attr("x", 305)
   .attr("y", 300 - radialScale(t))
-  .text(t.toString())
+  .text(x=>{
+    if(t.toString()==="5.5")return "N/A";
+    else return t.toString();
+  })
 );
+
+
+
 
 for (var i = 0; i < features.length-1; i++) {
   let ft_name = features[i];
   let angle = (Math.PI / 2) + (2 * Math.PI * i / (features.length-1));
-  console.log(angle);
+ 
   let line_coordinate = angleToCoordinate(angle, 100);
   let label_coordinate = angleToCoordinate(angle, 107);
 
@@ -441,8 +725,13 @@ for (var i = 0; i < features.length-1; i++) {
 
 
 let selected_year_data=d_2020;
-
+let starting_Legend;
 function updateStar(){
+  arr_sorted=sort_name_by_med(names);
+  d3.selectAll(".LegendDotS").remove();
+d3.selectAll(".LegendLabelS").remove();
+  d3.selectAll(".legendDotS").remove();
+d3.selectAll(".legendLabelS").remove();
   svgS.selectAll("path.graphInStar").remove();
   svgS.selectAll("circle.circleInStar").remove();
   //default = show 2020
@@ -455,7 +744,7 @@ function getPathCoordinates(data_point){
       let angle = (Math.PI / 2) + (2 * Math.PI * i / (features.length-1));
       coordinates.push(angleToCoordinate(angle, selected_year_data[data_point][i]));
   }
-  console.log(data_point,coordinates)
+
   return coordinates;
 }
 
@@ -465,11 +754,15 @@ function getPathCoordinates(data_point){
 let line = d3.line()
     .x(d => d.x)
     .y(d => d.y);
+  let color; 
 
+starting_Legend=-1;
 
 for (var i = 0; i < names.length; i ++){
   let dN =names[i];
-  let color = colors[name_index(dN)];
+  
+  name_index(dN)===-1?color="grey":color=colors[name_index(dN)];
+  console.log(color)
   let coordinates = getPathCoordinates(dN);
 
   //draw the path element
@@ -516,17 +809,18 @@ for (var i = 0; i < names.length; i ++){
 .attr("fill","black")
 .on("mouseover",function(d,i){
   
-    d3.select(this).attr("fill", color)
+    d3.select(this).attr("fill", colors[name_index(dN)])
     .attr("r", ""+5 * 2)
   var index=arr.indexOf(i);
-
+  console.log(i)
 
   
 svgS.append("rect").attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("id","overSR").attr("x", cx[index]-25) 
 .attr("y", cy[index]-20)
-.attr("width", 25)
+.attr("width", format_etichetta(dN).length*7.5)
 .attr("height", 12)
-.attr("fill","white")
+.attr("fill",colors[name_index(dN)])
+.attr("opacity","0.5")
 
 
 
@@ -534,7 +828,7 @@ svgS.append("text").attr("transform", "translate(" + margin.left + "," + margin.
 .attr("y", cy[index]-10)
  
 .text(function(d) {
- return selected_year_data[dN][index]+"";  // Value of the text
+ return format_etichetta(dN) +" - "+format_number(selected_year_data[dN][index])+"";  // Value of the text
 })
 })
 
@@ -546,14 +840,168 @@ svgS.append("text").attr("transform", "translate(" + margin.left + "," + margin.
   svgS.select("#overS").remove()
   svgS.select("#overSR").remove()
 })
+console.log(arr_sorted);
+
+
+      
+  
+  
+
+}
+
+svgS.selectAll("mydotsS")
+  .data(arr_sorted)
+  .enter()
+  .append("rect")
+  .attr("class","LegendDotS")
+    .attr("x", 100)
+    .attr("y", function(d,i){  return 100 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
+    .attr("width", size).attr("transform", "translate(" + (widthT+90) + "," + 0 + ")")
+    .attr("height", size)
+    .style("fill", function(d,i){ return colors[i]})
+
+// Add one dot in the legend for each name.
+svgS.selectAll("mylabelsS")
+  .data(arr_sorted)
+  .enter()
+  .append("text").attr("class","LegendLabelS")
+    .attr("x", 100 + size*1.2).attr("transform", "translate(" + (widthT+90) + "," + 0 + ")")
+    .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
+    .style("fill", function(d,i){ return colors[i]})
+    .text(function(d,i){ return format_etichetta(arr_sorted[i])+" - ("+format_number(selected_year_data[arr_sorted[i]][6])+")"})
+    .attr("text-anchor", "left")
+    .style("alignment-baseline", "middle")
 
 
 
+var newRemove=[];
+for (var i = 0; i < remove.length; i ++){
+  
+  if(selected_year_data[remove[i]]===undefined)continue;
+  newRemove.push(remove[i]);
+}
+for (var i = 0; i < newRemove.length; i ++){
+  let dN =newRemove[i];
+  
+  name_index(dN)===-1?color=supplement_colors[i]:color=colors[name_index(dN)];
+  let P=i;
+ 
+  let coordinates = getPathCoordinates(dN);
 
+  //draw the path element
+  svgS.append("path").attr("class","graphInStar").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+  .datum(coordinates)
+  .attr("d",line)
+  .attr("stroke-width", 3).attr("pointer-events", "none")
+  .attr("stroke", color)
+  .attr("fill", color)
+  .attr("stroke-opacity", 1)
+  .attr("opacity", 0.5);
+
+  
+  let angleCircle ;
+  let arr = [...features];
+  let cx =[];
+  let cy=[];
+  arr.pop();
+  
+  svgS.append("g").selectAll("circle").data(arr).enter()
+  
+  .append("circle").attr("class","circleInStar")
+.attr("cx",function(d,i){
+      var p;
+
+      angleCircle =(Math.PI / 2) + (2 * Math.PI * i / (arr.length));
+      p=selected_year_data[dN][i]
+     
+      cx.push((angleToCoordinate(angleCircle,p)).x);
+      return cx[i];
+      })
+.attr("cy",function(d,i){
+      var p;
+      
+      angleCircle =(Math.PI / 2) + (2 * Math.PI * i / (arr.length));
+      p=selected_year_data[dN][i]
+      cy.push((angleToCoordinate(angleCircle,p)).y)
+  
+      
+      return cy[i];
+  })
+  
+.attr("r","5").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+.attr("fill","black")
+.on("mouseover",function(d,i){
+  
+     d3.select(this).attr("fill", supplement_colors[P]);
+    
+    d3.select(this).attr("r", ""+5 * 2)
+  var index=arr.indexOf(i);
+
+
+  
+svgS.append("rect").attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("id","overSR").attr("x", cx[index]-50) 
+.attr("y", cy[index]-60)
+.attr("width", format_etichetta(dN).length*7.5)
+.attr("height", 24)
+.attr("fill","#BCE1DE")
+
+
+
+svgS.append("text").attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("id","overS").attr("x", cx[index]-50) 
+.attr("y", cy[index]-45)
+ 
+.text(function(d) {
+ return format_etichetta(dN)+" - "+format_number(selected_year_data[dN][index])+"";  // Value of the text
+})
+})
+
+
+.on("mouseout",function(d,i){
+  
+  d3.select(this).attr("fill", "black")
+  .attr("r", ""+5 );
+  svgS.select("#overS").remove()
+  svgS.select("#overSR").remove()
+});
+
+size=20;
+
+
+
+    
+
+}
+
+starting_Legend=arr_sorted.length;
+svgS.selectAll("mydotsS")
+  .data(newRemove)
+  .enter()
+  .append("rect")
+  .attr("class","legendDotS")
+    .attr("x", 100)
+    .attr("y", function(d,i){ if(starting_Legend>=0)return  100+i*(size+5)
+                              else return 100+ i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
+    .attr("width", size)
+    .attr("height", size).attr("transform", "translate(" + (widthT+90) + "," + (++starting_Legend)*20 + ")")
+    .style("fill", function(d,i){ return supplement_colors[i]})
+    
+// Add one dot in the legend for each name.
+
+svgS.selectAll("mylabelsS")
+  .data(newRemove)
+  .enter()
+  .append("text").attr("class","legendLabelS")
+    .attr("x", 100 + size*1.2)
+    .attr("y", function(d,i){if(starting_Legend>=0) return 100+(i)*(size+5) + (size/2)
+                            else return 100 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
+    .style("fill", function(d,i){ return supplement_colors[i]})
+    .text(function(d,i){ return format_etichetta(newRemove[i])+" ("+format_number(selected_year_data[newRemove[i]][6])+")"})
+    .attr("text-anchor", "left").attr("transform", "translate(" + (widthT+90) + "," + (starting_Legend)*20+ ")")
+    .style("alignment-baseline", "middle")
 
 
 }
-}
+
 
 
 
@@ -567,7 +1015,7 @@ var allGroup = ["2016", "2018", "2019", "2020"].reverse()
 
 // Initialize the button
 var dropdownButton = d3.select("#data1")
-  .append('select').attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+  .append('select').attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("id","yearSel")
 
 // add the options to the button
 dropdownButton // Add a button
@@ -608,5 +1056,7 @@ dropdownButton.on("change", function(d) {
   })
 
   updateStar()
+
+}
   
 }

@@ -51,10 +51,13 @@ function handleClick(d, i) { // Add interactivity
     if (index > -1) {
       selected.splice(index, 1);
       d3.select(this).style("fill","red");
+      display_data(selected)  
     }else{
         if(selected.length<5){
             selected.push(i);
-            d3.select(this).style("fill","blue");    
+            d3.select(this).style("fill","blue");
+              
+            display_data(selected)  
         }
     }
     console.log(selected);
