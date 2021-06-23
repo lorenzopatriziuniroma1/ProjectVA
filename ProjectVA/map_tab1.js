@@ -46,7 +46,6 @@ function handleMouseOut(d, i) {  // Add interactivity
                 .style("opacity", 0);	
         }
 function handleClick(d, i) { // Add interactivity 
-    console.log(i);
     const index = selected.indexOf(i);
     if (index > -1) {
       selected.splice(index, 1);
