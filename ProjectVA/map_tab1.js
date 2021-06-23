@@ -28,7 +28,7 @@ function handleMouseOver(d, i) {  // Add interactivity
       div.transition()		
       .duration(200)		
       .style("opacity", .9);		
-  div	.html(i.Institution + "<br/> Rank =" +i["Current Rank"])	
+  div	.html(i.Institution + "<br/> Rank =" +i["CurrentRank"])	
       .style("left", (d.pageX) + "px")		
       .style("top", (d.pageY - 28) + "px");
       }
@@ -65,7 +65,7 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
 
 
 
-d3.csv("ProjectVA\\Ranking-2019-Coords-clean.csv").then(function(csv) {
+d3.csv("ProjectVA/pca_csv/pca_year2020.csv").then(function(csv) {
   data = csv;
   
   g.selectAll("circle")
@@ -114,6 +114,7 @@ g.selectAll("circle")
    .attr("transform", function(d) {
     return "translate(" + projection([parseFloat(d["Longitude"]),parseFloat(d["Latitude"])]) + ")"+" scale("+1/event.transform.k+")";
    });
+  // g.selectAll("circle").style("opacity",function(d){ console.log(d["CurrentRank"]>3); return (d["CurrentRank"]<3) ?  10 :  0;})
 
 //g.selectAll("path")  
   // .attr("d", path.projection(projection)); 
@@ -130,8 +131,13 @@ svg1.call(zoom);
 
 var data;
 
+function changeMin(e){
+  g.selectAll("circle").attr("visibility",function(d){  return (d["OverallScore"]>e.value) ?  "visibility" :  "hidden"; });
+}
 
-
+function changeMax(e){
+  g.selectAll("circle").attr("visibility",function(d){  return (d["OverallScore"]<e.value) ?  "visibility" :  "hidden";})
+}
     //svg1.selectAll("circle")
      // .attr("transform", function(d) {
         //console.log(parseFloat(d["Latitude"])+d3.event.transform.y);
