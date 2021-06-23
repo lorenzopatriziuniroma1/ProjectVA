@@ -1,5 +1,5 @@
 function colores_range(n,start,end) {
-  var colores_g = ["blue", "yellow", "red"]
+  var colores_g = ["blue", "black", "red"]
   var step=(end-start)/3;
   var i=0;
   if(n<start+step){i=0}
@@ -23,10 +23,10 @@ function handleMouseOut2(d,i){
 }
 
 var pca_selected=[];
-
+var dimensions;
 var bru;
 //set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 30, left: 60},
+var margin = {top: 10, right: 30, bottom: 80, left: 60},
     width2 = 460 - margin.left - margin.right,
     height2 = 400 - margin.top - margin.bottom;
 
@@ -38,7 +38,14 @@ var svg = d3.select("#pca_scatter")
   .append("g")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
-
+  var svg2 = d3.select("#pca_scatter")
+          .append("svg")
+            .attr("width", width2 + margin.left + margin.right)
+            .attr("height", height2 + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform",
+                  "translate(" + margin.left + "," + margin.top + ")");
+        
 //Read the data
 d3.csv("ProjectVA/standard/Ranking-2020-Coords-clean.csv").then( 
 function(data) {
@@ -69,7 +76,9 @@ function(data) {
       .attr("cy", function (d) { return y(d.pca_2); } )
       .attr("r", 8)
       .style("fill", function (d) { return colores_range(d.OverallScore,0,100) } )
-      .style("opacity", 0.5)
+      .style("opacity", 0.5);
+      
+      svg.selectAll("circle").transition().duration(5000).attr("r",2);
 
       bru=d3.brush()                 // Add the brush feature using the d3.brush function
       .extent( [ [0,0], [width2,height2] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
@@ -108,8 +117,60 @@ function(data) {
            y1 = brush_coords[1][1];
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;    // This return TRUE or FALSE depending on if the points is in the selected area
   }
+// Extract the list of dimensions we want to keep in the plot. Here I keep all except the column called Species
+ dimensions = Object.keys(data[0]).filter(function(d) { return ['CurrentRank', 'LastRank','Age','Academicscorerscore', 
+'Employerscore','FacultyStudentscore', 'CitationsPerFacultyscore', 'InternationalFacultyscore', 'InternationalStudentscore', 'OverallScore'].includes(d); })
 
+  
+  console.log(dimensions);
+
+// For each dimension, I build a linear scale. I store all in a y object
+    var y2 = {}
+    for (i in dimensions) {
+      name_d = dimensions[i]
+      y2[name_d] = d3.scaleLinear()
+        .domain( d3.extent(data, function(d) { return +d[name_d]; }) )
+        .range([height2, 0])
+    }
+  
+    // Build the X scale -> it find the best position for each Y axis
+    var x2 = d3.scalePoint()
+      .range([0, width2])
+      .padding(1)
+      .domain(dimensions);
+      // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
+  function path(d) {
+    return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
+};
+ // Draw the lines
+ svg2
+ .selectAll("myPath")
+ .data(data)
+ .enter().append("path")
+ .attr("d",  path)
+ .style("fill", "none")
+ .style("stroke", "#69b3a2")
+ .style("opacity", 0.5);
+
+  // Draw the axis:
+  svg2.selectAll("myAxis")
+    // For each dimension of the dataset I add a 'g' element:
+    .data(dimensions).enter()
+    .append("g")
+    // I translate this element to its right position on the x axis
+    .attr("transform", function(d) { return "translate(" + x2(d) + ")"; })
+    // And I build the axis with the call function
+    .each(function(d) { d3.select(this).call(d3.axisLeft().scale(y2[d])); })
+    // Add axis title
+    .append("text")
+    .attr("transform","translate(0,"+(height2+15)+") rotate(45)")
+      .style("text-anchor", "start")
+      .text(function(d) { return d; })
+      
+      .style("fill", "black");
 })
+
+
 
 
 var years = ["2020", "2019", "2018","2016"];
@@ -135,7 +196,7 @@ function onchange() {
         svg.selectAll("circle").transition().duration(2000)
             .attr("cx", 0 )
             .attr("cy", 0 )
-            .attr("r", 2)
+            .attr("r", 2).remove();
     // Add X axis
   var x = d3.scaleLinear()
   .domain([-4, 7])
@@ -153,5 +214,33 @@ svg.selectAll("circle").data(data).transition().duration(2000)
 .attr("cy", function (d) { return y(d.pca_2); } )
     .attr("r", 2)
     .style("fill", function(d){return colores_range(d.OverallScore,0,100)})
+
+
+
+
+
+    // For each dimension, I build a linear scale. I store all in a y object
+    var y2 = {}
+    for (i in dimensions) {
+      name_d = dimensions[i]
+      y2[name_d] = d3.scaleLinear()
+        .domain( d3.extent(data, function(d) { return +d[name_d]; }) )
+        .range([height2, 0])
+    }
+  
+    // Build the X scale -> it find the best position for each Y axis
+    var x2 = d3.scalePoint()
+      .range([0, width2])
+      .padding(1)
+      .domain(dimensions);
+      // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
+  function path(d) {
+    return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
+};
+
+    svg2.selectAll("path").transition().duration(2000).remove()
+   // svg2.selectAll("path").data(data).transition().duration(2000).attr("d",  path)
       })
+
+
 };

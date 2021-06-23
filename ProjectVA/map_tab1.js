@@ -1,6 +1,6 @@
-const width = 800;
-const height = 500;
-const svg1 = d3.select("#map").append("svg")
+var width = 800;
+var height = 500;
+var svg1 = d3.select("#map").append("svg")
     .attr("width", width)
     .attr("height", height);
  
