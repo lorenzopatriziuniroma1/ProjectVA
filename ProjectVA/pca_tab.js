@@ -15,11 +15,15 @@ function handleMouseOn(d,i){
 div	.html(i.Institution + "<br/> Rank =" +i["CurrentRank"])	
   .style("left", (d.pageX) + "px")		
   .style("top", (d.pageY - 28) + "px");
+
+  d3.select(this).style("stroke", "red")
 }
 function handleMouseOut2(d,i){
   div.transition()		
   .duration(200)		
   .style("opacity", 0);		
+
+  d3.select(this).style("stroke", "#69b3a2")
 }
 
 var pca_selected=[];
@@ -91,6 +95,7 @@ function(data) {
   // Function that is triggered when brushing is performed
   function updateChart(event) {
     extent = event.selection
+    svg2.selectAll(".myPath").style("opacity", 0.1)
     myCircle.classed("selected", 
     function(d){
       var ret=isBrushed(extent, x(d.pca_1), y(d.pca_2)); 
@@ -98,15 +103,25 @@ function(data) {
       if(ret){
         if (index <= -1) {
           pca_selected.push(d);
+  
+         // svg2.select( "#"+d.Institution.replace(/[^a-zA-Z]/g, "")).style("stroke", "black").style("opacity", 1)
         }
       }else{
         
         if (index > -1) {
           pca_selected.splice(index, 1);
+          //svg2.select("#"+d.Institution.replace(/[^a-zA-Z]/g, "")).style("stroke", "#69b3a2")
         }
       }
       return ret; } );
-    console.log(pca_selected);
+    if (pca_selected.length==0){
+      svg2.selectAll(".myPath").style("opacity", 0.5).style("stroke", "#69b3a2")
+    }else{
+      svg2.selectAll(".myPath").filter( function(d) {
+        return pca_selected.some(function(el) { 
+          return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })}).style("opacity", 1).style("stroke", "black");
+    
+    }
   }
 
   // A function that return TRUE or FALSE according if a dot is in the selection or not
@@ -147,10 +162,14 @@ function(data) {
  .selectAll("myPath")
  .data(data)
  .enter().append("path")
+ .attr("id", function(d) { return d.Institution.replace(/[^a-zA-Z]/g, "") ;})
+ .attr("class","myPath")
  .attr("d",  path)
  .style("fill", "none")
  .style("stroke", "#69b3a2")
- .style("opacity", 0.5);
+ .style("opacity", 0.5)
+ .on("mouseover", handleMouseOn)
+.on("mouseout", handleMouseOut2);
 
   // Draw the axis:
   svg2.selectAll("myAxis")
@@ -178,6 +197,7 @@ var years = ["2020", "2019", "2018","2016"];
 var select = d3.select('#pca_scatter')
   .append('select')
   	.attr('class','select')
+    .attr('id',"pca_select")
     .on('change',onchange);
 
 var options = select
@@ -187,7 +207,7 @@ var options = select
           .text(function (d) { return d; });
 
 function onchange() {
-    selectValue = d3.select('select').property('value')
+    selectValue = d3.select('#pca_select').property('value')
    pca_selected=[];
     d3.csv("ProjectVA/pca_csv/pca_year"+selectValue+".csv").then (function(data) {
 
@@ -238,8 +258,6 @@ svg.selectAll("circle").data(data).transition().duration(2000)
     return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
 };
 
-    svg2.selectAll("path").transition().duration(2000).remove()
-   // svg2.selectAll("path").data(data).transition().duration(2000).attr("d",  path)
       })
 
 
