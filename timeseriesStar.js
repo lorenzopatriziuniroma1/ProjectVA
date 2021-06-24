@@ -623,7 +623,7 @@ for(let j=0;j<4;j++){  // years loop
     for(let k=0;k<original_selection_names.length;k++){  //list of names loop
       arr_of_stats=[];
       if(dat[j][i].Institution.toUpperCase()===original_selection_names[k].toUpperCase()){
-        arr_of_stats.push(dat[j][i]["Academic score"]);
+        (j<2)===true?arr_of_stats.push(dat[j][i]["Academic scorer score"]):arr_of_stats.push(dat[j][i]["Academic score"])
         arr_of_stats.push(dat[j][i]["Employer score"]);
         arr_of_stats.push(dat[j][i]["Faculty Student score"]);
         arr_of_stats.push(dat[j][i]["CitationsPerFaculty score"]);
