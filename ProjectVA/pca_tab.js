@@ -51,7 +51,7 @@ var svg = d3.select("#pca_scatter")
                   "translate(" + margin.left + "," + margin.top + ")");
         
 //Read the data
-d3.csv("ProjectVA/standard/Ranking-2020-Coords-clean.csv").then( 
+d3.csv("ProjectVA/pca_csv/pca_year2020.csv").then( 
 function(data) {
 
   // Add X axis
@@ -95,7 +95,7 @@ function(data) {
   // Function that is triggered when brushing is performed
   function updateChart(event) {
     extent = event.selection
-    svg2.selectAll(".myPath").style("opacity", 0.1)
+    svg2.selectAll(".myPath").style("opacity", 0.1).style("stroke", "#69b3a2")
     myCircle.classed("selected", 
     function(d){
       var ret=isBrushed(extent, x(d.pca_1), y(d.pca_2)); 
@@ -158,7 +158,7 @@ function(data) {
     return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
 };
  // Draw the lines
- svg2
+svg2
  .selectAll("myPath")
  .data(data)
  .enter().append("path")
@@ -235,7 +235,7 @@ svg.selectAll("circle").data(data).transition().duration(2000)
     .attr("r", 2)
     .style("fill", function(d){return colores_range(d.OverallScore,0,100)})
 
-
+    svg.selectAll("circle").exit().remove
 
 
 
@@ -258,7 +258,29 @@ svg.selectAll("circle").data(data).transition().duration(2000)
     return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
 };
 
-      })
+console.log(data)
+ // bind data
+ var appending = svg2.selectAll('.myPath').data(data)
 
+     // add new elements
+     appending
+     .transition()
+     .duration(5000)
+     .attr("id", function(d) {console.log("ciao"); return d.Institution.replace(/[^a-zA-Z]/g, "") ;})
+     .attr("class","myPath")
+     .attr("d",  path)
+     .style("fill", "none")
+     .style("stroke", "#69b3a2")
+     .style("opacity", 0.5)
+     
+     appending
+     .on("mouseover", handleMouseOn)
+    .on("mouseout", handleMouseOut2);
+
+
+        // remove old elements
+        appending.exit().remove();
+
+      })
 
 };
