@@ -1,5 +1,5 @@
 function colores_range(n,start,end) {
-  var colores_g = ["blue", "black", "red"]
+  var colores_g = palette_sequential_map
   var step=(end-start)/3;
   var i=0;
   if(n<start+step){i=0}
@@ -16,14 +16,14 @@ div	.html(i.Institution + "<br/> Rank =" +i["CurrentRank"])
   .style("left", (d.pageX) + "px")		
   .style("top", (d.pageY - 28) + "px");
 
-  d3.select(this).style("stroke", "red")
+  d3.select(this).style("stroke", "red").style("stroke-width","4.5px")
 }
 function handleMouseOut2(d,i){
   div.transition()		
   .duration(200)		
   .style("opacity", 0);		
 
-  d3.select(this).style("stroke", "#69b3a2")
+  d3.select(this).style("stroke", "#69b3a2").style("stroke-width","1px")
 }
 
 var pca_selected=[];
@@ -95,7 +95,7 @@ function(data) {
   // Function that is triggered when brushing is performed
   function updateChart(event) {
     extent = event.selection
-    svg2.selectAll(".myPath").style("opacity", 0.1).style("stroke", "#69b3a2")
+    svg2.selectAll(".myPath").transition().duration(1000).style("opacity", 0.05).style("stroke", "#69b3a2")
     myCircle.classed("selected", 
     function(d){
       var ret=isBrushed(extent, x(d.pca_1), y(d.pca_2)); 
@@ -115,11 +115,11 @@ function(data) {
       }
       return ret; } );
     if (pca_selected.length==0){
-      svg2.selectAll(".myPath").style("opacity", 0.5).style("stroke", "#69b3a2")
+      svg2.selectAll(".myPath").transition().duration(1000).style("opacity", 0.5).style("stroke", "#69b3a2")
     }else{
       svg2.selectAll(".myPath").filter( function(d) {
         return pca_selected.some(function(el) { 
-          return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })}).style("opacity", 1).style("stroke", "black");
+          return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })}).transition().duration(1000).style("opacity", 1).style("stroke", "black");
     
     }
   }

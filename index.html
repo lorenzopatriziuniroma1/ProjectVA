@@ -53,42 +53,68 @@
     <script src="https://d3js.org/topojson.v2.min.js"></script>
 
     <script src="timeseriesStar.js"></script>
-
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
-<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/d3-simple-slider"></script>
+
 </head>
 <body>
+
 <script>
   var selected=[];
-</script>
-  <div class="box">
-  <nav> TABS HERE</nav>
-  
-  <div class="container" id="map">
-    <form>
-      <div data-role="rangeslider">
-          <label for="range-1a">Rangeslider:</label>
-          <input type="range" name="range-1a" id="range-1a" min="0" max="100" value="0" onchange="changeMin(this)">
-          <label for="range-1b">Rangeslider:</label>
-          <input type="range" name="range-1b" id="range-1b" min="0" max="100" value="100" onchange="changeMax(this)">
-      </div>
-  </form>
+  var palette_sequential_map=["#edf8b1","#7fcdbb","#2c7fb8"];
+  var palette_divergent_map=["#e7298a","#66a61e","#e6ab02"];
+ 
 
+</script>
+
+
+<div class="container" style="width: 75%;">
+ 
+  <nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Home</button>
+      <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</button>
+      <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
+    </div>
+  </nav>
+
+
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+      <div class="row justify-content-center">
+        <div class="col justify-content-center" id="map">
+        <h2>Range</h2>
+        <div class="row align-items-center">
+          <div class="col-sm-2"><p id="value-range"></p></div>
+          <div class="col-sm"><div id="slider-range"></div></div>
+        </div>
+
+        </div>
+        <div class="col"  id="data1">
+    
+        </div>
+      </div>
+
+    </div>
+    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">  <div class="row"> 
+    
+      <div class="col" id="pca_scatter"> 
+       
+      </div>
+        </div>
+  </div></div>
+    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
   </div>
 
-<div class="container" id="data1"> 
-
 </div>
-
-<div class="container" id="pca_scatter"> 
- 
-</div>
-
-</div>
-</body>
 
 <script src="ProjectVA\pca_tab.js"></script>
 <script src="ProjectVA\map_tab1.js"></script>
 
+</body>
 </html>
