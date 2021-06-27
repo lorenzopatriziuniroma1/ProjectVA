@@ -31,7 +31,12 @@ df_f=[]
 for year in years:
     path=name+year
     df=pd.read_csv(path)
-    groups=df[["CurrentRank","Country"]].groupby(['Country']).agg(["count","mean"])
+
+    head=["country"]
+    for name in df.columns:
+        head.append(name+"_count")
+        head.append(name+"_mean")        
+    groups=df.groupby(['Country']).agg(["count","mean"])
     ##groups["Country"]=df[["Country"]].groupby(['Country'])
     print(groups)
-    groups.to_csv("ProjectVA\pca_csv\pca_year_group_"+year)
+    groups.reset_index().to_csv("ProjectVA\pca_csv\pca_year_group2_"+year,index=False,header=head)

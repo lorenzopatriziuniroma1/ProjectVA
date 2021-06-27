@@ -162,13 +162,18 @@ svg1.call(zoom);
 var data;
 
 function changeMin(e){
-
-  g.selectAll("circle").attr("visibility",function(d){  return (d["OverallScore"]>e) ?  "visibility" :  "hidden"; });
+console.log(e);
+g.selectAll("circle").attr("visibility",function(d){ console.log(d["OverallScore"]); console.log(e) ; console.log(d["OverallScore"]>e);return (d["OverallScore"]>e) ?  "visibility" :  "hidden"; });
 }
 
 function changeMax(e){
 
   g.selectAll("circle").attr("visibility",function(d){  return (d["OverallScore"]<e) ?  "visibility" :  "hidden"; });
+}
+
+
+function changeMinMax(min,max){
+  g.selectAll("circle").attr("visibility",function(d){  return (d["OverallScore"]<=max && d["OverallScore"]>=min) ?  "visibility" :  "hidden"; });
 }
     //svg1.selectAll("circle")
      // .attr("transform", function(d) {
@@ -229,8 +234,7 @@ function changeMax(e){
   .on('onchange', val => {
     d3.select('p#value-range').text(val.join('-'));
  
-    changeMin(val[0]);
-    changeMax(val[1]);
+changeMinMax(val[0],val[1]);
     console.log(val);
   });
 
