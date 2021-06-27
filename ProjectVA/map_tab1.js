@@ -63,34 +63,30 @@ function handleClick(d, i) { // Add interactivity
    
 }
 const path = d3.geoPath().projection(projection);
- //https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/maps/mapdata/custom50.json
+
 
  var stats;
 d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/maps/mapdata/custom50.json").then(function(uState) {
 
 
-  d3.csv("ProjectVA/pca_csv/pca_year_group_2020.csv").then(function(csv) {
-    stats=csv;
+  d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(csv) {
+    data = csv;
+    
+    var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
+
     g.selectAll('path')
     .data(uState.features)
     .enter()
     .append('path')
     .attr("d", path)
     .style("fill",function(d){
-      let c=csv.filter(function(row) {
-      return row['Country'] == d.properties.name;
-  })
-  if(c[0] == undefined) return "grey"; 
-      return colores_range2(c[0]["CurrentRank_count"],0,50)
+  if(color.get(d.properties.name) == undefined) return "grey"; 
+      return colores_range2(color.get(d.properties.name),0,50)
     })
     .style("stroke","#b3ccff")
     .style("stroke-width",".1px")
-      
-         
-  });
-  d3.csv("ProjectVA/pca_csv/pca_year2020.csv").then(function(csv) {
-    data = csv;
-    
+
+
     g.selectAll("circle")
   .data(data)
   .enter()
@@ -175,15 +171,6 @@ function changeMax(e){
 function changeMinMax(min,max){
   g.selectAll("circle").attr("visibility",function(d){  return (d["OverallScore"]<=max && d["OverallScore"]>=min) ?  "visibility" :  "hidden"; });
 }
-    //svg1.selectAll("circle")
-     // .attr("transform", function(d) {
-        //console.log(parseFloat(d["Latitude"])+d3.event.transform.y);
-        //console.log(d["Longitude"]);
-    //    var x=projection([parseFloat(d["Longitude"]),parseFloat(d["Latitude"])])
-    //    return "translate(" + (x[0]+d3.event.transform.y)+","+(x[1]+d3.event.transform.x) + ")"+" scale("+1/d3.event.transform.k+")";})
-   // svg1.selectAll('path')
-   //  .attr('transform', d3.event.transform);
-
 
    var legend = svg1.append('g')
   .attr("transform", "translate(" + (width-width*0.4)  + "," + (height-height*0.4 ) + ")")

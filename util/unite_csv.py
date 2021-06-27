@@ -1,7 +1,7 @@
 import pandas as pd
 
 """df = pd.read_csv('ProjectVA/Ranking-2020-Coords.csv')
-df.drop('Unnamed: 0', inplace=True, axis=1)
+
 df.drop('Unnamed: 0.1', inplace=True, axis=1)
 #df.drop('Unnamed: 0.1.1', inplace=True, axis=1)
 df['anno'] ='2020'

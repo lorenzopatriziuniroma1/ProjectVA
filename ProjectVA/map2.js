@@ -39,17 +39,25 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
 
     d3.csv("ProjectVA/pca_csv/pca_year_group_2020.csv").then(function(csv) {
        // stats=csv;
+      
+      });
+
+    d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(
+      function(data){
+        
+
+
+
+        var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
+
         g2.selectAll('path')
         .data(uState.features)
         .enter()
         .append('path')
         .attr("d", path2)
         .style("fill",function(d){
-          let c=csv.filter(function(row) {
-          return row['Country'] == d.properties.name;
-      })
-      if(c[0] == undefined) return "grey"; 
-          return colores_range2(c[0]["CurrentRank_count"],0,50)
+          if(color.get(d.properties.name) == undefined) return "grey"; 
+          return colores_range2(color.get(d.properties.name),0,50)
         })
         .attr("name", function(d) {  return d.properties.name})
         .style("stroke","#b3ccff")
@@ -58,10 +66,10 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
         .on("mouseout", handleMouseOut3)
         .on("mousemove",handleMouseMove)
         .on("click",handleMouseClick3)
-      });
 
-    d3.csv("ProjectVA/pca_csv/pca_year2020.csv").then(
-      function(data){
+
+
+
         
               // Extract the list of dimensions we want to keep in the plot. Here I keep all except the column called Species
  dimensions = Object.keys(data[0]).filter(function(d) { return ['CurrentRank', 'LastRank','Age','Academicscorerscore', 
@@ -189,7 +197,7 @@ function handleMouseClick3(d,i){
 
 function updateChart2(){
   d3.selectAll(".myPathCountry").remove();
-  d3.csv("ProjectVA/pca_csv/pca_year2020.csv").then(function(data2) {
+  d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(data2) {
 
  
 //    ['CurrentRank', 'LastRank','Age','Academicscorerscore',  'Employerscore','FacultyStudentscore', 'CitationsPerFacultyscore', 'InternationalFacultyscore', 'InternationalStudentscore', 'OverallScore']

@@ -51,7 +51,7 @@ var svg = d3.select("#pca_scatter")
                   "translate(" + margin.left + "," + margin.top + ")");
         
 //Read the data
-d3.csv("ProjectVA/pca_csv/pca_year2020.csv").then( 
+d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then( 
 function(data) {
 
   // Add X axis
@@ -209,7 +209,7 @@ var options = select
 function onchange() {
     selectValue = d3.select('#pca_select').property('value')
    pca_selected=[];
-    d3.csv("ProjectVA/pca_csv/pca_year"+selectValue+".csv").then (function(data) {
+    d3.csv("ProjectVA/pca_csv/pca_year_v2_"+selectValue+".csv").then (function(data) {
 
       
         // Add dots

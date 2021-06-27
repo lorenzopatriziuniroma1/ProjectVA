@@ -142,23 +142,23 @@ function sort_name_by_med(names){
 
 async function load_data(){
          
-    let dat1 = await d3.csv("ProjectVA/Ranking-2016-Coords-clean.csv").then(function(rows){
+    let dat1 = await d3.csv("ProjectVA/pca_csv/pca_year_v2_2016.csv").then(function(rows){
             
                 return rows
             }
        );
-    let dat2 = await d3.csv("ProjectVA/Ranking-2018-Coords-clean.csv").then(function(rows){
+    let dat2 = await d3.csv("ProjectVA/pca_csv/pca_year_v2_2018.csv").then(function(rows){
             
         return rows
     }
     
 );
-let dat3 = await d3.csv("ProjectVA/Ranking-2019-Coords-clean.csv").then(function(rows){
+let dat3 = await d3.csv("ProjectVA/pca_csv/pca_year_v2_2019.csv").then(function(rows){
             
     return rows
 }
 );
-let dat4 = await d3.csv("ProjectVA/Ranking-2020-Coords-clean.csv").then(function(rows){
+let dat4 = await d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(rows){
             
     return rows
 }
@@ -173,16 +173,16 @@ function checkValidity(s){
 
 function checkCompleteness(row){
   function checkPresence(row){
-  if(row['Overall Score']===undefined){
+  if(row['OverallScore']===undefined){
     
-    if(row["Overall Score "]!=="-"&& row["Overall Score "]!==""){
+    if(row["OverallScore"]!=="-"&& row["OverallScore"]!==""){
       
       return true;
     }
   }
   else{
     //console.log(row["anno"])
-    if(row["Overall Score"]!=="-"&& row["Overall Score"]!==""){
+    if(row["OverallScore"]!=="-"&& row["OverallScore"]!==""){
      
       return true;
       
@@ -191,16 +191,16 @@ function checkCompleteness(row){
   return false;
   }
   function checkVal(row){
-    if(isNaN(row['Overall Score'])){
+    if(isNaN(row['OverallScore'])){
     
-      if(row["Overall Score "]!=="-"&& row["Overall Score "]!==""){
+      if(row["OverallScore"]!=="-"&& row["OverallScore"]!==""){
         
         return true;
       }
     }
     else{
       //console.log(row["anno"])
-      if(row["Overall Score"]!=="-"&& row["Overall Score"]!==""){
+      if(row["OverallScore"]!=="-"&& row["OverallScore"]!==""){
        
         return true;
         
@@ -344,7 +344,7 @@ async function display_data(selected_on_map){
           if(dat[j][i].Institution.toUpperCase()===names[k].toUpperCase()){
             
               
-              (dat[j][i]["Overall Score "]===undefined)===true?d[names[k]]+=format_Overall(dat[j][i]["Overall Score"]):d[names[k]]+=format_Overall(dat[j][i]["Overall Score "]); // little bug with blank space in csv
+              (dat[j][i]["OverallScore"]===undefined)===true?d[names[k]]+=format_Overall(dat[j][i]["OverallScore"]):d[names[k]]+=format_Overall(dat[j][i]["OverallScore"]); // little bug with blank space in csv
             
             
           }
@@ -623,15 +623,15 @@ for(let j=0;j<4;j++){  // years loop
     for(let k=0;k<original_selection_names.length;k++){  //list of names loop
       arr_of_stats=[];
       if(dat[j][i].Institution.toUpperCase()===original_selection_names[k].toUpperCase()){
-        (j<2)===true?arr_of_stats.push(dat[j][i]["Academic scorer score"]):arr_of_stats.push(dat[j][i]["Academic score"])
-        arr_of_stats.push(dat[j][i]["Employer score"]);
-        arr_of_stats.push(dat[j][i]["Faculty Student score"]);
-        arr_of_stats.push(dat[j][i]["CitationsPerFaculty score"]);
-        arr_of_stats.push(dat[j][i]["InternationalFaculty score"]);
-        arr_of_stats.push(dat[j][i]["InternationalStudent score"]);
+        (j<2)===true?arr_of_stats.push(dat[j][i]["Academicscorerscore"]):arr_of_stats.push(dat[j][i]["Academicscore"])
+        arr_of_stats.push(dat[j][i]["Employerscore"]);
+        arr_of_stats.push(dat[j][i]["FacultyStudentscore"]);
+        arr_of_stats.push(dat[j][i]["CitationsPerFacultyscore"]);
+        arr_of_stats.push(dat[j][i]["InternationalFacultyscore"]);
+        arr_of_stats.push(dat[j][i]["InternationalStudentscore"]);
 
         
-        (dat[j][i]["Overall Score "] ===undefined)===true?arr_of_stats.push(format_Overall(dat[j][i]["Overall Score"])):arr_of_stats.push(format_Overall(dat[j][i]["Overall Score "])); // little bug with blank space in csv
+        (dat[j][i]["OverallScore"] ===undefined)===true?arr_of_stats.push(format_Overall(dat[j][i]["OverallScore"])):arr_of_stats.push(format_Overall(dat[j][i]["OverallScore"])); // little bug with blank space in csv
          
          make_graph_possible(arr_of_stats);
          switch(j){
@@ -664,7 +664,7 @@ svgS.append("text")
   .attr("y", 0)
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
   .text("Star Graph");
-let features = ["Academic score","Employer score","Faculty Student score","CitationsPerFaculty score","InternationalFaculty score","InternationalStudent score","Overall Score"];
+let features = ["Academicscorerscore","Employerscore","FacultyStudentscore","CitationsPerFacultyscore","InternationalFacultyscore","InternationalStudentscore","OverallScore"];
 
 let radialScale = d3.scaleLinear()
     .domain([0,100])
