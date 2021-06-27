@@ -58,9 +58,11 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
         .on("mouseout", handleMouseOut3)
         .on("mousemove",handleMouseMove)
         .on("click",handleMouseClick3)
-      
-        
+      });
 
+    d3.csv("ProjectVA/pca_csv/pca_year2020.csv").then(
+      function(data){
+        
               // Extract the list of dimensions we want to keep in the plot. Here I keep all except the column called Species
  dimensions = Object.keys(data[0]).filter(function(d) { return ['CurrentRank', 'LastRank','Age','Academicscorerscore', 
  'Employerscore','FacultyStudentscore', 'CitationsPerFacultyscore', 'InternationalFacultyscore', 'InternationalStudentscore', 'OverallScore'].includes(d); })
@@ -101,8 +103,8 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
    .text(function(d) { return d; })
    
    .style("fill", "black");
-
-      });
+      }
+    )
 });
 
 
@@ -244,3 +246,37 @@ return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
 
 
 
+ var legend = svg3.append('g')
+ .attr("transform", "translate(" + (width3-width3*0.2)  + "," + (height3-height3*0.2 ) + ")")
+ .append('svg')
+ .style("background","#b3ccff");
+
+ size=13;
+  // Handmade legend
+  legend.append("rect")
+  .attr("x",180).attr("y",130-10)    
+  .attr("width", size)
+  .attr("height", size)
+  .style("fill", palette_sequential_map[2])
+  legend.append("text").attr("x", 200).attr("y", 130).text("High #University").style("font-size", "15px").attr("alignment-baseline","middle")
+
+  legend.append("rect")
+  .attr("x",180).attr("y",150-10)    
+  .attr("width", size)
+  .attr("height", size)
+  .style("fill", palette_sequential_map[1])
+  legend.append("text").attr("x", 200).attr("y", 150).text("Middle #University").style("font-size", "15px").attr("alignment-baseline","middle")
+  
+  legend.append("rect")
+  .attr("x",180).attr("y",170-10)    
+  .attr("width", size)
+  .attr("height", size)
+  .style("fill", palette_sequential_map[0])
+  legend.append("text").attr("x", 200).attr("y", 170).text("Low #University").style("font-size", "15px").attr("alignment-baseline","middle")
+ 
+  legend.append("rect")
+  .attr("x",180).attr("y",190-10)    
+  .attr("width", size)
+  .attr("height", size)
+  .style("fill", "gray")
+  legend.append("text").attr("x", 200).attr("y", 190).text("0 Univesity").style("font-size", "15px").attr("alignment-baseline","middle")
