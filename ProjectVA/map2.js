@@ -34,6 +34,31 @@ var path2 = d3.geoPath().projection(projection2);
 
 var g2 = svg3.append("g");
 
+var selectPercentage=d3.select("div #selectpercentage")
+.append('select')
+.attr('class','select')
+.attr('id',"map_percentage")
+.on('change',updateChart2);
+
+var percentage=[]
+for(var i=0 ; i<10;i++ ){
+  percentage.push(""+(100-10*(i)));
+}
+
+
+var options2 = selectPercentage
+.selectAll('option')
+  .data(percentage).enter()
+  .append('option')
+      .text(function (d) {return d; });
+
+var selectedPercentage=100;
+
+function compareUniversity(a,b){
+  return a.OverallScore < b.OverallScore;
+}
+
+
 
 d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/maps/mapdata/custom50.json").then(function(uState) {
 
@@ -197,11 +222,18 @@ function handleMouseClick3(d,i){
 
 function updateChart2(){
   d3.selectAll(".myPathCountry").remove();
+  selectedPercentage = d3.select('#map_percentage').property('value')
   d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(data2) {
 
  
 //    ['CurrentRank', 'LastRank','Age','Academicscorerscore',  'Employerscore','FacultyStudentscore', 'CitationsPerFacultyscore', 'InternationalFacultyscore', 'InternationalStudentscore', 'OverallScore']
    var c= d3.rollup(data2, v =>{ 
+    var l=v.length;
+    var p=parseInt(l*selectedPercentage/100);
+    v.sort(compareUniversity)
+    console.log(p)
+    v= v.slice(0,p+1);
+    console.log(v)
      return { "CurrentRank": d3.sum(v, d => d.CurrentRank)/v.length,
       'LastRank': d3.sum(v, d => d.LastRank)/v.length,
       'Age': d3.sum(v, d => d.Age)/v.length,
@@ -215,7 +247,6 @@ function updateChart2(){
       'Country': v[0].Country
     };
     }, d => d.Country);
-console.log(c)
 
 
 
@@ -288,3 +319,8 @@ return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
   .attr("height", size)
   .style("fill", "gray")
   legend.append("text").attr("x", 200).attr("y", 190).text("0 Univesity").style("font-size", "15px").attr("alignment-baseline","middle")
+ 
+ 
+ 
+
+ 

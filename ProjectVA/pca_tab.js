@@ -208,6 +208,7 @@ var options = select
 
 function onchange() {
     selectValue = d3.select('#pca_select').property('value')
+    console.log(selectValue)
    pca_selected=[];
     d3.csv("ProjectVA/pca_csv/pca_year_v2_"+selectValue+".csv").then (function(data) {
 
