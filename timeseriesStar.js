@@ -63,6 +63,23 @@ function format_info(s){
   return ris;
 
 }
+function sortArrOfMeans(){
+  var tmp=[];var k=0
+  var maxX=-1;
+  while(ArrOfMEANS.length>0){
+    for(var i=0;i<ArrOfMEANS.length;i++){
+      if(ArrOfMEANS[i]>maxX){
+        maxX=ArrOfMEANS[i];
+        k=i;
+      }
+    }
+    tmp.push(maxX);
+    maxX=-1;
+    ArrOfMEANS.splice(k, 1)
+  }
+  ArrOfMEANS=tmp;
+}
+
 function mean_d(d,names){
   mean={};
 
@@ -81,6 +98,22 @@ function mean_d(d,names){
 
   return mean;
 }
+
+function preProcess(mat){
+  let features = ["Academicscorerscore","Employerscore","FacultyStudentscore","CitationsPerFacultyscore","InternationalFacultyscore","InternationalStudentscore","OverallScore"];
+  for(var i=0;i<mat.length;i++){
+    for(var j=0;j<mat[i].length;j++){
+      mat[i][j].Institution=mat[i][j].Institution.trim();
+     features.forEach(f=>{
+       if(mat[i][j][f]==="0"||mat[i][j][f]==="0.0"){
+         mat[i][j][f]="-";
+       }
+     })
+    }
+  }
+  return mat;
+}
+
 
 function format_number(s){
   console.log(s);
@@ -120,6 +153,8 @@ function format_etichetta(s){
 function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
 }
+
+
 
 //given a name, get the position in the ArrOfMEANS
 function name_index(name){
@@ -172,44 +207,23 @@ function checkValidity(s){
 
 
 function checkCompleteness(row){
+  //console.log("AAAA ",row)
   function checkPresence(row){
-  if(row['OverallScore']===undefined){
     
-    if(row["OverallScore"]!=="-"&& row["OverallScore"]!==""){
-      
-      return true;
-    }
-  }
-  else{
+ 
     //console.log(row["anno"])
     if(row["OverallScore"]!=="-"&& row["OverallScore"]!==""){
      
       return true;
       
     }
-  }
+
+  
   return false;
   }
-  function checkVal(row){
-    if(isNaN(row['OverallScore'])){
-    
-      if(row["OverallScore"]!=="-"&& row["OverallScore"]!==""){
-        
-        return true;
-      }
-    }
-    else{
-      //console.log(row["anno"])
-      if(row["OverallScore"]!=="-"&& row["OverallScore"]!==""){
-       
-        return true;
-        
-      }
-    }
-    return false;
-  }
+  
 
-  return checkVal(row)&&checkPresence(row);
+  return checkPresence(row);
 }
 
 function checkCompletenessOverall(data,names){
@@ -218,14 +232,20 @@ function checkCompletenessOverall(data,names){
   for(var j=0;j<4;j++){
     for(var n=0;n<names.length;n++){
       for(var i=0;i<data[j].length;i++){
+        if(j==1 &&i===601){
+          
+        }
         if(names[n].toUpperCase()===data[j][i].Institution.toUpperCase()){
           skipped=false;
           if(checkCompleteness(data[j][i])===false ){
+            
             if (!ris.includes(names[n].toUpperCase())){
+              
               ris.push(names[n].toUpperCase());
             }
-          what_miss[names[n]]+="Overall "+j+"/";
-
+            if(what_miss[names[n]]!==undefined) what_miss[names[n]]+="Overall "+j+"/";
+            else what_miss[names[n]]="Overall "+j+"/";
+          
           }
           
         }
@@ -234,7 +254,8 @@ function checkCompletenessOverall(data,names){
         if(!ris.includes(names[n].toUpperCase())){
         ris.push(names[n].toUpperCase());
       }
-      if(what_miss[names[n]]!==undefined&&!what_miss[names[n].includes("Overall")]&&!what_miss[names[n]].includes("NotPresent")){
+      if(what_miss[names[n]]!==undefined&&!what_miss[names[n]].includes("Overall")&&!what_miss[names[n]].includes("NotPresent")){
+        console.log(what_miss);
         what_miss[names[n]]="NotPresent "+j+"/";
       }else{
         what_miss[names[n]]+="NotPresent "+j+"/";
@@ -296,13 +317,13 @@ async function display_data(selected_on_map){
     }
     var names = [];var original_selection_names=[];
     for(var t=0;t<selected_on_map.length;t++){
-        names.push(selected_on_map[t]['Institution'].toUpperCase());
-        original_selection_names.push(selected_on_map[t]['Institution'].toUpperCase());
+        names.push(selected_on_map[t]['Institution'].toUpperCase().trim());
+        original_selection_names.push(selected_on_map[t]['Institution'].toUpperCase().trim());
     }
 
     ArrOfMEANS=[]
     let dat = await load_data();
-
+    dat=preProcess(dat);
     let remove=[] 
 
     //no data --> remove from names
@@ -380,7 +401,7 @@ async function display_data(selected_on_map){
       }
     
     d_mean=mean_d(d,names);
-    ArrOfMEANS.sort().reverse();
+    sortArrOfMeans();
           
     
 
@@ -524,6 +545,7 @@ for(let n=0;n< names.length;n++){
 
     arr_sorted=[];
     arr_sorted=sort_name_by_med(names);
+    console.log("X ", ArrOfMEANS);
 
     var size = 20
 svgT.selectAll("mydots")
@@ -623,7 +645,7 @@ for(let j=0;j<4;j++){  // years loop
     for(let k=0;k<original_selection_names.length;k++){  //list of names loop
       arr_of_stats=[];
       if(dat[j][i].Institution.toUpperCase()===original_selection_names[k].toUpperCase()){
-        (j<2)===true?arr_of_stats.push(dat[j][i]["Academicscorerscore"]):arr_of_stats.push(dat[j][i]["Academicscore"])
+        arr_of_stats.push(dat[j][i]["Academicscorerscore"])
         arr_of_stats.push(dat[j][i]["Employerscore"]);
         arr_of_stats.push(dat[j][i]["FacultyStudentscore"]);
         arr_of_stats.push(dat[j][i]["CitationsPerFacultyscore"]);
