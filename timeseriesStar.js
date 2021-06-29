@@ -711,8 +711,9 @@ var svgS= d3.select("#data1")
       event.transform.y=old.y;
     }
     old=event.transform
-   svgS.attr("transform",event.transform);
-  }));
+    svgS.attr("transform",event.transform)
+  }))
+  .append("g");
 
 //prepare data
 var arr_of_stats =[]; //Academic scorer score,Employer score,Faculty Student score,CitationsPerFaculty score,InternationalFaculty score,InternationalStudent score,Overall Score 
