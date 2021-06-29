@@ -31,7 +31,7 @@ var dimensions;
 var bru;
 //set the dimensions and margins of the graph
 var margin = {top: 10, right: 30, bottom: 80, left: 60},
-    width2 = 460 - margin.left - margin.right,
+    width2 =  d3.select(".row").node().getBoundingClientRect().width - margin.left - margin.right,
     height2 = 400 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
@@ -96,6 +96,7 @@ function(data) {
   function updateChart(event) {
     extent = event.selection
     svg2.selectAll(".myPath").transition().duration(1000).style("opacity", 0.05).style("stroke", "#69b3a2")
+    svg_map_pca.selectAll("circle").transition().duration(1000).style("opacity",0.5).style("stroke", "none")
     myCircle.classed("selected", 
     function(d){
       var ret=isBrushed(extent, x(d.pca_1), y(d.pca_2)); 
@@ -103,7 +104,6 @@ function(data) {
       if(ret){
         if (index <= -1) {
           pca_selected.push(d);
-  
          // svg2.select( "#"+d.Institution.replace(/[^a-zA-Z]/g, "")).style("stroke", "black").style("opacity", 1)
         }
       }else{
@@ -115,12 +115,17 @@ function(data) {
       }
       return ret; } );
     if (pca_selected.length==0){
-      svg2.selectAll(".myPath").transition().duration(1000).style("opacity", 0.5).style("stroke", "#69b3a2")
+      svg2.selectAll(".myPath").transition().duration(1000).style("opacity", 0.5).style("stroke", "#69b3a2");
+      svg_map_pca.selectAll("circle").attr("r",5)
+      .style("fill",palette_divergent_map[2]).transition().duration(1000).style("opacity", 1).style("stroke", "none")
     }else{
       svg2.selectAll(".myPath").filter( function(d) {
         return pca_selected.some(function(el) { 
           return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })}).transition().duration(1000).style("opacity", 1).style("stroke", "black");
     
+          svg_map_pca.selectAll("circle").filter(function(d){
+            return pca_selected.some(function(el) { 
+              return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })}).moveToFront().transition().duration(1000).attr("r",9).style("opacity", 1).style("stroke", "black");
     }
   }
 
@@ -285,3 +290,123 @@ console.log(data)
       })
 
 };
+
+
+
+
+
+
+
+//----------------------------------------------------------------mapppppaaaaaa----------------------------------------------------
+
+
+var svg_map_pca = d3.select("#map3")
+  .append("svg")
+    .attr("width", width2 + margin.left + margin.right)
+    .attr("height", height2 + margin.top + margin.bottom)
+    .style("background","#b3ccff")
+
+    var g_map_pca = svg_map_pca.append("g");
+
+
+    const projection_map_pca = d3.geoMercator()
+    .translate([width2 / 2, height2 / 2]) // translate to center of screen
+    .scale([100]); // scale things down so see entire US
+ 
+
+    var tooltip3 = d3.select("#map3")
+    .append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0)
+    .attr("margin",margin);
+
+
+
+
+
+    const path_map_pca = d3.geoPath().projection(projection_map_pca);
+
+
+ var stats;
+d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/maps/mapdata/custom50.json").then(function(uState) {
+
+
+  d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(csv) {
+ var data=csv
+    var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
+
+    g_map_pca.selectAll('path')
+    .data(uState.features)
+    .enter()
+    .append('path')
+    .attr("d", path_map_pca)
+    .style("fill",function(d){
+  if(color.get(d.properties.name) == undefined) return "grey"; 
+      return colores_range2(color.get(d.properties.name),0,50)
+    })
+    .style("stroke","#b3ccff")
+    .style("stroke-width",".1px")
+
+
+  g_map_pca.selectAll("circle")
+  .data(data)
+  .enter()
+  .append("circle")
+  .on("mouseover", handleMouseOver)
+  .on("mouseout", handleMouseOut)
+  .attr("r",5)
+  .style("fill",palette_divergent_map[2])
+  .attr("transform", function(d) {return "translate(" + projection_map_pca([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
+  .attr("id",function(d){return d.Institution})
+  .attr("id", function(d) { return d.Institution.replace(/[^a-zA-Z]/g, "") ;})
+  .attr("co",palette_divergent_map[2]);
+
+  });
+
+
+
+
+  var old;
+var zoom = d3.zoom()
+.scaleExtent([1, 85])
+.on('zoom', function(event) {
+  //console.log(d3.event.transform)
+  if(event.transform.x*event.transform.k>width2*0.8){
+    event.transform.x=old.x;
+  }
+  if(event.transform.x/event.transform.k<-width2*0.8){
+    event.transform.x=old.x;
+  }
+  if(event.transform.y*event.transform.k>height2*0.8){
+    event.transform.y=old.y;
+  }
+  if(event.transform.y/event.transform.k<-height2*0.8){
+    event.transform.y=old.y;
+  }
+    old=event.transform
+   g_map_pca.attr("transform",event.transform);
+
+   g_map_pca.selectAll("circle")
+   //.attr("d", path.projection(projection))
+   .attr("transform", function(d) {
+    return "translate(" + projection_map_pca([parseFloat(d["Longitude"]),parseFloat(d["Latitude"])]) + ")"+" scale("+1/event.transform.k+")";
+   });
+  // g.selectAll("circle").style("opacity",function(d){ console.log(d["CurrentRank"]>3); return (d["CurrentRank"]<3) ?  10 :  0;})
+
+//g.selectAll("path")  
+  // .attr("d", path.projection(projection)); 
+  div.transition()		
+  .duration(500)		
+  .style("opacity", 10);
+  div.transition()		
+  .duration(500)		
+  .style("opacity", 0);
+  
+});
+
+svg_map_pca.call(zoom);
+
+
+
+})
+

@@ -66,11 +66,16 @@
   var palette_sequential_map=["#edf8b1","#7fcdbb","#2c7fb8"];
   var palette_divergent_map=["#e7298a","#66a61e","#e6ab02"];
  
-
+  d3.selection.prototype.moveToFront = function() {
+    return this.each(function(){
+    this.parentNode.appendChild(this);
+    });
+  };
+  
 </script>
 
 
-<div class="container" style="width: 75%;">
+<div class="container shadow-sm p-3 mb-5 bg-white rounded" style="width: 75%;">
  
   <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -92,13 +97,24 @@
         </div>
 
         </div>
+
+        <div class="row justify-content-center">
         <div class="col"  id="data1">
     
+        </div>
         </div>
       </div>
 
     </div>
-    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">  <div class="row"> 
+    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">  
+      <div class="row" > 
+    
+        <div class="col" id="map3"> 
+         
+        </div>
+          </div>
+
+      <div class="row" > 
     
       <div class="col" id="pca_scatter"> 
        

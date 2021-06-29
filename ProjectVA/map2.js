@@ -1,10 +1,10 @@
 
 var svg3 = d3.select(".row");
 var width3 = svg3.node().getBoundingClientRect().width;
-var height3 = svg3.node().getBoundingClientRect().height;
+var height3 = svg3.node().getBoundingClientRect().height/2;
 var country_selected=[];
 var dimension
-var margin = {top: 100, right: 30, bottom: 80, left: 60},
+var margin = {top: 80, right: 30, bottom: 20, left: 60}
 
 svg3 = d3.select("#map2")
   .append("svg")

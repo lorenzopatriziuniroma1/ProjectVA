@@ -1,11 +1,27 @@
-var width = 800;
+var width = d3.select(".row").node().getBoundingClientRect().width;
 var height = 500;
-var svg1 = d3.select("#map").append("svg")
-    .attr("width", width)
-    .attr("height", height)
+
+var margin = {top: 100, right: 30, bottom: 80, left: 60}
+
+
+var symbolGenerator = d3.symbol()
+  .type(d3.symbolStar)
+  .size(80);
+
+var pathData = symbolGenerator();
+var svg1 = d3.selectAll("#map")
+  .append("svg")
+    .attr("width", width) 
+    .attr("height", height )
     .style("background","#b3ccff")
- 
+    .style("margin-bottom","10px")
+
 var g = svg1.append("g");
+
+
+
+
+
 const projection = d3.geoMercator()
     .translate([width / 2, height / 2]) // translate to center of screen
     .scale([100]); // scale things down so see entire US
@@ -38,7 +54,8 @@ function handleMouseOut(d, i) {  // Add interactivity
     //console.log(i);
     const index = selected.indexOf(i);
     if (index <= -1) {
-        d3.select(this).style("fill",palette_divergent_map[2]);
+      console.log(this)
+        d3.select(this).style("fill",  d3.select(this).attr("co"));
     }
         // Select text by id and then remove
        // document.getElementById( "t" + i.Institution ).remove();  // Remove text location
@@ -50,7 +67,7 @@ function handleClick(d, i) { // Add interactivity
     const index = selected.indexOf(i);
     if (index > -1) {
       selected.splice(index, 1);
-      d3.select(this).style("fill",palette_divergent_map[2]);
+      d3.select(this).style("fill",  d3.select(this).attr("co"));
       display_data(selected)  
     }else{
         if(selected.length<5){
@@ -90,14 +107,46 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
     g.selectAll("circle")
   .data(data)
   .enter()
+  .filter(d=>{
+    return d.CurrentRank<=10;
+  })
+  .append("path")
+  .on("mouseover", handleMouseOver)
+  .on("mouseout", handleMouseOut)
+  .on("click", handleClick) 
+  .attr("r",5)
+  .style("fill","pink")
+  .attr("d",pathData)
+  .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
+  .attr("id",function(d){return d.Institution})
+  .attr("class","University star")
+  .attr("co","pink");
+
+
+  g.selectAll("circle")
+  .data(data)
+  .enter()
+  .filter(d=>{
+    return d.CurrentRank>10;
+  })
   .append("circle")
   .on("mouseover", handleMouseOver)
   .on("mouseout", handleMouseOut)
   .on("click", handleClick) 
-  .attr("r",5).style("fill",palette_divergent_map[2]).attr("d",path)
+  .attr("r",5).style("fill",palette_divergent_map[2])
   .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
-  .attr("id",function(d){return d.Institution});
+  .attr("id",function(d){return d.Institution})
+  .attr("class","University")
+  .attr("co",palette_divergent_map[2]);
+
+
+  d3.selectAll(".star").moveToFront()
+
   });
+
+
+
+
 
 })
 
@@ -119,23 +168,22 @@ var zoom = d3.zoom()
 .scaleExtent([1, 85])
 .on('zoom', function(event) {
   //console.log(d3.event.transform)
-   if(event.transform.x*event.transform.k>600){
-      event.transform.x=old.x;
-    }
-    if(event.transform.x/event.transform.k<-600){
-      event.transform.x=old.x;
-    }
-    if(event.transform.y*event.transform.k>400){
-      event.transform.y=old.y;
-    }
-    if(event.transform.y/event.transform.k<-300){
-      event.transform.y=old.y;
-    }
+  if(event.transform.x*event.transform.k>width*0.8){
+    event.transform.x=old.x;
+  }
+  if(event.transform.x/event.transform.k<-width*0.8){
+    event.transform.x=old.x;
+  }
+  if(event.transform.y*event.transform.k>height*0.8){
+    event.transform.y=old.y;
+  }
+  if(event.transform.y/event.transform.k<-height*0.8){
+    event.transform.y=old.y;
+  }
     old=event.transform
    g.attr("transform",event.transform);
 
-
-g.selectAll("circle")
+g.selectAll(".University")
    //.attr("d", path.projection(projection))
    .attr("transform", function(d) {
     return "translate(" + projection([parseFloat(d["Longitude"]),parseFloat(d["Latitude"])]) + ")"+" scale("+1/event.transform.k+")";
