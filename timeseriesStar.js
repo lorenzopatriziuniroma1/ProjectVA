@@ -4,7 +4,7 @@
 let ArrOfMEANS;let d_mean;  var arr_sorted=[];
 var d_2016,d_2018,d_2019,d_2020;
 var what_miss={};
-
+let clicked_label=[], newRemove;
 //colors of timeseries and Starplot in decreasing order using divergent palette - max 5 universities at once!
 
 const colors = ["#f22105",
@@ -600,10 +600,34 @@ svgT.selectAll("mylabels")
 */
 
 
-//AGGIUSTARE ETICHETTA
 
+
+
+function arr_diff (a1, a2) {
+
+  var a = [], diff = [];
+
+  for (var i = 0; i < a1.length; i++) {
+      a[a1[i]] = true;
+  }
+
+  for (var i = 0; i < a2.length; i++) {
+      if (a[a2[i]]) {
+          delete a[a2[i]];
+      } else {
+          a[a2[i]] = true;
+      }
+  }
+
+  for (var k in a) {
+      diff.push(k);
+  }
+
+  return diff;
+}
 
 function starPlot(){
+  var newRemove;
 function make_graph_possible(arr){
   for(var i=0;i<arr.length;i++){
     if(i<arr.length-1 && (arr[i]==="-"||arr[i]==="")){
@@ -621,6 +645,43 @@ function make_graph_possible(arr){
   }
 }
 
+function showOnlyClicked(institutions){
+  updateStar([])
+  
+  var to_be_hidden=[...institutions]
+  
+  for(var j=0;j<clicked_label.length;j++){
+    for(var i =0;i<institutions.length;i++){
+     if(clicked_label[j].includes(institutions[i])){
+       to_be_hidden.splice(to_be_hidden.indexOf(institutions[i]),1)
+       break;
+     }
+
+    }
+    
+  }
+  
+    svgS.selectAll("path").filter(function(d,i){
+     
+      var I_D=d3.select(this).attr("id")
+      for(var j=0;j<to_be_hidden.length;j++){
+        if(I_D.includes(to_be_hidden[j])) return true;
+      }
+      return false;
+    }).remove()
+
+    svgS.selectAll(".circleInStar").filter(function(d,i){
+      
+      var I_D=d3.select(this).attr("id")
+      for(var j=0;j<to_be_hidden.length;j++){
+        if(I_D.includes(to_be_hidden[j])) return true;
+      }
+      return false;
+    }).remove()
+  
+  
+}
+
 function angleToCoordinate(angle, value){
   let x = Math.cos(angle) * radialScale(value);
   let y = Math.sin(angle) * radialScale(value);
@@ -634,7 +695,24 @@ var svgS= d3.select("#data1")
 .append("svg")
 .attr("id","starplot")
 .attr("width",1000)
-.attr("height",800);
+.attr("height",800)                                                //  <------------------  --------        ----------------TODO Regola zoom
+.call(d3.zoom().scaleExtent([1,85]).on("zoom", function(event) {
+  //console.log(d3.event.transform)
+   if(event.transform.x*event.transform.k>600){
+      event.transform.x=old.x;
+    }
+    if(event.transform.x/event.transform.k<-600){
+      event.transform.x=old.x;
+    }
+    if(event.transform.y*event.transform.k>400){
+      event.transform.y=old.y;
+    }
+    if(event.transform.y/event.transform.k<-300){
+      event.transform.y=old.y;
+    }
+    old=event.transform
+   svgS.attr("transform",event.transform);
+  }));
 
 //prepare data
 var arr_of_stats =[]; //Academic scorer score,Employer score,Faculty Student score,CitationsPerFaculty score,InternationalFaculty score,InternationalStudent score,Overall Score 
@@ -679,7 +757,7 @@ for(let j=0;j<4;j++){  // years loop
 }
 
 
-console.log(d_2016,d_2018,d_2019,d_2020)
+//console.log(d_2016,d_2018,d_2019,d_2020)
 
 svgS.append("text")
   .attr("x", 275) 
@@ -687,6 +765,7 @@ svgS.append("text")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
   .text("Star Graph");
 let features = ["Academicscorerscore","Employerscore","FacultyStudentscore","CitationsPerFacultyscore","InternationalFacultyscore","InternationalStudentscore","OverallScore"];
+let features_adjusted = ["Academic score","Employer score","FacultyStudent score","CitationsPerFaculty score","InternationalFaculty score","InternationalStudent score","OverallScore"];
 
 let radialScale = d3.scaleLinear()
     .domain([0,100])
@@ -715,7 +794,7 @@ ticks.forEach(t =>
 
 
 for (var i = 0; i < features.length-1; i++) {
-  let ft_name = features[i];
+  let ft_name = features_adjusted[i];
   let angle = (Math.PI / 2) + (2 * Math.PI * i / (features.length-1));
  
   let line_coordinate = angleToCoordinate(angle, 100);
@@ -748,8 +827,10 @@ for (var i = 0; i < features.length-1; i++) {
 
 let selected_year_data=d_2020;
 let starting_Legend;
-function updateStar(){
+function updateStar(hide){
+  newRemove=[]
   arr_sorted=sort_name_by_med(names);
+  arr_sorted=arr_diff(arr_sorted,hide)
   d3.selectAll(".LegendDotS").remove();
 d3.selectAll(".LegendLabelS").remove();
   d3.selectAll(".legendDotS").remove();
@@ -784,18 +865,19 @@ for (var i = 0; i < names.length; i ++){
   let dN =names[i];
   
   name_index(dN)===-1?color="grey":color=colors[name_index(dN)];
-  console.log(color)
+  
   let coordinates = getPathCoordinates(dN);
 
   //draw the path element
-  svgS.append("path").attr("class","graphInStar").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+  svgS.append("path").attr("id","Path"+names[i]).attr("class","graphInStar").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
   .datum(coordinates)
   .attr("d",line)
   .attr("stroke-width", 3).attr("pointer-events", "none")
   .attr("stroke", color)
   .attr("fill", color)
   .attr("stroke-opacity", 1)
-  .attr("opacity", 0.5);
+  .attr("opacity", 0.5)
+  
 
   
   let angleCircle ;
@@ -807,6 +889,7 @@ for (var i = 0; i < names.length; i ++){
   svgS.append("g").selectAll("circle").data(arr).enter()
   
   .append("circle").attr("class","circleInStar")
+  .attr("id","Circles"+names[i])
 .attr("cx",function(d,i){
       var p;
 
@@ -871,16 +954,54 @@ console.log(arr_sorted);
 
 }
 
+
+
 svgS.selectAll("mydotsS")
   .data(arr_sorted)
   .enter()
+  
+  
   .append("rect")
+  .attr("id",function(d,i){return "Lab"+arr_sorted[i]})
   .attr("class","LegendDotS")
+  
     .attr("x", 100)
     .attr("y", function(d,i){  return 100 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
     .attr("width", size).attr("transform", "translate(" + (widthT+90) + "," + 0 + ")")
     .attr("height", size)
-    .style("fill", function(d,i){ return colors[i]})
+    .attr("fill", function(d,i){ 
+      var b = clicked_label.includes("Lab"+arr_sorted[i])
+      return b==true?"#F8D210":colors[i]
+    }).on("click",function(d,i){
+      if((names.length==1 && newRemove.length==0) || (names.length==0 && newRemove.length==1 ) )return;
+      //higlight at most 2 graphs
+      if(clicked_label.includes(d3.select(this).attr("id"))){
+        var insx = clicked_label.indexOf(d3.select(this).attr("id"))
+        clicked_label.splice(insx,1);
+        if(clicked_label.length==0){
+          return starPlot(); //reload as before
+        }
+        else{
+          return showOnlyClicked(names.concat(newRemove));
+        }
+      }
+      else{
+        if(clicked_label.length<2){
+          
+          clicked_label.push(d3.select(this).attr("id"));
+          
+          return showOnlyClicked(names.concat(newRemove));
+  
+        }
+        else{
+          tmp = [clicked_label[1],d3.select(this).attr("id")];
+          clicked_label=tmp;
+          return showOnlyClicked(names.concat(newRemove));
+        }
+      }
+      
+    })
+    
 
 // Add one dot in the legend for each name.
 svgS.selectAll("mylabelsS")
@@ -896,7 +1017,7 @@ svgS.selectAll("mylabelsS")
 
 
 
-var newRemove=[];
+
 for (var i = 0; i < remove.length; i ++){
   
   if(selected_year_data[remove[i]]===undefined)continue;
@@ -918,7 +1039,8 @@ for (var i = 0; i < newRemove.length; i ++){
   .attr("stroke", color)
   .attr("fill", color)
   .attr("stroke-opacity", 1)
-  .attr("opacity", 0.5);
+  .attr("opacity", 0.5)
+  .attr("id", "Path"+newRemove[i])
 
   
   let angleCircle ;
@@ -930,6 +1052,7 @@ for (var i = 0; i < newRemove.length; i ++){
   svgS.append("g").selectAll("circle").data(arr).enter()
   
   .append("circle").attr("class","circleInStar")
+  .attr("id","Circles"+newRemove[i])
 .attr("cx",function(d,i){
       var p;
 
@@ -1000,12 +1123,43 @@ svgS.selectAll("mydotsS")
   .enter()
   .append("rect")
   .attr("class","legendDotS")
+  .attr("id",function(d,i){return "Lab"+newRemove[i]})
     .attr("x", 100)
     .attr("y", function(d,i){ if(starting_Legend>=0)return  100+i*(size+5)
                               else return 100+ i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
     .attr("width", size)
     .attr("height", size).attr("transform", "translate(" + (widthT+90) + "," + (++starting_Legend)*20 + ")")
-    .style("fill", function(d,i){ return supplement_colors[i]})
+    .style("fill", function(d,i){ 
+      var b = clicked_label.includes("Lab"+newRemove[i])
+      return b==true?"#F8D210":supplement_colors[i]
+    }).on("click",function(d,i){
+      if((names.length==1 && newRemove.length==0) || (names.length==0 && newRemove.length==1 ) )return;
+      //higlight at most 2 graphs
+      if(clicked_label.includes(d3.select(this).attr("id"))){
+        var insx = clicked_label.indexOf(d3.select(this).attr("id"))
+        clicked_label.splice(insx,1);
+        if(clicked_label.length==0){
+          return starPlot(); //reload as before
+        }
+        else{
+          return showOnlyClicked(names.concat(newRemove));
+        }
+      }
+      else{
+        if(clicked_label.length<2){
+          clicked_label.push(d3.select(this).attr("id"));
+          
+          return showOnlyClicked(names.concat(newRemove));
+  
+        }
+        else{
+          tmp = [clicked_label[1],d3.select(this).attr("id")];
+          clicked_label=tmp;
+          return showOnlyClicked(names.concat(newRemove));
+        }
+      }
+      
+    })
     
 // Add one dot in the legend for each name.
 
@@ -1021,6 +1175,7 @@ svgS.selectAll("mylabelsS")
     .attr("text-anchor", "left").attr("transform", "translate(" + (widthT+90) + "," + (starting_Legend)*20+ ")")
     .style("alignment-baseline", "middle")
 
+    
 
 }
 
@@ -1074,11 +1229,20 @@ dropdownButton.on("change", function(d) {
    }
 
     // run the updateChart function with this selected option
-    updateStar()
+    console.log("EY",names,newRemove)
+    if(clicked_label.length==0){
+      updateStar([])
+    }
+    else{
+    showOnlyClicked(names.concat(newRemove))
+    }
+    //clicked_label=[]
+    //updateStar([])
   })
 
-  updateStar()
 
+  updateStar([])
+  
 }
   
 }
