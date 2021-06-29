@@ -225,7 +225,8 @@ function updateChart2(){
   selectedPercentage = d3.select('#map_percentage').property('value')
   d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(data2) {
 
- 
+    var color= d3.rollup(data2, v =>{return v.length }, d => d.Country)
+
 //    ['CurrentRank', 'LastRank','Age','Academicscorerscore',  'Employerscore','FacultyStudentscore', 'CitationsPerFacultyscore', 'InternationalFacultyscore', 'InternationalStudentscore', 'OverallScore']
    var c= d3.rollup(data2, v =>{ 
     var l=v.length;
@@ -259,6 +260,25 @@ for (i in dimensions) {
     .range([height3, 0])
 }
 
+function show(d, i){
+  console.log(d);
+  console.log(i);
+
+  tooltip2.html( " Country ="+i.Country )	
+  .style("left", (d.pageX) + "px")		
+   .style("top", (d.pageY - 28) + "px")
+   .transition()
+   .duration(200)		
+   .style("opacity", .9);
+}
+
+function unshow(d, i){
+
+  tooltip2
+   .transition()
+   .duration(200)		
+   .style("opacity", 0);
+}
 // Build the X scale -> it find the best position for each Y axis
 var x2 = d3.scalePoint()
   .range([0, width3])
@@ -277,13 +297,17 @@ return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
  .attr("class","myPathCountry")
  .attr("d",  path)
  .style("fill", "none")
- .style("stroke", "#69b3a2")
- .style("opacity", 0.5)
+ .style("stroke",function(d){
+  if(color.get(d.Country) == undefined) return "grey"; 
+  return colores_range2(color.get(d.Country),0,50)
+})
+ .style("stroke-width", "3")
+ .style("opacity", 1)
+ .on("mouseover",show)
+ .on("mouseout",unshow)
   })
      
- }
-
-
+ };
 
  var legend = svg3.append('g')
  .attr("transform", "translate(" + (width3-width3*0.2)  + "," + (height3-height3*0.2 ) + ")")

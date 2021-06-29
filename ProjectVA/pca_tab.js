@@ -104,13 +104,13 @@ function(data) {
       if(ret){
         if (index <= -1) {
           pca_selected.push(d);
-         // svg2.select( "#"+d.Institution.replace(/[^a-zA-Z]/g, "")).style("stroke", "black").style("opacity", 1)
+        
         }
       }else{
         
         if (index > -1) {
           pca_selected.splice(index, 1);
-          //svg2.select("#"+d.Institution.replace(/[^a-zA-Z]/g, "")).style("stroke", "#69b3a2")
+     
         }
       }
       return ret; } );
