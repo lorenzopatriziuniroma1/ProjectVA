@@ -16,29 +16,32 @@ div	.html(i.Institution + "<br/> Rank =" +i["CurrentRank"])
   .style("left", (d.pageX) + "px")		
   .style("top", (d.pageY - 28) + "px");
 
-  d3.select(this).style("stroke", "red").style("stroke-width","4.5px")
+  var c=d3.select(this)
+  c.attr("old",c.style("stroke")).style("stroke", "red").style("stroke-width","4.5px")
+  c.moveToFront();
 }
 function handleMouseOut2(d,i){
   div.transition()		
   .duration(200)		
   .style("opacity", 0);		
 
-  d3.select(this).style("stroke", "#69b3a2").style("stroke-width","1px")
+  var c=d3.select(this)
+  c.style("stroke", c.attr("old")).style("stroke-width","1px")
 }
 
 var pca_selected=[];
 var dimensions;
 var bru;
 //set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 80, left: 60},
-    width2 =  d3.select(".row").node().getBoundingClientRect().width - margin.left - margin.right,
-    height2 = 400 - margin.top - margin.bottom;
+var margin = {top: 10, right: 30, bottom: 120, left: 60},
+    width2 =container_width*0.4,
+    height2 = container_heigth *0.35 ;
 
 // append the svg object to the body of the page
 var svg = d3.select("#pca_scatter")
   .append("svg")
-    .attr("width", width2 + margin.left + margin.right)
-    .attr("height", height2 + margin.top + margin.bottom)
+    .attr("width",  width2 + margin.left + margin.right )
+    .attr("height", height2 + margin.top + margin.bottom )
   .append("g")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
@@ -51,6 +54,7 @@ var svg = d3.select("#pca_scatter")
                   "translate(" + margin.left + "," + margin.top + ")");
         
 //Read the data
+
 d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then( 
 function(data) {
 
@@ -121,11 +125,19 @@ function(data) {
     }else{
       svg2.selectAll(".myPath").filter( function(d) {
         return pca_selected.some(function(el) { 
-          return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })}).transition().duration(1000).style("opacity", 1).style("stroke", "black");
+          return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })}).transition().duration(1000).style("opacity", 1).style("stroke", 
+          function(d){
+
+            if(color_multidim.get(d.Country) == undefined) return "grey"; 
+                return colores_range2(color_multidim.get(d.Country),0,50)
+              }
+
+          )
+          .style("stroke-width","1.5px");
     
           svg_map_pca.selectAll("circle").filter(function(d){
             return pca_selected.some(function(el) { 
-              return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })}).moveToFront().transition().duration(1000).attr("r",9).style("opacity", 1).style("stroke", "black");
+              return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })}).moveToFront().transition().duration(1000).attr("r",9).style("opacity", 1).style("stroke","black");
     }
   }
 
@@ -142,7 +154,6 @@ function(data) {
 'Employerscore','FacultyStudentscore', 'CitationsPerFacultyscore', 'InternationalFacultyscore', 'InternationalStudentscore', 'OverallScore'].includes(d); })
 
   
-  console.log(dimensions);
 
 // For each dimension, I build a linear scale. I store all in a y object
     var y2 = {}
@@ -187,10 +198,10 @@ svg2
     .each(function(d) { d3.select(this).call(d3.axisLeft().scale(y2[d])); })
     // Add axis title
     .append("text")
-    .attr("transform","translate(0,"+(height2+15)+") rotate(45)")
+    .attr("transform","translate(0,"+(height2+15)+") rotate(35)")
       .style("text-anchor", "start")
       .text(function(d) { return d; })
-      
+      .style("font-size", "13px")
       .style("fill", "black");
 })
 
@@ -199,9 +210,9 @@ svg2
 
 var years = ["2020", "2019", "2018","2016"];
 
-var select = d3.select('#pca_scatter')
+var select = d3.select('#pca_year')
   .append('select')
-  	.attr('class','select')
+  	.attr('class','justify-content-center form-select text-center')
     .attr('id',"pca_select")
     .on('change',onchange);
 
@@ -209,11 +220,12 @@ var options = select
     .selectAll('option')
       .data(years).enter()
       .append('option')
+      .attr("class"," text-center")
           .text(function (d) { return d; });
 
 function onchange() {
     selectValue = d3.select('#pca_select').property('value')
-    console.log(selectValue)
+
    pca_selected=[];
     d3.csv("ProjectVA/pca_csv/pca_year_v2_"+selectValue+".csv").then (function(data) {
 
@@ -264,7 +276,6 @@ svg.selectAll("circle").data(data).transition().duration(2000)
     return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
 };
 
-console.log(data)
  // bind data
  var appending = svg2.selectAll('.myPath').data(data)
 
@@ -272,7 +283,7 @@ console.log(data)
      appending
      .transition()
      .duration(5000)
-     .attr("id", function(d) {console.log("ciao"); return d.Institution.replace(/[^a-zA-Z]/g, "") ;})
+     .attr("id", function(d) { return d.Institution.replace(/[^a-zA-Z]/g, "") ;})
      .attr("class","myPath")
      .attr("d",  path)
      .style("fill", "none")
@@ -300,17 +311,18 @@ console.log(data)
 //----------------------------------------------------------------mapppppaaaaaa----------------------------------------------------
 
 
+var width2_map=container_width;
 var svg_map_pca = d3.select("#map3")
   .append("svg")
-    .attr("width", width2 + margin.left + margin.right)
-    .attr("height", height2 + margin.top + margin.bottom)
+    .attr("width", width2_map)
+    .attr("height", height2)
     .style("background","#b3ccff")
 
     var g_map_pca = svg_map_pca.append("g");
 
 
     const projection_map_pca = d3.geoMercator()
-    .translate([width2 / 2, height2 / 2]) // translate to center of screen
+    .translate([width2_map / 2, height2 / 2]) // translate to center of screen
     .scale([100]); // scale things down so see entire US
  
 
@@ -328,13 +340,14 @@ var svg_map_pca = d3.select("#map3")
 
 
  var stats;
+ var color_multidim;
 d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/maps/mapdata/custom50.json").then(function(uState) {
 
 
   d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(csv) {
  var data=csv
     var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
-
+    color_multidim=color
     g_map_pca.selectAll('path')
     .data(uState.features)
     .enter()
@@ -370,7 +383,6 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
 var zoom = d3.zoom()
 .scaleExtent([1, 85])
 .on('zoom', function(event) {
-  //console.log(d3.event.transform)
   if(event.transform.x*event.transform.k>width2*0.8){
     event.transform.x=old.x;
   }
@@ -391,7 +403,6 @@ var zoom = d3.zoom()
    .attr("transform", function(d) {
     return "translate(" + projection_map_pca([parseFloat(d["Longitude"]),parseFloat(d["Latitude"])]) + ")"+" scale("+1/event.transform.k+")";
    });
-  // g.selectAll("circle").style("opacity",function(d){ console.log(d["CurrentRank"]>3); return (d["CurrentRank"]<3) ?  10 :  0;})
 
 //g.selectAll("path")  
   // .attr("d", path.projection(projection)); 

@@ -1,5 +1,7 @@
-var width = d3.select(".row").node().getBoundingClientRect().width;
-var height = 500;
+var width =container_width
+var height = container_heigth*0.4;
+
+console.log("width:"+width)
 
 var margin = {top: 100, right: 30, bottom: 80, left: 60}
 
@@ -217,7 +219,7 @@ function changeMax(e){
 
 
 function changeMinMax(min,max){
-  g.selectAll("circle").attr("visibility",function(d){  return (d["OverallScore"]<=max && d["OverallScore"]>=min) ?  "visibility" :  "hidden"; });
+  g.selectAll(".University").attr("visibility",function(d){  return (d["OverallScore"]<=max && d["OverallScore"]>=min) ?  "visibility" :  "hidden"; });
 }
 
    var legend = svg1.append('g')
@@ -261,29 +263,29 @@ function changeMinMax(min,max){
   .sliderBottom()
   .min(0)
   .max(100)
-  .width(300)
+  .width(width*0.3)
   .ticks(5)
   .step(1)
   .default([0, 100])
   .fill('#2196f3')
   .on('onchange', val => {
-    d3.select('p#value-range').text(val.join('-'));
+    d3.select('#value-range').text(val.join('-'));
  
 changeMinMax(val[0],val[1]);
-    console.log(val);
+
   });
 
   var gRange = d3
   .select('div#slider-range')
   .append('svg')
-  .attr('width', 500)
-  .attr('height', 100)
+  .attr('width', width*0.4)
+  .attr('height', 70)
   .append('g')
   .attr('transform', 'translate(30,30)');
 
 gRange.call(sliderRange);
 
-d3.select('p#value-range').text(
+d3.select('#value-range').text(
   sliderRange
     .value()
     .join('-')

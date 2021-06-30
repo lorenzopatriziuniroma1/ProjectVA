@@ -1,15 +1,16 @@
 
 var svg3 = d3.select(".row");
-var width3 = svg3.node().getBoundingClientRect().width;
-var height3 = svg3.node().getBoundingClientRect().height/2;
+var width3 = container_width;
+var height3 = container_heigth *0.4 ;
+
 var country_selected=[];
 var dimension
-var margin = {top: 80, right: 30, bottom: 20, left: 60}
+var margin = {top: 80, right: 30, bottom: 150, left: 60}
 
 svg3 = d3.select("#map2")
   .append("svg")
-    .attr("width", width3 + margin.left + margin.right)
-    .attr("height", height3 + margin.top + margin.bottom)
+    .attr("width", width3)
+    .attr("height", height3)
     .style("background","#b3ccff")
 
   
@@ -20,10 +21,10 @@ svg3 = d3.select("#map2")
     .attr("margin",margin);
 
 var svg4 = d3.select("#map2").append("svg")
-.attr("width", width3 + margin.left + margin.right)
-.attr("height", height3 + margin.top + margin.bottom)
+.attr("width", width3 )
+.attr("height", height3 + margin.bottom)
 .attr("transform",
-"translate(" + margin.left + "," + (margin.top) + ")");
+"translate(" + 0+ "," + (10) + ")");
 
 var  projection2 = d3.geoMercator()
     .translate([width3/2 , height3/2 ]) // translate to center of screen
@@ -36,7 +37,7 @@ var g2 = svg3.append("g");
 
 var selectPercentage=d3.select("div #selectpercentage")
 .append('select')
-.attr('class','select')
+.attr('class','form-select text-center')
 .attr('id',"map_percentage")
 .on('change',updateChart2);
 
@@ -107,7 +108,7 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
        name_d = dimensions[i]
        y2[name_d] = d3.scaleLinear()
          .domain( d3.extent(data, function(d) { return +d[name_d]; }) )
-         .range([height3, 0])
+         .range([height3+10, 0])
      }
    
      // Build the X scale -> it find the best position for each Y axis
@@ -131,10 +132,10 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
  .each(function(d) { d3.select(this).call(d3.axisLeft().scale(y2[d])); })
  // Add axis title
  .append("text")
- .attr("transform","translate(0,"+(height3+15)+") rotate(45)")
+ .attr("transform","translate(0,"+(height3+20)+") rotate(35)")
    .style("text-anchor", "start")
    .text(function(d) { return d; })
-   
+   .style("font-size", "13px")
    .style("fill", "black");
       }
     )
