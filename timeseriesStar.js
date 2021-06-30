@@ -5,6 +5,16 @@ let ArrOfMEANS;let d_mean;  var arr_sorted=[];
 var d_2016,d_2018,d_2019,d_2020;
 var what_miss={};
 let clicked_label=[], newRemove;
+
+
+var width_data=container_width;
+var height_data= container_heigth;
+
+
+
+var margin2 = {top: 0, right:0, bottom:0, left:0}
+
+var radius= width_data*0.25
 //colors of timeseries and Starplot in decreasing order using divergent palette - max 5 universities at once!
 
 const colors = ["#f22105",
@@ -313,6 +323,8 @@ async function display_data(selected_on_map){
     what_miss={};
     if(selected_on_map.length===0){
       document.getElementById("data1").innerHTML="";
+      document.getElementById("data2").innerHTML="";
+      document.getElementById("data3").innerHTML="";
     return;
     }
     var names = [];var original_selection_names=[];
@@ -375,7 +387,6 @@ async function display_data(selected_on_map){
     d3.select("#missingData").remove()
     d3.select("#errorData").remove()
     d3.selectAll('#timeseries').remove(); 
-    
     d3.selectAll('text #LegendLabel').remove(); 
     d3.selectAll('rect #LegendDot').remove(); 
     
@@ -392,12 +403,24 @@ async function display_data(selected_on_map){
       
       var stamp="";
       remove.forEach(r=>{
+        var msg=r+" "+ format_info(what_miss[r])
+
         stamp+=r+" "+ format_info(what_miss[r])
-      
+
+        document.getElementById("toast_id").innerHTML=msg;
+
+        var toast= document.getElementById("liveToast").cloneNode(true);
+  
+        toast.setAttribute('id',msg.replace(/[^a-zA-Z]/g, ""));
+        document.getElementById("toastlist").appendChild(toast); 
+          $('#'+msg.replace(/[^a-zA-Z]/g, "")).toast('show');
+
       })
   
-      d3.select("#data1").append("div").attr("id","missingData");
-      document.getElementById("missingData").innerHTML="<h4 style='color:blue'> Some info missing : "+stamp+"</h4>";
+      console.log(stamp)
+    //  / d3.select("#data1").append("div").attr("id","missingData");
+
+
       }
     
     d_mean=mean_d(d,names);
@@ -414,8 +437,8 @@ if(names.length===0){starPlot(); return;}
     var svgT= d3.select("#data1")
     .append("svg")
     .attr("id","timeseries")
-    .attr("width",1000)
-    .attr("height",500);
+    .attr("width",width_data*0.4)
+    .attr("height",height_data/2);
   
     var g = svgT.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -423,11 +446,11 @@ var formatNumber = d3.format(".1f");
 
 var x = d3.scaleTime()
     .domain([new Date(2015, 10, 1), new Date(2020, 1, 1)])
-    .range([33, widthT]);
+    .range([33, width_data*0.4]);
 
 var y = d3.scaleLinear()
     .domain([0, 100.0])
-    .range([heightT, 0]);
+    .range([height_data/2.5, 0]);
 
 var xAxis = d3.axisBottom(x)
     .ticks(d3.timeYear).tickFormat(d3.timeFormat("%Y"));
@@ -547,45 +570,45 @@ for(let n=0;n< names.length;n++){
     arr_sorted=sort_name_by_med(names);
     console.log("X ", ArrOfMEANS);
 
-    var size = 20
-svgT.selectAll("mydots")
-  .data(arr_sorted)
-  .enter()
-  .append("rect")
-  .attr("class","LegendDot")
-    .attr("x", 100)
-    .attr("y", function(d,i){ return 100 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
-    .attr("width", size).attr("transform", "translate(" + (widthT +20)+ "," + -10 + ")")
-    .attr("height", size)
-    .style("fill", function(d){ return colors[name_index(d)]})
+//     var size = 20
+// svgT.selectAll("mydots")
+//   .data(arr_sorted)
+//   .enter()
+//   .append("rect")
+//   .attr("class","LegendDot")
+//     .attr("x", 100)
+//     .attr("y", function(d,i){ return 100 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
+//     .attr("width", size).attr("transform", "translate(" + (widthT +20)+ "," + -10 + ")")
+//     .attr("height", size)
+//     .style("fill", function(d){ return colors[name_index(d)]})
 
 // Add one dot in the legend for each name.
-svgT.selectAll("mylabels")
-  .data(arr_sorted)
-  .enter()
-  .append("text").attr("class","LegendLabel")
-    .attr("x", 100 + size*1.2).attr("transform", "translate(" + (widthT+20) + "," + -10 + ")")
-    .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
-    .style("fill", function(d){ return colors[name_index(d)]})
-    .text(function(d){ return format_etichetta(d) +" ("+d_mean[d].toFixed(2)+")"})
-    .attr("text-anchor", "left")
-    .style("alignment-baseline", "middle")
+// svgT.selectAll("mylabels")
+//   .data(arr_sorted)
+//   .enter()
+//   .append("text").attr("class","LegendLabel")
+//     .attr("x", 100 + size*1.2).attr("transform", "translate(" + (widthT+20) + "," + -10 + ")")
+//     .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
+//     .style("fill", function(d){ return colors[name_index(d)]})
+//     .text(function(d){ return format_etichetta(d) +" ("+d_mean[d].toFixed(2)+")"})
+//     .attr("text-anchor", "left")
+//     .style("alignment-baseline", "middle")
 
-  svgT.append("text")
-    .attr("class", "x label")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-    .attr("text-anchor", "center")
-    .attr("x", widthT/2)
-    .attr("y", heightT +50)
-    .text("Years");
-    svgT.append("text")
-    .attr("transform", "translate(" + margin.left + "," + 1 + ")")
-    .attr("class", "y label")
-    .attr("text-anchor", "end")
-    .attr("y", 6)
-    .attr("dy", ".75em")
-    .attr("x", 30)
-    .text("Rating");
+//   svgT.append("text")
+//     .attr("class", "x label")
+//     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+//     .attr("text-anchor", "center")
+//     .attr("x", widthT/2)
+//     .attr("y", heightT +50)
+//     .text("Years");
+//     svgT.append("text")
+//     .attr("transform", "translate(" + margin.left + "," + 1 + ")")
+//     .attr("class", "y label")
+//     .attr("text-anchor", "end")
+//     .attr("y", 6)
+//     .attr("dy", ".75em")
+//     .attr("x", 30)
+//     .text("Rating");
 
 
   starPlot();
@@ -598,9 +621,6 @@ svgT.selectAll("mylabels")
 #
 #
 */
-
-
-
 
 
 function arr_diff (a1, a2) {
@@ -691,29 +711,17 @@ function angleToCoordinate(angle, value){
 d3.select("#starplot").remove();
 d3.select("#yearSel").remove();
 
-var svgS= d3.select("#data1")
+var svgS= d3.select("#data2")
 .append("svg")
 .attr("id","starplot")
-.attr("width",1000)
-.attr("height",800)                                                //  <------------------  --------        ----------------TODO Regola zoom
-.call(d3.zoom().scaleExtent([1,85]).on("zoom", function(event) {
-  //console.log(d3.event.transform)
-   if(event.transform.x*event.transform.k>600){
-      event.transform.x=old.x;
-    }
-    if(event.transform.x/event.transform.k<-600){
-      event.transform.x=old.x;
-    }
-    if(event.transform.y*event.transform.k>400){
-      event.transform.y=old.y;
-    }
-    if(event.transform.y/event.transform.k<-300){
-      event.transform.y=old.y;
-    }
-    old=event.transform
-    svgS.attr("transform",event.transform)
-  }))
-  .append("g");
+.attr("width",width_data*0.4)
+.attr("height",height_data*0.7)                                                //  <------------------  --------        ----------------TODO Regola zoom
+// .call(d3.zoom().scaleExtent([0.3,105]).on("zoom", function(event) {
+//   //console.log(d3.event.transform)
+
+//     svgS.attr("transform",event.transform)
+//   }))
+  .append("g").attr("transform", "translate(62.55393795277152,51.08848604189552) scale(0.6381643844144765)");
 
 //prepare data
 var arr_of_stats =[]; //Academic scorer score,Employer score,Faculty Student score,CitationsPerFaculty score,InternationalFaculty score,InternationalStudent score,Overall Score 
@@ -760,21 +768,21 @@ for(let j=0;j<4;j++){  // years loop
 
 //console.log(d_2016,d_2018,d_2019,d_2020)
 
-svgS.append("text")
-  .attr("x", 275) 
-  .attr("y", 0)
-  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-  .text("Star Graph");
+// svgS.append("text")
+//   .attr("x", 275) 
+//   .attr("y", 0)
+//   .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
+//   .text("Star Graph");
 let features = ["Academicscorerscore","Employerscore","FacultyStudentscore","CitationsPerFacultyscore","InternationalFacultyscore","InternationalStudentscore","OverallScore"];
 let features_adjusted = ["Academic score","Employer score","FacultyStudent score","CitationsPerFaculty score","InternationalFaculty score","InternationalStudent score","OverallScore"];
 
 let radialScale = d3.scaleLinear()
     .domain([0,100])
-    .range([0,250]);
+    .range([0,radius]);
 let ticks = [5.5,20,40,60,80,100];
 
 ticks.forEach(t =>
-  svgS.append("circle").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+  svgS.append("circle").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
   .attr("cx", 300)
   .attr("cy", 300)
   .attr("fill", "none")
@@ -782,7 +790,7 @@ ticks.forEach(t =>
   .attr("r", radialScale(t))
 );
 ticks.forEach(t =>
-  svgS.append("text").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+  svgS.append("text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
   .attr("x", 305)
   .attr("y", 300 - radialScale(t))
   .text(x=>{
@@ -802,7 +810,7 @@ for (var i = 0; i < features.length-1; i++) {
   let label_coordinate = angleToCoordinate(angle, 107);
 
   //draw axis line
-  svgS.append("line").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+  svgS.append("line").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
   .attr("x1", 300)
   .attr("y1", 300)
   .attr("x2", line_coordinate.x)
@@ -819,7 +827,7 @@ for (var i = 0; i < features.length-1; i++) {
 
   }
   
-  svgS.append("text").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+  svgS.append("text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
   .attr("x", label_coordinate.x) 
   .attr("y", label_coordinate.y)
   .text(ft_name);
@@ -870,7 +878,7 @@ for (var i = 0; i < names.length; i ++){
   let coordinates = getPathCoordinates(dN);
 
   //draw the path element
-  svgS.append("path").attr("id","Path"+names[i]).attr("class","graphInStar").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+  svgS.append("path").attr("id","Path"+names[i]).attr("class","graphInStar").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
   .datum(coordinates)
   .attr("d",line)
   .attr("stroke-width", 3).attr("pointer-events", "none")
@@ -911,7 +919,7 @@ for (var i = 0; i < names.length; i ++){
       return cy[i];
   })
   
-.attr("r","5").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+.attr("r","5").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
 .attr("fill","black")
 .on("mouseover",function(d,i){
   
@@ -921,7 +929,7 @@ for (var i = 0; i < names.length; i ++){
   console.log(i)
 
   
-svgS.append("rect").attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("id","overSR").attr("x", cx[index]-25) 
+svgS.append("rect").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overSR").attr("x", cx[index]-25) 
 .attr("y", cy[index]-20)
 .attr("width", format_etichetta(dN).length*7.5)
 .attr("height", 12)
@@ -930,7 +938,7 @@ svgS.append("rect").attr("transform", "translate(" + margin.left + "," + margin.
 
 
 
-svgS.append("text").attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("id","overS").attr("x", cx[index]-25) 
+svgS.append("text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overS").attr("x", cx[index]-25) 
 .attr("y", cy[index]-10)
  
 .text(function(d) {
@@ -1033,7 +1041,7 @@ for (var i = 0; i < newRemove.length; i ++){
   let coordinates = getPathCoordinates(dN);
 
   //draw the path element
-  svgS.append("path").attr("class","graphInStar").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+  svgS.append("path").attr("class","graphInStar").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
   .datum(coordinates)
   .attr("d",line)
   .attr("stroke-width", 3).attr("pointer-events", "none")
@@ -1074,7 +1082,7 @@ for (var i = 0; i < newRemove.length; i ++){
       return cy[i];
   })
   
-.attr("r","5").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+.attr("r","5").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
 .attr("fill","black")
 .on("mouseover",function(d,i){
   
@@ -1085,7 +1093,7 @@ for (var i = 0; i < newRemove.length; i ++){
 
 
   
-svgS.append("rect").attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("id","overSR").attr("x", cx[index]-50) 
+svgS.append("rect").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overSR").attr("x", cx[index]-50) 
 .attr("y", cy[index]-60)
 .attr("width", format_etichetta(dN).length*7.5)
 .attr("height", 24)
@@ -1093,7 +1101,7 @@ svgS.append("rect").attr("transform", "translate(" + margin.left + "," + margin.
 
 
 
-svgS.append("text").attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("id","overS").attr("x", cx[index]-50) 
+svgS.append("text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overS").attr("x", cx[index]-50) 
 .attr("y", cy[index]-45)
  
 .text(function(d) {
@@ -1192,8 +1200,8 @@ SELECT YEAR BUTTON FOR STARPLOT
 var allGroup = ["2016", "2018", "2019", "2020"].reverse()
 
 // Initialize the button
-var dropdownButton = d3.select("#data1")
-  .append('select').attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("id","yearSel")
+var dropdownButton = d3.select("#data3")
+  .append('select').attr("id","yearSel").attr('class','justify-content-center form-select text-center')
 
 // add the options to the button
 dropdownButton // Add a button

@@ -57,7 +57,7 @@
     <script src="https://d3js.org/topojson.v2.min.js"></script>
     <script src="https://unpkg.com/d3-simple-slider"></script>
 
-    <script src="timeseriesStar.js"></script>
+
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -72,7 +72,7 @@
 
 
 
-    <div class="container shadow-lg  p-3 mb-5 bg-white rounded" style="width: 75%; margin-top: 10px;">
+    <div class="container-lg shadow-lg  p-3 mb-5 bg-white rounded" style="width: 75%; margin-top: 10px;">
 
 
       <script>
@@ -80,7 +80,7 @@
         var palette_sequential_map = ["#edf8b1", "#7fcdbb", "#2c7fb8"];
         var palette_divergent_map = ["#e7298a", "#66a61e", "#e6ab02"];
 
-        const container_width = d3.select(".container").node().getBoundingClientRect().width * 0.97;
+        const container_width = d3.select(".container-lg").node().getBoundingClientRect().width * 0.97;
         const container_heigth = window.innerHeight;
         d3.selection.prototype.moveToFront = function () {
           return this.each(function () {
@@ -91,7 +91,7 @@
       </script>
 
 
-
+      <script src="timeseriesStar.js"></script>
       <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
           <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
@@ -112,7 +112,7 @@
                 <div class="col" id="map">
                 </div>
               </div>
-              <div class="row align-items-center" style="margin-left: 5px;">
+              <div class="row align-items-center">
                 <div class="col">
                   <div class="row align-items-center">
                     University Rank:<div id="value-range" style="width: 3%;"></div>
@@ -123,6 +123,13 @@
             </div>
             <div class="row justify-content-center">
               <div class="col" id="data1">
+              </div>
+
+              <div class="col" id="data2">
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <div class="col" id="data3">
               </div>
             </div>
           </div>
@@ -163,6 +170,26 @@
       <script src="ProjectVA\pca_tab.js"></script>
       <script src="ProjectVA\map_tab1.js"></script>
       <script src="ProjectVA\map2.js"></script>
+
+
+
+
+      <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11" id="toastlist">
+        
+        <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header">
+            <strong class="me-auto">Missing Information</strong>
+            <small>Now</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body" id="toast_id">
+            inser info
+          </div>
+        </div>
+      </div>
+
+
+
   </body>
 
 </html>
