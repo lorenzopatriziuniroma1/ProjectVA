@@ -90,17 +90,25 @@ function(data) {
 
       bru=d3.brush()                 // Add the brush feature using the d3.brush function
       .extent( [ [0,0], [width2,height2] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
-      .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
+      .on("end brush", updateChart)
+       // Each time the brush selection changes, trigger the 'updateChart' function
     
   // Add brushing
   svg
     .call(bru )
 
+
+    svg
   // Function that is triggered when brushing is performed
+  var start = new Date().getTime();
+
   function updateChart(event) {
+    console.log(event)
+    var end = new Date().getTime();
+    if(end-start < 1500 && event.type=="brush") return;
+    start=new Date().getTime();
     extent = event.selection
-    svg2.selectAll(".myPath").transition().duration(1000).style("opacity", 0.05).style("stroke", "#69b3a2")
-    svg_map_pca.selectAll("circle").transition().duration(1000).style("opacity",0.5).style("stroke", "none")
+
     myCircle.classed("selected", 
     function(d){
       var ret=isBrushed(extent, x(d.pca_1), y(d.pca_2)); 
@@ -118,14 +126,31 @@ function(data) {
         }
       }
       return ret; } );
+
     if (pca_selected.length==0){
-      svg2.selectAll(".myPath").transition().duration(1000).style("opacity", 0.5).style("stroke", "#69b3a2");
+      svg2.selectAll(".myPath").transition().duration(2000).style("opacity", 0.5).style("stroke", "#69b3a2");
       svg_map_pca.selectAll("circle").attr("r",5)
-      .style("fill",palette_divergent_map[2]).transition().duration(1000).style("opacity", 1).style("stroke", "none")
+      .style("fill",palette_divergent_map[2]).transition().duration(2000).style("opacity", 1).style("stroke", "none")
     }else{
-      svg2.selectAll(".myPath").filter( function(d) {
-        return pca_selected.some(function(el) { 
-          return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })}).transition().duration(1000).style("opacity", 1).style("stroke", 
+      // svg2.selectAll(".myPath").transition().duration(2000).style("opacity", 0.05).style("stroke", "#69b3a2")
+   svg_map_pca.selectAll("circle").transition().duration(2000).style("opacity",0.5).style("stroke", "none")
+      
+      svg2.selectAll(".myPath")
+      // .filter( function(d) {
+      //   return pca_selected.some(function(el) { 
+      //     return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })})
+      .transition().duration(2000)
+         .style("opacity", 
+          
+          function(d){
+            if( pca_selected.some(function(el) { 
+              return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") } )){
+                return 1;
+              }
+              return 0.00005;
+          }
+
+          ).style("stroke", 
           function(d){
 
             if(color_multidim.get(d.Country) == undefined) return "grey"; 
@@ -135,9 +160,17 @@ function(data) {
           )
           .style("stroke-width","1.5px");
     
-          svg_map_pca.selectAll("circle").filter(function(d){
+          svg_map_pca
+          .selectAll("circle")
+          .filter(function(d){
             return pca_selected.some(function(el) { 
-              return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })}).moveToFront().transition().duration(1000).attr("r",9).style("opacity", 1).style("stroke","black");
+              return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })})
+              .moveToFront()
+              .transition()
+              .duration(2000)
+              .attr("r",9)
+              .style("opacity", 1)
+              .style("stroke","black");
     }
   }
 
@@ -420,4 +453,41 @@ svg_map_pca.call(zoom);
 
 
 })
+
+
+
+var legend = svg_map_pca.append('g')
+ .attr("transform", "translate(" + (width2_map-width2_map*0.4)  + "," + (height2-height2*0.4 ) + ")")
+ .append('svg')
+ .style("background","#b3ccff");
+
+ size=13;
+   // Handmade legend
+   legend.append("rect")
+   .attr("x",width2_map*0.24).attr("y",height2*0.22-10)    
+   .attr("width", size)
+   .attr("height", size)
+   .style("fill", palette_sequential_map[2])
+   legend.append("text").attr("x", width2_map*0.24+20).attr("y", height2*0.22).text("High #University").style("font-size", "15px").attr("alignment-baseline","middle")
+
+   legend.append("rect")
+   .attr("x",width2_map*0.24).attr("y",height2*0.22+20-10)    
+   .attr("width", size)
+   .attr("height", size)
+   .style("fill", palette_sequential_map[1])
+   legend.append("text").attr("x", width2_map*0.24+20).attr("y", height2*0.22+20).text("Middle #University").style("font-size", "15px").attr("alignment-baseline","middle")
+   
+   legend.append("rect")
+   .attr("x",width2_map*0.24).attr("y",height2*0.22-10+40)    
+   .attr("width", size)
+   .attr("height", size)
+   .style("fill", palette_sequential_map[0])
+   legend.append("text").attr("x", width2_map*0.24+20).attr("y", height2*0.22+40).text("Low #University").style("font-size", "15px").attr("alignment-baseline","middle")
+  
+   legend.append("rect")
+   .attr("x",width2_map*0.24).attr("y",height2*0.22-10+60)    
+   .attr("width", size)
+   .attr("height", size)
+   .style("fill", "gray")
+   legend.append("text").attr("x", width2_map*0.24+20).attr("y", height2*0.22+60).text("0 Univesity").style("font-size", "15px").attr("alignment-baseline","middle")
 

@@ -28,7 +28,7 @@ var svg4 = d3.select("#map2").append("svg")
 
 var  projection2 = d3.geoMercator()
     .translate([width3/2 , height3/2 ]) // translate to center of screen
-    .scale([200]); // scale things down so see entire US
+    .scale([100]); // scale things down so see entire US
     
 
 var path2 = d3.geoPath().projection(projection2);
@@ -61,7 +61,7 @@ function compareUniversity(a,b){
 
 
 
-d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/maps/mapdata/custom50.json").then(function(uState) {
+d3.json("GeoMap/custom.geo.json").then(function(uState) {
 
     d3.csv("ProjectVA/pca_csv/pca_year_group_2020.csv").then(function(csv) {
        // stats=csv;
@@ -311,41 +311,38 @@ return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
  };
 
  var legend = svg3.append('g')
- .attr("transform", "translate(" + (width3-width3*0.2)  + "," + (height3-height3*0.2 ) + ")")
+ .attr("transform", "translate(" + (width3-width3*0.4)  + "," + (height3-height3*0.4 ) + ")")
  .append('svg')
  .style("background","#b3ccff");
 
  size=13;
-  // Handmade legend
-  legend.append("rect")
-  .attr("x",180).attr("y",130-10)    
-  .attr("width", size)
-  .attr("height", size)
-  .style("fill", palette_sequential_map[2])
-  legend.append("text").attr("x", 200).attr("y", 130).text("High #University").style("font-size", "15px").attr("alignment-baseline","middle")
+   // Handmade legend
+   legend.append("rect")
+   .attr("x",container_width*0.24).attr("y",height3*0.22-10)    
+   .attr("width", size)
+   .attr("height", size)
+   .style("fill", palette_sequential_map[2])
+   legend.append("text").attr("x", width3*0.24+20).attr("y", height3*0.22).text("High #University").style("font-size", "15px").attr("alignment-baseline","middle")
 
-  legend.append("rect")
-  .attr("x",180).attr("y",150-10)    
-  .attr("width", size)
-  .attr("height", size)
-  .style("fill", palette_sequential_map[1])
-  legend.append("text").attr("x", 200).attr("y", 150).text("Middle #University").style("font-size", "15px").attr("alignment-baseline","middle")
+   legend.append("rect")
+   .attr("x",width3*0.24).attr("y",height3*0.22+20-10)    
+   .attr("width", size)
+   .attr("height", size)
+   .style("fill", palette_sequential_map[1])
+   legend.append("text").attr("x", width3*0.24+20).attr("y", height3*0.22+20).text("Middle #University").style("font-size", "15px").attr("alignment-baseline","middle")
+   
+   legend.append("rect")
+   .attr("x",width3*0.24).attr("y",height3*0.22-10+40)    
+   .attr("width", size)
+   .attr("height", size)
+   .style("fill", palette_sequential_map[0])
+   legend.append("text").attr("x", width3*0.24+20).attr("y", height3*0.22+40).text("Low #University").style("font-size", "15px").attr("alignment-baseline","middle")
   
-  legend.append("rect")
-  .attr("x",180).attr("y",170-10)    
-  .attr("width", size)
-  .attr("height", size)
-  .style("fill", palette_sequential_map[0])
-  legend.append("text").attr("x", 200).attr("y", 170).text("Low #University").style("font-size", "15px").attr("alignment-baseline","middle")
- 
-  legend.append("rect")
-  .attr("x",180).attr("y",190-10)    
-  .attr("width", size)
-  .attr("height", size)
-  .style("fill", "gray")
-  legend.append("text").attr("x", 200).attr("y", 190).text("0 Univesity").style("font-size", "15px").attr("alignment-baseline","middle")
- 
- 
- 
+   legend.append("rect")
+   .attr("x",width3*0.24).attr("y",height3*0.22-10+60)    
+   .attr("width", size)
+   .attr("height", size)
+   .style("fill", "gray")
+   legend.append("text").attr("x", width3*0.24+20).attr("y", height3*0.22+60).text("0 Univesity").style("font-size", "15px").attr("alignment-baseline","middle")
 
  

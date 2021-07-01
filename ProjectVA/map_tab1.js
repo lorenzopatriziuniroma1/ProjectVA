@@ -1,8 +1,6 @@
 var width =container_width
 var height = container_heigth*0.4;
 
-console.log("width:"+width)
-
 var margin = {top: 100, right: 30, bottom: 80, left: 60}
 
 
@@ -47,7 +45,7 @@ function handleMouseOver(d, i) {  // Add interactivity
       div.transition()		
       .duration(200)		
       .style("opacity", .9);		
-  div	.html(i.Institution + "<br/> Rank =" +i["CurrentRank"])	
+  div	.html(i.Institution + "<br/> Rank =" +i["CurrentRank"]+"<br/> year= " +i.anno)	
       .style("left", (d.pageX) + "px")		
       .style("top", (d.pageY - 28) + "px");
       }
@@ -56,7 +54,6 @@ function handleMouseOut(d, i) {  // Add interactivity
     //console.log(i);
     const index = selected.indexOf(i);
     if (index <= -1) {
-      console.log(this)
         d3.select(this).style("fill",  d3.select(this).attr("co"));
     }
         // Select text by id and then remove
@@ -208,8 +205,7 @@ svg1.call(zoom);
 var data;
 
 function changeMin(e){
-console.log(e);
-g.selectAll("circle").attr("visibility",function(d){ console.log(d["OverallScore"]); console.log(e) ; console.log(d["OverallScore"]>e);return (d["OverallScore"]>e) ?  "visibility" :  "hidden"; });
+g.selectAll("circle").attr("visibility",function(d){ return (d["OverallScore"]>e) ?  "visibility" :  "hidden"; });
 }
 
 function changeMax(e){
@@ -230,32 +226,32 @@ function changeMinMax(min,max){
   size=13;
    // Handmade legend
    legend.append("rect")
-   .attr("x",180).attr("y",130-10)    
+   .attr("x",width*0.24).attr("y",height*0.22-10)    
    .attr("width", size)
    .attr("height", size)
    .style("fill", palette_sequential_map[2])
-   legend.append("text").attr("x", 200).attr("y", 130).text("High #University").style("font-size", "15px").attr("alignment-baseline","middle")
+   legend.append("text").attr("x", width*0.24+20).attr("y", height*0.22).text("High #University").style("font-size", "15px").attr("alignment-baseline","middle")
 
    legend.append("rect")
-   .attr("x",180).attr("y",150-10)    
+   .attr("x",width*0.24).attr("y",height*0.22+20-10)    
    .attr("width", size)
    .attr("height", size)
    .style("fill", palette_sequential_map[1])
-   legend.append("text").attr("x", 200).attr("y", 150).text("Middle #University").style("font-size", "15px").attr("alignment-baseline","middle")
+   legend.append("text").attr("x", width*0.24+20).attr("y", height*0.22+20).text("Middle #University").style("font-size", "15px").attr("alignment-baseline","middle")
    
    legend.append("rect")
-   .attr("x",180).attr("y",170-10)    
+   .attr("x",width*0.24).attr("y",height*0.22-10+40)    
    .attr("width", size)
    .attr("height", size)
    .style("fill", palette_sequential_map[0])
-   legend.append("text").attr("x", 200).attr("y", 170).text("Low #University").style("font-size", "15px").attr("alignment-baseline","middle")
+   legend.append("text").attr("x", width*0.24+20).attr("y", height*0.22+40).text("Low #University").style("font-size", "15px").attr("alignment-baseline","middle")
   
    legend.append("rect")
-   .attr("x",180).attr("y",190-10)    
+   .attr("x",width*0.24).attr("y",height*0.22-10+60)    
    .attr("width", size)
    .attr("height", size)
    .style("fill", "gray")
-   legend.append("text").attr("x", 200).attr("y", 190).text("0 Univesity").style("font-size", "15px").attr("alignment-baseline","middle")
+   legend.append("text").attr("x", width*0.24+20).attr("y", height*0.22+60).text("0 Univesity").style("font-size", "15px").attr("alignment-baseline","middle")
 
   // Range
  
@@ -290,3 +286,98 @@ d3.select('#value-range').text(
     .value()
     .join('-')
 );
+
+
+function  updateLittleMap(year){
+  d3.csv("ProjectVA/pca_csv/pca_year_v2_"+year+".csv").then(function(data) {
+
+    var transfomr=svg1.select(".star").attr("transform").split("scale")[1]
+
+    svg1.selectAll(".University")
+    .transition().duration(1500)
+    .attr("r",0)
+    .remove()
+
+    svg1.selectAll(".star")
+    .transition().duration(1500)
+    .style("opacity",0).on("end",
+    function(){
+  
+
+  
+     var g2= g.selectAll("circle")
+ 
+     g2.data(data)
+      .enter()
+      .filter(d=>{
+        return d.CurrentRank<=10;
+      })
+      .append("path")
+      .on("mouseover", handleMouseOver)
+      .on("mouseout", handleMouseOut)
+      .on("click", handleClick) 
+      .attr("r",5)
+      .style("fill",
+      function(d){
+       
+        if(selected.some(e => {return e.Institution==d.Institution})){
+          return "red"
+        }
+        return "pink"
+      }
+      
+      )
+      .attr("d",pathData)
+      .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale"+transfomr;})
+      .attr("id",function(d){return d.Institution})
+      .attr("class","University star")
+      .attr("co","pink")    
+      .style("opacity",0) .transition().duration(1501) .style("opacity",1)
+      .on("end", function(){
+        d3.selectAll(".star").moveToFront()
+      });
+    
+    
+      g.selectAll("circle")
+      .data(data)
+      .enter()
+      .filter(d=>{
+        return d.CurrentRank>10;
+      })
+      .append("circle")
+      .on("mouseover", handleMouseOver)
+      .on("mouseout", handleMouseOut)
+      .on("click", handleClick) 
+      .attr("r",0).style("fill",
+      function(d){
+       
+        if(selected.some(e => {return e.Institution==d.Institution})){
+          return "red"
+        }
+        return palette_divergent_map[2]
+      }
+      )
+      .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale"+transfomr;})
+      .attr("id",function(d){return d.Institution})
+      .attr("class","University")
+      .attr("co",palette_divergent_map[2])
+      .style("opacity",0) .transition().duration(1500) .style("opacity",1)  .attr("r",5);
+    
+    
+      
+  
+  
+  
+  
+    }).remove()
+
+
+
+  })
+
+
+
+
+ 
+ 
+}

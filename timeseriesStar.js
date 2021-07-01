@@ -32,7 +32,7 @@ const supplement_colors=[
 
 //calculate the mean per one university
 function format_info(s){
-  console.log(s);
+  //console.log(s);
   var ris="";
   function map_j_to_year(j){
     switch(j){
@@ -126,7 +126,7 @@ function preProcess(mat){
 
 
 function format_number(s){
-  console.log(s);
+ // console.log(s);
   if(s.includes("5.5")){
     return "N/A"
   }
@@ -265,7 +265,7 @@ function checkCompletenessOverall(data,names){
         ris.push(names[n].toUpperCase());
       }
       if(what_miss[names[n]]!==undefined&&!what_miss[names[n]].includes("Overall")&&!what_miss[names[n]].includes("NotPresent")){
-        console.log(what_miss);
+    
         what_miss[names[n]]="NotPresent "+j+"/";
       }else{
         what_miss[names[n]]+="NotPresent "+j+"/";
@@ -276,7 +276,6 @@ function checkCompletenessOverall(data,names){
     }
     
   }
-  console.log(what_miss)
   return ris;
   
 }
@@ -417,7 +416,6 @@ async function display_data(selected_on_map){
 
       })
   
-      console.log(stamp)
     //  / d3.select("#data1").append("div").attr("id","missingData");
 
 
@@ -568,7 +566,7 @@ for(let n=0;n< names.length;n++){
 
     arr_sorted=[];
     arr_sorted=sort_name_by_med(names);
-    console.log("X ", ArrOfMEANS);
+    
 
 //     var size = 20
 // svgT.selectAll("mydots")
@@ -926,7 +924,7 @@ for (var i = 0; i < names.length; i ++){
     d3.select(this).attr("fill", colors[name_index(dN)])
     .attr("r", ""+5 * 2)
   var index=arr.indexOf(i);
-  console.log(i)
+
 
   
 svgS.append("rect").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overSR").attr("x", cx[index]-25) 
@@ -954,7 +952,7 @@ svgS.append("text").attr("transform", "translate(" + margin2.left + "," + margin
   svgS.select("#overS").remove()
   svgS.select("#overSR").remove()
 })
-console.log(arr_sorted);
+
 
 
       
@@ -1222,23 +1220,30 @@ dropdownButton.on("change", function(d) {
     // recover the option that has been chosen
    switch(d3.select(this).property("value")){
       case "2016":
+        updateLittleMap(2016);
         selected_year_data=d_2016;
        break;
       case "2018":
         selected_year_data=d_2018;
+        updateLittleMap(2018);
         break; 
       case "2019":
         selected_year_data=d_2019;
+        updateLittleMap(2019);
        break;
       case "2020":
         selected_year_data=d_2020;
+        updateLittleMap(2020);
        break;
       default:
          break;
+      
    }
 
+
+
     // run the updateChart function with this selected option
-    console.log("EY",names,newRemove)
+    //console.log("EY",names,newRemove)
     if(clicked_label.length==0){
       updateStar([])
     }
