@@ -88,6 +88,14 @@
           });
         };
 
+        function findWithAttr(array, attr, value) {
+          for(var i = 0; i < array.length; i += 1) {
+              if(array[i][attr] === value) {
+                  return i;
+              }
+          }
+          return -1;
+      }
       </script>
 
 
@@ -119,6 +127,8 @@
                     <div id="slider-range" style="width: 40%;"></div>
                   </div>
                 </div>
+
+                <div class="col" id="selectmapyea">
               </div>
             </div>
             <div class="row justify-content-center">
@@ -129,7 +139,9 @@
               </div>
             </div>
             <div class="row justify-content-center">
+            
               <div class="col" id="data3">
+              </div>
               </div>
             </div>
           </div>

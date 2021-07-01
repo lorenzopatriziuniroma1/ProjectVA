@@ -1220,20 +1220,17 @@ dropdownButton.on("change", function(d) {
     // recover the option that has been chosen
    switch(d3.select(this).property("value")){
       case "2016":
-        updateLittleMap(2016);
+
         selected_year_data=d_2016;
        break;
       case "2018":
         selected_year_data=d_2018;
-        updateLittleMap(2018);
         break; 
       case "2019":
         selected_year_data=d_2019;
-        updateLittleMap(2019);
        break;
       case "2020":
         selected_year_data=d_2020;
-        updateLittleMap(2020);
        break;
       default:
          break;

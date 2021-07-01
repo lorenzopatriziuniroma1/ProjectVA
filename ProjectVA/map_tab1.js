@@ -33,7 +33,7 @@ var div = d3.select("body").append("div")
       // Create Event Handlers for mouse
 function handleMouseOver(d, i) {  // Add interactivity
      // console.log(i);
-     const index = selected.indexOf(i);
+     const index =findWithAttr(selected,"Institution",i.Institution);
      if (index <= -1) {
          d3.select(this).style("fill",palette_divergent_map[1]);
      }
@@ -52,7 +52,7 @@ function handleMouseOver(d, i) {  // Add interactivity
 
 function handleMouseOut(d, i) {  // Add interactivity
     //console.log(i);
-    const index = selected.indexOf(i);
+    const index = findWithAttr(selected,"Institution",i.Institution);;
     if (index <= -1) {
         d3.select(this).style("fill",  d3.select(this).attr("co"));
     }
@@ -63,8 +63,10 @@ function handleMouseOut(d, i) {  // Add interactivity
                 .style("opacity", 0);	
         }
 function handleClick(d, i) { // Add interactivity 
-    const index = selected.indexOf(i);
+    var  index =findWithAttr(selected,"Institution",i.Institution);
+
     if (index > -1) {
+    
       selected.splice(index, 1);
       d3.select(this).style("fill",  d3.select(this).attr("co"));
       display_data(selected)  
@@ -76,7 +78,7 @@ function handleClick(d, i) { // Add interactivity
             display_data(selected)  
         }
     }
-   
+    console.log(selected)
 }
 const path = d3.geoPath().projection(projection);
 
@@ -135,7 +137,7 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   .attr("r",5).style("fill",palette_divergent_map[2])
   .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
   .attr("id",function(d){return d.Institution})
-  .attr("class","University")
+  .attr("class","University cityCircle")
   .attr("co",palette_divergent_map[2]);
 
 
@@ -293,91 +295,84 @@ function  updateLittleMap(year){
 
     var transfomr=svg1.select(".star").attr("transform").split("scale")[1]
 
-    svg1.selectAll(".University")
-    .transition().duration(1500)
-    .attr("r",0)
-    .remove()
-
-    svg1.selectAll(".star")
-    .transition().duration(1500)
-    .style("opacity",0).on("end",
-    function(){
-  
-
-  
-     var g2= g.selectAll("circle")
- 
-     g2.data(data)
-      .enter()
-      .filter(d=>{
-        return d.CurrentRank<=10;
-      })
-      .append("path")
-      .on("mouseover", handleMouseOver)
-      .on("mouseout", handleMouseOut)
-      .on("click", handleClick) 
-      .attr("r",5)
-      .style("fill",
-      function(d){
-       
-        if(selected.some(e => {return e.Institution==d.Institution})){
-          return "red"
-        }
-        return "pink"
-      }
-      
-      )
-      .attr("d",pathData)
-      .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale"+transfomr;})
-      .attr("id",function(d){return d.Institution})
-      .attr("class","University star")
-      .attr("co","pink")    
-      .style("opacity",0) .transition().duration(1501) .style("opacity",1)
-      .on("end", function(){
-        d3.selectAll(".star").moveToFront()
-      });
-    
-    
-      g.selectAll("circle")
-      .data(data)
-      .enter()
-      .filter(d=>{
-        return d.CurrentRank>10;
-      })
-      .append("circle")
-      .on("mouseover", handleMouseOver)
-      .on("mouseout", handleMouseOut)
-      .on("click", handleClick) 
-      .attr("r",0).style("fill",
-      function(d){
-       
-        if(selected.some(e => {return e.Institution==d.Institution})){
-          return "red"
-        }
-        return palette_divergent_map[2]
-      }
-      )
-      .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale"+transfomr;})
-      .attr("id",function(d){return d.Institution})
-      .attr("class","University")
-      .attr("co",palette_divergent_map[2])
-      .style("opacity",0) .transition().duration(1500) .style("opacity",1)  .attr("r",5);
-    
-    
-      
-  
-  
-  
-  
-    }).remove()
 
 
+var circle = g.selectAll(".cityCircle").data([])
 
-  })
+circle.exit().remove()
 
 
+g.selectAll(".cityCircle")
+.data(data)
+.enter()
+.filter(d=>{
+  return d.CurrentRank>10;
+})
+.append("circle")
+.on("mouseover", handleMouseOver)
+.on("mouseout", handleMouseOut)
+.on("click", handleClick) 
+.attr("r",5).style("fill",palette_divergent_map[2])
+.attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale"+transfomr;})
+.attr("id",function(d){return d.Institution})
+.attr("class","University cityCircle")
+.attr("co",palette_divergent_map[2]);
+
+//circle.enter().attr("r",0).transition().duration(2000).attr("r",5)
+
+g.selectAll(".star").data([]).exit().remove()
 
 
- 
- 
+g.selectAll(".star")
+.data(data)
+.enter()
+.filter(d=>{
+  return d.CurrentRank<=10;
+})
+.append("path")
+.on("mouseover", handleMouseOver)
+.on("mouseout", handleMouseOut)
+.on("click", handleClick) 
+.attr("r",5)
+.style("fill","pink")
+.attr("d",pathData)
+.attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale"+transfomr;})
+.attr("id",function(d){return d.Institution})
+.attr("class","University star")
+.attr("co","pink")
+
+for(var i=0; i<selected.length ; i++){
+  d3.select("circle[id='"+selected[i].Institution+"']").style("fill","red")
+  d3.select("path[id='"+selected[i].Institution+"']").style("fill","red")
+
 }
+
+
+})
+
+
+}
+
+
+
+var allGroup2 = ["2016", "2018", "2019", "2020"].reverse()
+
+// Initialize the button
+var dropdownButton2 = d3.select("#selectmapyea")
+  .append('select').attr("id","selectmapyea2").attr('class','justify-content-center form-select text-center')
+
+// add the options to the button
+dropdownButton2 // Add a button
+  .selectAll('myOptions') 
+   .data(allGroup2)
+  .enter()
+  .append('option')
+  .text(function (d) { return d; }) // text showed in the menu
+  .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+  dropdownButton2.on("change", function(d) {
+
+    // recover the option that has been chosen
+   var year =d3.select(this).property("value")
+   updateLittleMap(year)
+  })
