@@ -97,6 +97,7 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
     .enter()
     .append('path')
     .attr("d", path)
+    .attr("class","country")
     .style("fill",function(d){
   if(color.get(d.properties.name) == undefined) return "grey"; 
       return colores_range2(color.get(d.properties.name),0,50)
@@ -333,7 +334,6 @@ g.selectAll(".star")
 .on("mouseover", handleMouseOver)
 .on("mouseout", handleMouseOut)
 .on("click", handleClick) 
-.attr("r",5)
 .style("fill","pink")
 .attr("d",pathData)
 .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale"+transfomr;})
@@ -346,6 +346,16 @@ for(var i=0; i<selected.length ; i++){
   d3.select("path[id='"+selected[i].Institution+"']").style("fill","red")
 
 }
+
+
+
+var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
+
+g.selectAll('.country')
+.style("fill",function(d){
+if(color.get(d.properties.name) == undefined) return "grey"; 
+  return colores_range2(color.get(d.properties.name),0,50)
+})
 
 
 })
