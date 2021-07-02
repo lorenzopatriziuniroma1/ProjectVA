@@ -319,11 +319,13 @@ function format_Overall(stringScore){
 async function display_data(selected_on_map){
     
     //document.getElementById("show_data").remove();
+    d3.select("#BARsvg").style("visibility","hidden").attr("height", 0)
     what_miss={};
     if(selected_on_map.length===0){
       document.getElementById("data1").innerHTML="";
       document.getElementById("data2").innerHTML="";
-      document.getElementById("data3").innerHTML="";
+      //document.getElementById("data3").innerHTML="";
+      d3.select("#BARsvg").style("visibility","visible").attr("height", 550)
     return;
     }
     var names = [];var original_selection_names=[];

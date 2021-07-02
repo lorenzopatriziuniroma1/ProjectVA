@@ -2,6 +2,30 @@ var width =container_width
 var height = container_heigth*0.4;
 
 var margin = {top: 100, right: 30, bottom: 80, left: 60}
+function map_singleX(attr){
+  
+  if(attr==="XL"||attr==="FC"||attr=="5"||attr=="5.0"||attr=="VH"||attr==="A"){
+    
+    return "A"
+  }
+  else if(attr==="L"||attr==="CO"||attr=="4"||attr=="4.0"||attr=="HI"||attr==="B"){
+    
+    return "B"
+  }
+  else if(attr==="M"||attr==="FO"||attr=="3"||attr=="3.0"||attr=="MD"||attr==="C"){
+    
+    return "C"
+  }
+  else if(attr==="S"||attr==="SP"||attr=="2"||attr=="2.0"|attr=="LO"||attr==="D"){
+    
+    return "D"
+  }
+  else{
+    
+    return "E"
+  }
+   
+  }
 
 
 var symbolGenerator = d3.symbol()
@@ -89,7 +113,7 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
 
   d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(csv) {
     data = csv;
-    
+    //createBarGraph(data)
     var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
 
     g.selectAll('path')
@@ -122,7 +146,22 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
   .attr("id",function(d){return d.Institution})
   .attr("class","University star")
-  .attr("co","pink");
+  .attr("co","pink")
+  .attr("Usize",function(d){
+    return map_singleX(d.Size)
+  })
+  .attr("Ures",function(d){
+    return map_singleX(d.Research)
+  })
+  .attr("Uage",function(d){
+    return map_singleX(d.Age)
+  })
+  .attr("Ufocus",function(d){
+    return map_singleX(d.Focus)
+  })
+  .attr("Ustatus",function(d){
+    return map_singleX(d.Status)
+  });
 
 
   g.selectAll("circle")
@@ -139,11 +178,27 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
   .attr("id",function(d){return d.Institution})
   .attr("class","University cityCircle")
-  .attr("co",palette_divergent_map[2]);
+  .attr("co",palette_divergent_map[2])
+  .attr("Usize",function(d){
+    return map_singleX(d.Size)
+  })
+  .attr("Ures",function(d){
+    return map_singleX(d.Research)
+  })
+  .attr("Uage",function(d){
+    return map_singleX(d.Age)
+  })
+  .attr("Ufocus",function(d){
+    return map_singleX(d.Focus)
+  })
+  .attr("Ustatus",function(d){
+    return map_singleX(d.Status)
+  });
 
 
   d3.selectAll(".star").moveToFront()
 
+  createBarGraph(data)
   });
 
 
@@ -188,7 +243,7 @@ var zoom = d3.zoom()
 g.selectAll(".University")
    //.attr("d", path.projection(projection))
    .attr("transform", function(d) {
-    return "translate(" + projection([parseFloat(d["Longitude"]),parseFloat(d["Latitude"])]) + ")"+" scale("+1/event.transform.k+")";
+    return "translate(" + projection([parseFloat(d["Longitude"]),parseFloat(d["Latitude"])]) + ")"+" scale("+1/(event.transform.k/2)+")";
    });
   // g.selectAll("circle").style("opacity",function(d){ console.log(d["CurrentRank"]>3); return (d["CurrentRank"]<3) ?  10 :  0;})
 
@@ -291,17 +346,323 @@ d3.select('#value-range').text(
 );
 
 
+function createBarGraph(year_data){
+  document.getElementById("data3").innerHTML=""
+  function map_usage(year_data){
+    //var supp=[{"categorie":"Size","values":[0,0,0,0,0]},{"categorie":"Focus","values":[0,0,0,0,0]},{"categorie":"Research","values":[0,0,0,0,0]},{"categorie":"Age","values":[0,0,0,0,0]},{"categorie":"Status","values":[0,0,0,0,0]}];
+    var supp = {"Size":[0,0,0,0,0],"Focus":[0,0,0,0,0],"Research":[0,0,0,0,0],"Age":[0,0,0,0,0],"Status":[0,0,0,0,0]}
+    function map_single(kind,attr){
+      if(kind=="Status"){
+        switch(attr){
+          case "A":
+            supp["Status"][0]+=1
+            return "A"
+            
+          case "B":
+            supp["Status"][1]+=1
+            return "B"
+           
+          case "C":
+            supp["Status"][2]+=1
+            return "C"
+          default:
+            supp["Status"][4]+=1
+            return "E"
+          
+        }
+      }
+
+      if(attr==="XL"||attr==="FC"||attr=="5"||attr=="5.0"||attr=="VH"){
+        supp[kind][0]+=1
+        return "A"
+      }
+      else if(attr==="L"||attr==="CO"||attr=="4"||attr=="4.0"||attr=="HI"){
+        supp[kind][1]+=1
+        return "B"
+      }
+      else if(attr==="M"||attr==="FO"||attr=="3"||attr=="3.0"||attr=="MD"){
+        supp[kind][2]+=1
+        return "C"
+      }
+      else if(attr==="S"||attr==="SP"||attr=="2"||attr=="2.0"|attr=="LO"){
+        supp[kind][3]+=1
+        return "D"
+      }
+      else{
+        supp[kind][4]+=1
+        return "E"
+      }
+    }
+    var res = new Object();
+    
+    for(var i=0;i<year_data.length;i++){
+      
+        res[year_data[i].Institution]={"Size":map_single("Size",year_data[i].Size),"Focus":map_single("Focus",year_data[i].Focus),"Research":map_single("Research",year_data[i].Research),"Age":map_single("Age",year_data[i].Age),"Status":map_single("Status",year_data[i].Status)}
+        
+    
+    }
+    return [res,supp];
+  }
+  function generate_J(d,dN){
+    var r=[];
+    var t={},small_t={};
+    var arr=[]
+    var rates = ["A","B","C","D","E"];
+    for(var i=0;i< Object.keys(dN).length;i++){
+      t["categorie"]=Object.keys(dN)[i];
+      for(var j=0;j<dN["Size"].length;j++){
+        small_t["value"]=dN[Object.keys(dN)[i]][j]
+        small_t["rate"]=rates[j];
+        small_t["class"]=Object.keys(dN)[i];
+        arr.push(small_t);
+        small_t={}
+      }
+      t["values"]=arr;
+      r.push(t);
+      t={};
+      arr=[];
+    }
+    return r;
+  }
+  //Size, Focus, Reasearch, Age, Status
+
+  var marginBAR = {top: 20, right: 20, bottom: 30, left: 40},
+    widthBAR = 960 - marginBAR.left - marginBAR.right,
+    heightBAR = 500 - marginBAR.top - marginBAR.bottom;
+
+var x0 = d3.scaleBand()
+
+    .range([0, widthBAR-20]).round([.1]).paddingInner([0.15])
+
+var x1 = d3.scaleBand();
+
+var y = d3.scaleLinear()
+    .range([heightBAR, 0]);
+
+var xAxis = d3.axisBottom(x0)
+    
+    .tickSize(0)
+    
+var yAxis = d3.axisLeft(y)
+    
+
+var color = d3.scaleOrdinal()
+    .range(["#f22105",
+    "#ff7eac",
+    "#ffdbff",
+    "#aed1ff",
+    "#00cceb"]);
+
+var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
+    .attr("width", widthBAR + marginBAR.left + marginBAR.right)
+    .attr("height", heightBAR + marginBAR.top + marginBAR.bottom)
+  .append("g")
+    .attr("transform", "translate(" + marginBAR.left + "," + marginBAR.top + ")");
+
+  var Call=map_usage(year_data);
+  var d_year_numeric=Call[1];var d_year = Call[0];
+
+  var categoriesNames = ["Size", "Focus", "Research", "Age", "Status"]
+  var rateNames = ["A","B","C","D","E"];
+
+  x0.domain(categoriesNames);
+  x1.domain(rateNames).range([0, x0.bandwidth()]);
+  y.domain([0, Object.keys(d_year).length]);
+
+  svgB.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + heightBAR + ")")
+      .call(xAxis);
+
+  svgB.append("g")
+      .attr("class", "y axis")
+      .style('opacity','0')
+      .call(yAxis)
+  .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .style('font-weight','bold')
+      .text("Value");
+
+  svgB.select('.y').transition().duration(500).delay(1300).style('opacity','1');
+  var supp_data=generate_J(d_year,d_year_numeric);
+  console.log(supp_data)
+  var slice = svgB.selectAll(".slice")
+      .data(supp_data)
+      .enter().append("g")
+      .attr("class", "g")
+      .attr("transform",function(d) { 
+        //console.log("DDDD",d)
+        return "translate(" + x0(d.categorie) + ",0)"; });
+
+        var xText,yText,Idx;
+  slice.selectAll("rect")
+      .data(function(d) { return d.values; })
+  .enter().append("rect")
+      .attr("width", x1.bandwidth())
+      .attr("x", function(d) { return x1(d.rate); })
+      .style("fill", function(d) { return color(d.rate) })
+      .attr("y", function(d) { return y(0); })
+      .attr("height", function(d) { return heightBAR - y(0); })
+     .on("mouseover", function(d,h) {
+          d3.select(this).style("fill", d3.rgb(color(h.rate)).darker(2));
+
+        
+          yText=d3.select(this).attr("y")
+          Idx=Object.keys(d_year_numeric).indexOf(h.class);
+          svgB.append("text").style("fill",color(h.rate)).attr("transform", "translate(" + 1.17*(x0.bandwidth()*Idx )+ ","+ -5 + ")").attr("id","robaText").attr("x",x1(h.rate)+Idx*2).attr("y",yText).text(h.value);
+   
+          d3.selectAll(".cityCircle").filter(function(){
+            //console.log("UN FILTER",d3.select(this))
+            switch(h.class){
+             
+              case "Size":
+                return d3.select(this).attr("Usize")===h.rate;
+                
+              case "Age":
+                return d3.select(this).attr("Ures")===h.rate;
+                
+              case "Research":
+                return d3.select(this).attr("Uage")===h.rate;
+               
+              case "Focus":
+                return d3.select(this).attr("Ufocus")===h.rate;
+                
+              case "Status":
+                return d3.select(this).attr("Ustatus")===h.rate;
+                
+              default:
+                return false;
+            }
+            
+          })
+          .style("fill","white")
+          d3.selectAll(".star").filter(function(){
+            switch(h.class){
+             
+              case "Size":
+                return d3.select(this).attr("Usize")===h.rate;
+                
+              case "Age":
+                return d3.select(this).attr("Ures")===h.rate;
+                
+              case "Research":
+                return d3.select(this).attr("Uage")===h.rate;
+               
+              case "Focus":
+                return d3.select(this).attr("Ufocus")===h.rate;
+                
+              case "Status":
+                return d3.select(this).attr("Ustatus")===h.rate;
+                
+              default:
+                return false;
+            }
+            
+          })
+          .style("fill","white")
+      })
+      .on("mouseout", function(d,h) {
+        
+          d3.select(this).style("fill", color(h.rate));
+          d3.select("#robaText").remove();
+          d3.selectAll(".cityCircle").filter(function(){
+            switch(h.class){
+             
+              case "Size":
+                return d3.select(this).attr("Usize")===h.rate;
+                
+              case "Age":
+                return d3.select(this).attr("Ures")===h.rate;
+                
+              case "Research":
+                return d3.select(this).attr("Uage")===h.rate;
+               
+              case "Focus":
+                return d3.select(this).attr("Ufocus")===h.rate;
+                
+              case "Status":
+                return d3.select(this).attr("Ustatus")===h.rate;
+                
+              default:
+                return false;
+            }
+            
+          })
+          .style("fill",palette_divergent_map[2])
+          d3.selectAll(".star").filter(function(){
+           
+            switch(h.class){
+             
+              case "Size":
+                return d3.select(this).attr("Usize")===h.rate;
+                
+              case "Age":
+                return d3.select(this).attr("Ures")===h.rate;
+                
+              case "Research":
+                return d3.select(this).attr("Uage")===h.rate;
+               
+              case "Focus":
+                return d3.select(this).attr("Ufocus")===h.rate;
+                
+              case "Status":
+                return d3.select(this).attr("Ustatus")===h.rate;
+                
+              default:
+                return false;
+            }
+            
+          })
+          .style("fill","pink")
+      });
+
+  slice.selectAll("rect")
+      .transition()
+      .delay(function (d) {return Math.random()*1000;})
+      .duration(1000)
+      .attr("y", function(d) { return y(d.value); })
+      .attr("height", function(d) { return heightBAR - y(d.value); });
+
+ 
+  var legend = svgB.selectAll(".legend")
+      .data(supp_data[0].values.map(function(d) { return d.rate; }))
+  .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d,i) { return "translate(0," + i * 20 + ")"; })
+      .style("opacity","0");
+
+  legend.append("rect")
+      .attr("x", widthBAR - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", function(d) { return color(d); });
+
+  legend.append("text")
+      .attr("x", widthBAR - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) {return d; });
+
+  legend.transition().duration(500).delay(function(d,i){ return 1300 + 100 * i; }).style("opacity","1");
+
+
+
+}
+
+
 function  updateLittleMap(year){
   d3.csv("ProjectVA/pca_csv/pca_year_v2_"+year+".csv").then(function(data) {
 
     var transfomr=svg1.select(".star").attr("transform").split("scale")[1]
 
 
-
 var circle = g.selectAll(".cityCircle").data([])
 
 circle.exit().remove()
-
 
 g.selectAll(".cityCircle")
 .data(data)
@@ -317,9 +678,26 @@ g.selectAll(".cityCircle")
 .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale"+transfomr;})
 .attr("id",function(d){return d.Institution})
 .attr("class","University cityCircle")
-.attr("co",palette_divergent_map[2]);
+.attr("co",palette_divergent_map[2])
+.attr("Usize",function(d){
+  return map_singleX(d.Size)
+})
+.attr("Ures",function(d){
+  return map_singleX(d.Research)
+})
+.attr("Uage",function(d){
+  return map_singleX(d.Age)
+})
+.attr("Ufocus",function(d){
+  return map_singleX(d.Focus)
+})
+.attr("Ustatus",function(d){
+  return map_singleX(d.Status)
+});
 
 //circle.enter().attr("r",0).transition().duration(2000).attr("r",5)
+
+
 
 g.selectAll(".star").data([]).exit().remove()
 
@@ -340,6 +718,21 @@ g.selectAll(".star")
 .attr("id",function(d){return d.Institution})
 .attr("class","University star")
 .attr("co","pink")
+.attr("Usize",function(d){
+  return map_singleX(d.Size)
+})
+.attr("Ures",function(d){
+  return map_singleX(d.Research)
+})
+.attr("Uage",function(d){
+  return map_singleX(d.Age)
+})
+.attr("Ufocus",function(d){
+  return map_singleX(d.Focus)
+})
+.attr("Ustatus",function(d){
+  return map_singleX(d.Status)
+});
 
 for(var i=0; i<selected.length ; i++){
   d3.select("circle[id='"+selected[i].Institution+"']").style("fill","red")
@@ -358,9 +751,10 @@ if(color.get(d.properties.name) == undefined) return "grey";
 })
 
 
+
 })
 
-
+createBarGraph(data)
 }
 
 
