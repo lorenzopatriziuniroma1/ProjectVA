@@ -105,7 +105,7 @@ function(data) {
   function updateChart(event) {
     console.log(event)
     var end = new Date().getTime();
-    if(end-start < 1500 && event.type=="brush") return;
+    if(end-start < 500 && event.type=="brush") return;
     start=new Date().getTime();
     extent = event.selection
 
@@ -144,7 +144,7 @@ function(data) {
           
           function(d){
             if( pca_selected.some(function(el) { 
-              return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") } )){
+              return el.Institution== d.Institution } )){
                 return 1;
               }
               return 0.00005;
@@ -164,7 +164,7 @@ function(data) {
           .selectAll("circle")
           .filter(function(d){
             return pca_selected.some(function(el) { 
-              return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })})
+              return el.Institution== d.Institution})})
               .moveToFront()
               .transition()
               .duration(2000)
@@ -211,7 +211,7 @@ svg2
  .selectAll("myPath")
  .data(data)
  .enter().append("path")
- .attr("id", function(d) { return d.Institution.replace(/[^a-zA-Z]/g, "") ;})
+ .attr("id", function(d) { return d.Institution ;})
  .attr("class","myPath")
  .attr("d",  path)
  .style("fill", "none")
@@ -316,7 +316,7 @@ svg.selectAll("circle").data(data).transition().duration(2000)
      appending
      .transition()
      .duration(5000)
-     .attr("id", function(d) { return d.Institution.replace(/[^a-zA-Z]/g, "") ;})
+     .attr("id", function(d) { return d.Institution ;})
      .attr("class","myPath")
      .attr("d",  path)
      .style("fill", "none")
@@ -331,8 +331,45 @@ svg.selectAll("circle").data(data).transition().duration(2000)
         // remove old elements
         appending.exit().remove();
 
+
+
+
+
+        var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
+
+        g_map_pca.selectAll('path')
+        .style("fill",function(d){
+        if(color.get(d.properties.name) == undefined) return "grey"; 
+          return colores_range2(color.get(d.properties.name),0,50)
+        })
+
+
+        var circle = g_map_pca.selectAll("circle").data(data)
+
+        console.log(circle)
+        circle.exit().remove()
+          
+        circle.enter().append("circle")
+        .attr("r",5) 
+        .on("mouseover", handleMouseOver)
+        .on("mouseout", handleMouseOut)
+        .style("fill",palette_divergent_map[2])
+        .attr("transform", function(d) {return "translate(" + projection_map_pca([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
+        .attr("id",function(d){return d.Institution})
+        .attr("id", function(d) { return d.Institution ;})
+        .attr("co",palette_divergent_map[2]);
+        
+
+     
       })
 
+
+      div.transition()		
+      .duration(200)		
+      .style("opacity", .9);		
+      div.transition()		
+      .duration(200)		
+      .style("opacity", 0);		
 };
 
 
@@ -404,7 +441,7 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   .style("fill",palette_divergent_map[2])
   .attr("transform", function(d) {return "translate(" + projection_map_pca([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
   .attr("id",function(d){return d.Institution})
-  .attr("id", function(d) { return d.Institution.replace(/[^a-zA-Z]/g, "") ;})
+  .attr("id", function(d) { return d.Institution ;})
   .attr("co",palette_divergent_map[2]);
 
   });

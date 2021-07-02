@@ -7,6 +7,9 @@ var country_selected=[];
 var dimension
 var margin = {top: 80, right: 30, bottom: 150, left: 60}
 
+
+var year_3=2020
+
 svg3 = d3.select("#map2")
   .append("svg")
     .attr("width", width3)
@@ -20,7 +23,7 @@ svg3 = d3.select("#map2")
     .style("opacity", 0)
     .attr("margin",margin);
 
-var svg4 = d3.select("#map2").append("svg")
+var svg4 = d3.select("#md_country").append("svg")
 .attr("width", width3 )
 .attr("height", height3 + margin.bottom)
 .attr("transform",
@@ -60,13 +63,26 @@ function compareUniversity(a,b){
 }
 
 
+function show(d, i){
+
+  tooltip2.html( " Country ="+i.Country )	
+  .style("left", (d.pageX) + "px")		
+   .style("top", (d.pageY - 28) + "px")
+   .transition()
+   .duration(200)		
+   .style("opacity", .9);
+}
+
+function unshow(d, i){
+
+  tooltip2
+   .transition()
+   .duration(200)		
+   .style("opacity", 0);
+}
 
 d3.json("GeoMap/custom.geo.json").then(function(uState) {
 
-    d3.csv("ProjectVA/pca_csv/pca_year_group_2020.csv").then(function(csv) {
-       // stats=csv;
-      
-      });
 
     d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(
       function(data){
@@ -224,7 +240,7 @@ function handleMouseClick3(d,i){
 function updateChart2(){
   d3.selectAll(".myPathCountry").remove();
   selectedPercentage = d3.select('#map_percentage').property('value')
-  d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(data2) {
+  d3.csv("ProjectVA/pca_csv/pca_year_v2_"+year_3+".csv").then(function(data2) {
 
     var color= d3.rollup(data2, v =>{return v.length }, d => d.Country)
 
@@ -233,9 +249,9 @@ function updateChart2(){
     var l=v.length;
     var p=parseInt(l*selectedPercentage/100);
     v.sort(compareUniversity)
-    console.log(p)
+
     v= v.slice(0,p+1);
-    console.log(v)
+
      return { "CurrentRank": d3.sum(v, d => d.CurrentRank)/v.length,
       'LastRank': d3.sum(v, d => d.LastRank)/v.length,
       'Age': d3.sum(v, d => d.Age)/v.length,
@@ -261,25 +277,7 @@ for (i in dimensions) {
     .range([height3, 0])
 }
 
-function show(d, i){
-  console.log(d);
-  console.log(i);
 
-  tooltip2.html( " Country ="+i.Country )	
-  .style("left", (d.pageX) + "px")		
-   .style("top", (d.pageY - 28) + "px")
-   .transition()
-   .duration(200)		
-   .style("opacity", .9);
-}
-
-function unshow(d, i){
-
-  tooltip2
-   .transition()
-   .duration(200)		
-   .style("opacity", 0);
-}
 // Build the X scale -> it find the best position for each Y axis
 var x2 = d3.scalePoint()
   .range([0, width3])
@@ -289,7 +287,7 @@ var x2 = d3.scalePoint()
 function path(d) {
 return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
 } 
-    svg4
+  var lines= svg4
  .selectAll("myPath")
  .data(c.values())
  .enter().append("path")
@@ -346,3 +344,82 @@ return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
    legend.append("text").attr("x", width3*0.24+20).attr("y", height3*0.22+60).text("0 Univesity").style("font-size", "15px").attr("alignment-baseline","middle")
 
  
+
+var allGroup3 = ["2016", "2018", "2019", "2020"].reverse()
+
+// Initialize the button
+var dropdownButton3 = d3.select("#country_year")
+  .append('select').attr("id","selectmapyea2").attr('class','justify-content-center form-select text-center')
+
+// add the options to the button
+dropdownButton3 // Add a button
+  .selectAll('myOptions') 
+   .data(allGroup3)
+  .enter()
+  .append('option')
+  .text(function (d) { return d; }) // text showed in the menu
+  .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+  dropdownButton3.on("change", function(d) {
+    var year =d3.select(this).property("value")
+    year_3=year
+    d3.csv("ProjectVA/pca_csv/pca_year_v2_"+year+".csv").then(function(data) {
+
+
+      var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
+
+g2.selectAll('path')
+.style("fill",function(d){
+  if(country_selected.some(el=>{return el==d.properties.name})) return "red";
+if(color.get(d.properties.name) == undefined) return "grey"; 
+
+
+  return colores_range2(color.get(d.properties.name),0,50)
+})
+
+
+
+var y2 = {}
+for (i in dimensions) {
+  name_d = dimensions[i]
+  y2[name_d] = d3.scaleLinear()
+    .domain( d3.extent(data, function(d) { return +d[name_d]; }) )
+    .range([height3, 0])
+}
+
+// Build the X scale -> it find the best position for each Y axis
+var x2 = d3.scalePoint()
+  .range([0, width3])
+  .padding(1)
+  .domain(dimensions);
+  // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
+function path(d) {
+return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
+};
+
+
+
+
+ 
+
+//       .filter(d=>{
+//         return  country_selected.indexOf(d.Country)>-1;
+//       })
+//       .style("fill", "none")
+//      .transition()
+//      .duration(5000)
+//      .attr("d",  path)
+//  .style("fill", "none")
+//  .style("stroke",function(d){
+
+//   if(color.get(d.Country) == undefined) return "grey"; 
+//   return colores_range2(color.get(d.Country),0,50)
+// })
+//  .style("stroke-width", "3")
+//  .style("opacity", 1)
+
+
+updateChart2()
+
+    })  
+  })
