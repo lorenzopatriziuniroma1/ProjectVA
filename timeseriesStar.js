@@ -435,7 +435,7 @@ if(names.length===0){starPlot(); return;}
     var svgT= d3.select("#data1")
     .append("svg")
     .attr("id","timeseries")
-    .attr("width",width_data*0.4)
+    .attr("width",width_data*0.45)
     .attr("height",height_data*0.6);
   
     var g = svgT.append("g").attr("transform", "translate(" + 20 + "," + margin.top + ")");
@@ -444,7 +444,7 @@ var formatNumber = d3.format(".1f");
 
 var x = d3.scaleTime()
     .domain([new Date(2015, 10, 1), new Date(2020, 1, 1)])
-    .range([0, width_data*0.39]);
+    .range([0, width_data*0.4]);
 
 var y = d3.scaleLinear()
     .domain([0, 100.0])
@@ -462,7 +462,7 @@ var yAxis = d3.axisRight(y)
     });
 
 g.append("g")
-    .attr("transform", "translate(0," + height_data*0.5 + ")")
+    .attr("transform", "translate(40," + height_data*0.5 + ")")
     .call(customXAxis);
 
 g.append("g")
@@ -508,12 +508,12 @@ for(let n=0;n< names.length;n++){
 
   let Index=3;
 
-  svgT.append("path").attr("transform", "translate(" +15 + "," + margin.top + ")").datum(dataDone).attr("fill", "none")
+  svgT.append("path").attr("transform", "translate(" +40 + "," + margin.top + ")").datum(dataDone).attr("fill", "none")
   .attr("stroke", colors[position_wrt_selected])
   .attr("stroke-width", 5).attr("class","line").attr("d",line);
 
   svgT.append("g").selectAll("circle").data(yCoords).enter()
-    .append("circle").attr("transform", "translate(" +15 + "," + margin.top + ")").attr("id",""+names[n])
+    .append("circle").attr("transform", "translate(" +40 + "," + margin.top + ")").attr("id",""+names[n])
 	.attr("cx",function(d,i){
         var p;
         
