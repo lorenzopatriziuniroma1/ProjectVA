@@ -258,35 +258,33 @@ var options = select
 
 function onchange() {
     selectValue = d3.select('#pca_select').property('value')
-
+    // Add X axis
+    var x = d3.scaleLinear()
+    .domain([-4, 7])
+    .range([ 0, width2 ]);
+  
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([-3, 5])
+    .range([ height2, 0]);
    pca_selected=[];
     d3.csv("ProjectVA/pca_csv/pca_year_v2_"+selectValue+".csv").then (function(data) {
 
       
-        // Add dots
-        svg.selectAll("circle").transition().duration(2000)
-            .attr("cx", 0 )
-            .attr("cy", 0 )
-            .attr("r", 2).remove();
-    // Add X axis
-  var x = d3.scaleLinear()
-  .domain([-4, 7])
-  .range([ 0, width2 ]);
-
-// Add Y axis
-var y = d3.scaleLinear()
-  .domain([-3, 5])
-  .range([ height2, 0]);
+      var circles=svg.selectAll("circle").data(data)
+      circles.exit().remove()
+      circles.enter().append("circle")
 
 
-// Add dots
-svg.selectAll("circle").data(data).transition().duration(2000)
-.attr("cx", function (d) { return x(d.pca_1); } )
-.attr("cy", function (d) { return y(d.pca_2); } )
-    .attr("r", 2)
-    .style("fill", function(d){return colores_range(d.OverallScore,0,100)})
+      circles.transition().duration(2000) 
+      .attr("cx", function (d) { return x(d.pca_1); } )
+      .attr("cy", function (d) { return y(d.pca_2); } )
 
-    svg.selectAll("circle").exit().remove
+      .style("fill", function (d) { return colores_range(d.OverallScore,0,100) } )
+      .style("opacity", 0.5);
+
+
+
 
 
 
@@ -312,6 +310,11 @@ svg.selectAll("circle").data(data).transition().duration(2000)
  // bind data
  var appending = svg2.selectAll('.myPath').data(data)
 
+         // remove old elements
+         appending.exit().remove();
+         appending.enter().append("path")
+         console.log("ciao")
+         console.log(appending)
      // add new elements
      appending
      .transition()
@@ -328,8 +331,7 @@ svg.selectAll("circle").data(data).transition().duration(2000)
     .on("mouseout", handleMouseOut2);
 
 
-        // remove old elements
-        appending.exit().remove();
+
 
 
 

@@ -72,7 +72,7 @@
 
 
 
-    <div class="container-lg shadow-lg  p-3 mb-5 bg-white rounded" style="width: 75%; height:101%; margin-top: 10px;">
+    <div class="container-fluid shadow-lg  p-4 mb-5 bg-white rounded" style="width: 80%; height:101%; margin-top: 10px;">
 
 
       <script>
@@ -80,7 +80,7 @@
         var palette_sequential_map = ["#edf8b1", "#7fcdbb", "#2c7fb8"];
         var palette_divergent_map = ["#e7298a", "#66a61e", "#e6ab02"];
 
-        const container_width = d3.select(".container-lg").node().getBoundingClientRect().width * 0.97;
+        const container_width = d3.select(".container-fluid").node().getBoundingClientRect().width * 0.97;
         const container_heigth = window.innerHeight;
         d3.selection.prototype.moveToFront = function () {
           return this.each(function () {

@@ -436,25 +436,25 @@ if(names.length===0){starPlot(); return;}
     .append("svg")
     .attr("id","timeseries")
     .attr("width",width_data*0.4)
-    .attr("height",height_data/2);
+    .attr("height",height_data*0.6);
   
-    var g = svgT.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var g = svgT.append("g").attr("transform", "translate(" + 20 + "," + margin.top + ")");
 
 var formatNumber = d3.format(".1f");
 
 var x = d3.scaleTime()
     .domain([new Date(2015, 10, 1), new Date(2020, 1, 1)])
-    .range([33, width_data*0.4]);
+    .range([0, width_data*0.39]);
 
 var y = d3.scaleLinear()
     .domain([0, 100.0])
-    .range([height_data/2.5, 0]);
+    .range([height_data*0.5, 0]);
 
 var xAxis = d3.axisBottom(x)
     .ticks(d3.timeYear).tickFormat(d3.timeFormat("%Y"));
 
 var yAxis = d3.axisRight(y)
-    .tickSize(widthT)
+    .tickSize(width_data*0.5)
     .tickFormat(function(d) {
       var s = formatNumber(d);
       return s
@@ -462,7 +462,7 @@ var yAxis = d3.axisRight(y)
     });
 
 g.append("g")
-    .attr("transform", "translate(0," + heightT + ")")
+    .attr("transform", "translate(0," + height_data*0.5 + ")")
     .call(customXAxis);
 
 g.append("g")
@@ -508,12 +508,12 @@ for(let n=0;n< names.length;n++){
 
   let Index=3;
 
-  svgT.append("path").attr("transform", "translate(" + margin.left + "," + margin.top + ")").datum(dataDone).attr("fill", "none")
+  svgT.append("path").attr("transform", "translate(" +15 + "," + margin.top + ")").datum(dataDone).attr("fill", "none")
   .attr("stroke", colors[position_wrt_selected])
   .attr("stroke-width", 5).attr("class","line").attr("d",line);
 
   svgT.append("g").selectAll("circle").data(yCoords).enter()
-    .append("circle").attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("id",""+names[n])
+    .append("circle").attr("transform", "translate(" +15 + "," + margin.top + ")").attr("id",""+names[n])
 	.attr("cx",function(d,i){
         var p;
         
@@ -547,21 +547,31 @@ for(let n=0;n< names.length;n++){
     Index=3
   }
   
-  svgT.append("text").attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("id","over").attr("x",function(d){return x(xCoords[Index])+10}).attr("y",function(d){return y(i)+20})
-   
+  var ret=svgT.append("text").attr("transform", "translate(" + 0 + "," + margin.top + ")").attr("id","over").attr("x",function(d){return x(xCoords[Index])+10}).attr("y",function(d){return y(i)+20})
+  .attr("cc",
+  function(){
+    console.log(this);
+    return this.getBBox().width
+  })
  .text(function(d) {
-   return i.toFixed(2)+"";  // Value of the text
- });
-  }
-  )
+   return i.toFixed(2)+"";  });
+  })
   .on("mouseout",function(d,i){
     
     d3.select(this).attr("fill", "black")
     .attr("r", ""+5 );
     svgT.select("#over").remove()
-  })
+  });
 
-  
+//   svgS.insert("rect","text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overSR").attr("x", cx[index]-25) 
+// .attr("y", cy[index]-20)
+// .attr("width", redTxt.attr("cc"))
+// .attr("height", 12)
+// .attr("fill",colors[name_index(dN)])
+// .attr("opacity","0.5")
+
+
+
 }
 
     arr_sorted=[];
@@ -712,14 +722,14 @@ d3.select("#yearSel").remove();
 var svgS= d3.select("#data2")
 .append("svg")
 .attr("id","starplot")
-.attr("width",width_data*0.4)
+.attr("width",width_data*0.5)
 .attr("height",height_data*0.7)                                                //  <------------------  --------        ----------------TODO Regola zoom
 // .call(d3.zoom().scaleExtent([0.3,105]).on("zoom", function(event) {
 //   //console.log(d3.event.transform)
 
 //     svgS.attr("transform",event.transform)
 //   }))
-  .append("g").attr("transform", "translate(62.55393795277152,51.08848604189552) scale(0.6381643844144765)");
+  .append("g").attr("transform", "translate("+(width_data*0.2-margin.left)+","+(height_data*0.2-margin.top)+") scale(0.6)");
 
 //prepare data
 var arr_of_stats =[]; //Academic scorer score,Employer score,Faculty Student score,CitationsPerFaculty score,InternationalFaculty score,InternationalStudent score,Overall Score 
@@ -927,21 +937,33 @@ for (var i = 0; i < names.length; i ++){
 
 
   
-svgS.append("rect").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overSR").attr("x", cx[index]-25) 
+
+
+
+
+var redTxt=svgS.append("text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overS").attr("x", cx[index]-25) 
+.attr("y", cy[index]-10)
+.text(function(d) {
+  return format_etichetta(dN) +" - "+format_number(selected_year_data[dN][index])+"";  // Value of the text
+ })   
+.attr("cc",function() {
+  console.log(this)
+  console.log("porcosdiao")
+ return this.getBBox().width;
+})
+   
+
+
+
+
+svgS.insert("rect","text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overSR").attr("x", cx[index]-25) 
 .attr("y", cy[index]-20)
-.attr("width", format_etichetta(dN).length*7.5)
+.attr("width", redTxt.attr("cc"))
 .attr("height", 12)
 .attr("fill",colors[name_index(dN)])
 .attr("opacity","0.5")
 
 
-
-svgS.append("text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overS").attr("x", cx[index]-25) 
-.attr("y", cy[index]-10)
- 
-.text(function(d) {
- return format_etichetta(dN) +" - "+format_number(selected_year_data[dN][index])+"";  // Value of the text
-})
 })
 
 
@@ -1090,21 +1112,28 @@ for (var i = 0; i < newRemove.length; i ++){
   var index=arr.indexOf(i);
 
 
-  
-svgS.append("rect").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overSR").attr("x", cx[index]-50) 
-.attr("y", cy[index]-60)
-.attr("width", format_etichetta(dN).length*7.5)
+
+
+  var redTxt=svgS.append("text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overS").attr("x", cx[index]-25) 
+.attr("y", cy[index]-10)
+.text(function(d) {
+  return format_etichetta(dN) +" - "+format_number(selected_year_data[dN][index])+"";  // Value of the text
+ })   
+.attr("cc",function() {
+  console.log(this)
+  console.log("porcosdiao")
+ return this.getBBox().width;
+})
+   
+console.log("Green= "+redTxt.attr("cc"))
+
+var rectlabel=svgS.insert("rect","text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overSR").attr("x", cx[index]-25) 
+.attr("y", cy[index]-25)
+.attr("width",redTxt.attr("cc"))
 .attr("height", 24)
 .attr("fill","#BCE1DE")
 
 
-
-svgS.append("text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overS").attr("x", cx[index]-50) 
-.attr("y", cy[index]-45)
- 
-.text(function(d) {
- return format_etichetta(dN)+" - "+format_number(selected_year_data[dN][index])+"";  // Value of the text
-})
 })
 
 
