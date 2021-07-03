@@ -113,7 +113,7 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
 
   d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(csv) {
     data = csv;
-    //createBarGraph(data)
+    
     var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
 
     g.selectAll('path')
@@ -346,9 +346,11 @@ d3.select('#value-range').text(
 );
 
 
-function createBarGraph(year_data){
+function createBarGraph(year_datax){
+  console.log(year_datax)
   document.getElementById("data3").innerHTML=""
-  function map_usage(year_data){
+  //console.log(year_data)
+  function map_usage(year_datay){
     //var supp=[{"categorie":"Size","values":[0,0,0,0,0]},{"categorie":"Focus","values":[0,0,0,0,0]},{"categorie":"Research","values":[0,0,0,0,0]},{"categorie":"Age","values":[0,0,0,0,0]},{"categorie":"Status","values":[0,0,0,0,0]}];
     var supp = {"Size":[0,0,0,0,0],"Focus":[0,0,0,0,0],"Research":[0,0,0,0,0],"Age":[0,0,0,0,0],"Status":[0,0,0,0,0]}
     function map_single(kind,attr){
@@ -395,9 +397,9 @@ function createBarGraph(year_data){
     }
     var res = new Object();
     
-    for(var i=0;i<year_data.length;i++){
+    for(var i=0;i<year_datay.length;i++){
       
-        res[year_data[i].Institution]={"Size":map_single("Size",year_data[i].Size),"Focus":map_single("Focus",year_data[i].Focus),"Research":map_single("Research",year_data[i].Research),"Age":map_single("Age",year_data[i].Age),"Status":map_single("Status",year_data[i].Status)}
+        res[year_datay[i].Institution]={"Size":map_single("Size",year_datay[i].Size),"Focus":map_single("Focus",year_datay[i].Focus),"Research":map_single("Research",year_datay[i].Research),"Age":map_single("Age",year_datay[i].Age),"Status":map_single("Status",year_datay[i].Status)}
         
     
     }
@@ -454,12 +456,12 @@ var color = d3.scaleOrdinal()
     "#00cceb"]);
 
 var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
-    .attr("width", widthBAR + marginBAR.left + marginBAR.right)
+    .attr("width", widthBAR + marginBAR.left*120 + marginBAR.right)
     .attr("height", heightBAR + marginBAR.top + marginBAR.bottom)
   .append("g")
     .attr("transform", "translate(" + marginBAR.left + "," + marginBAR.top + ")");
 
-  var Call=map_usage(year_data);
+  var Call=map_usage(year_datax);
   var d_year_numeric=Call[1];var d_year = Call[0];
 
   var categoriesNames = ["Size", "Focus", "Research", "Age", "Status"]
@@ -626,30 +628,64 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
       .attr("y", function(d) { return y(d.value); })
       .attr("height", function(d) { return heightBAR - y(d.value); });
 
- 
+      
+     // categoriesNames=["Size","Focus","Res.","Age","Status"]
+      var rowsX = [{"Size":"XL","Focus":"Full Comprehensive","Research":"Very High","Age":"Historic","Status":"A"},{"Size":"L","Focus":"Comprehensive","Research":"High","Age":"Mature","Status":"B"},{"Size":"M","Focus":"Focused","Research":"Medium","Age":"Established","Status":"C"},{"Size":"S","Focus":"Specialist","Research":"Low","Age":"Young","Status":"-"},{"Size":"N/A","Focus":"N/A","Research":"N/A","Age":"New","Status":"N/A"}];
   var legend = svgB.selectAll(".legend")
       .data(supp_data[0].values.map(function(d) { return d.rate; }))
   .enter().append("g")
       .attr("class", "legend")
-      .attr("transform", function(d,i) { return "translate(0," + i * 20 + ")"; })
+      .attr("transform", function(d,i) { return "translate(0," + i * 29 + ")"; })
       .style("opacity","0");
 
+   
+     
   legend.append("rect")
       .attr("x", widthBAR - 18)
-      .attr("width", 18)
-      .attr("height", 18)
+      .attr("y", 45)
+      .attr("width", 22)
+      .attr("height", 22)
       .style("fill", function(d) { return color(d); });
+ 
 
-  legend.append("text")
-      .attr("x", widthBAR - 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "end")
-      .text(function(d) {return d; });
+  legend.transition().duration(100).style("opacity","1");
+  
+  function tabulate(data, columns) {
+    var table = svgB.append('foreignObject').attr("width",500).attr("height",500).attr("id","legendTable").attr("transform", function(d,i) { return "translate("+widthBAR+"," +15 + ")"; }).append("xhtml:table")
+    var thead = table.append('thead')
+    var	tbody = table.append('tbody');
+    var jj=0;
+    // append the header row
+    thead.append('tr')
+      .selectAll('th')
+      .data(columns).enter()
+      .append('th')
+        .text(function (column) { return column; });
+  
+    // create a row for each object in the data
+    var rows = tbody.selectAll('tr')
+      .data(data)
+      .enter()
+      .append('tr');
+  
+    // create a cell in each row for each column
+    var cells = rows.selectAll('td')
+      .data(function (row) {
+        return columns.map(function (column) {
+          return {column: column, value: row[column]};
+        });
+      })
+      .enter()
+      .append('td')
+        .text(function (d) { return d.value; }).style("color",function(h,u){
+          if(u==4){return color(jj++)}
+          return color(jj)
+        });
+  
+    return table;
+  }
 
-  legend.transition().duration(500).delay(function(d,i){ return 1300 + 100 * i; }).style("opacity","1");
-
-
+  tabulate(rowsX,categoriesNames)
 
 }
 
@@ -750,11 +786,11 @@ if(color.get(d.properties.name) == undefined) return "grey";
   return colores_range2(color.get(d.properties.name),0,50)
 })
 
-
+createBarGraph(data)
 
 })
 
-createBarGraph(data)
+
 }
 
 
