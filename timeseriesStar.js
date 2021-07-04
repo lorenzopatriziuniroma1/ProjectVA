@@ -136,7 +136,11 @@ function format_number(s){
 
 function format_etichetta(s){
   var r=s.toUpperCase().split(" ");
-
+  for(var i=0;i<r.length;i++){  //check abbreviation in name
+    if(r[i].includes("(")&&r[i].includes(")")){
+      return r[i].replace("(","").replace(")","");
+    }
+  }
   var x="";
   for(var i=0;i<r.length;i++){
     if(r[i].includes("UNIVERS")){
@@ -147,6 +151,9 @@ function format_etichetta(s){
     }
     else if(r[i].includes("COLLEGE")){
       x+="COLL."
+    }
+    else if(r[i]=="OF"||r[i]=="THE"){
+      continue;
     }
     else{
       x+=r[i];
@@ -324,7 +331,11 @@ async function display_data(selected_on_map){
     if(selected_on_map.length===0){
       document.getElementById("data1").innerHTML="";
       document.getElementById("data2").innerHTML="";
+      document.getElementById("data4").innerHTML="";
+      document.getElementById("data5").innerHTML="";
+
       //document.getElementById("data3").innerHTML="";
+      d3.select('#yearSel').remove()
       d3.select("#BARsvg").style("visibility","visible").attr("height", 550)
     return;
     }
@@ -949,8 +960,7 @@ var redTxt=svgS.append("text").attr("transform", "translate(" + margin2.left + "
   return format_etichetta(dN) +" - "+format_number(selected_year_data[dN][index])+"";  // Value of the text
  })   
 .attr("cc",function() {
-  console.log(this)
-  console.log("porcosdiao")
+  
  return this.getBBox().width;
 })
    
@@ -1215,6 +1225,298 @@ svgS.selectAll("mylabelsS")
 
     
 
+
+    //console.log(names,newRemove, selected_year_data);
+    function bargraph(overalls){
+      d3.select("#BARsvg2").remove()
+      function map_usage_unidata(){
+        var r = [];
+        for(u in unis){
+          var t={};var vl=[];
+          t["categorie"]=format_etichetta(unis[u]);
+          vl.push({"value":overalls[unis[u]][0],"rate":"new"})
+          vl.push({"value":overalls[unis[u]][1],"rate":"old"})
+          t["values"]=vl;
+          r.push(t)
+        }
+        return r;
+      }
+
+
+      var unis = Object.keys(overalls)
+
+        //Size, Focus, Reasearch, Age, Status
+      
+      var marginBAR = {top: 20, right: 20, bottom: 30, left: 40},
+          widthBAR = 350+(50*unis.length) - marginBAR.left - marginBAR.right,
+          heightBAR = 500 - marginBAR.top - marginBAR.bottom;
+      
+      var x0 = d3.scaleBand()
+      
+          .range([0, widthBAR-20]).round([.1]).paddingInner([0.50]).paddingOuter([0.3])
+      
+      var x1 = d3.scaleBand();
+      
+      var y = d3.scaleLinear()
+          .range([heightBAR, 0]);
+      
+      var xAxis = d3.axisBottom(x0)
+          
+          .tickSize(0)
+          
+      var yAxis = d3.axisLeft(y)
+          
+      
+      const colorOri = 
+          ["#f22105",
+          "#ff7eac",
+          "#ffdbff",
+          "#aed1ff",
+          "#00cceb"]
+      const colorNew = ["#de8f40",
+          "#eebf97",
+          "#f1f1f1",
+          "#bfb7da",
+          "#8d80c2"]
+      
+      var svgB2 = d3.select('#data5').append("svg").attr("id","BARsvg2")
+          .attr("width", widthBAR+300 + marginBAR.left*5+ marginBAR.right)
+          .attr("height", heightBAR+100 + marginBAR.top + marginBAR.bottom)
+        .append("g")
+          .attr("transform", "translate(" + marginBAR.left + "," + (marginBAR.top+100) + ")");
+      
+        var CallS=map_usage_unidata(overalls);
+       console.log(CallS)
+      
+        var categoriesNames =[];
+        unis.forEach(u=>{
+          categoriesNames.push(format_etichetta(u))
+        })
+        var rateNames = ["new","old"];
+      
+        x0.domain(categoriesNames);
+        x1.domain(rateNames).range([0, x0.bandwidth()]);
+        y.domain([0, 100]);
+      
+        svgB2.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + heightBAR + ")")
+            .call(xAxis);
+      
+        svgB2.append("g")
+            .attr("class", "y axis")
+            .style('opacity','0')
+            .call(yAxis)
+        .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .style('font-weight','bold')
+            .text("Value");
+      
+        svgB2.select('.y').transition().duration(500).delay(1300).style('opacity','1');
+        var supp_data=CallS;var C=0,gh=0;
+        console.log(supp_data)
+        var slice = svgB2.selectAll(".slice")
+            .data(supp_data)
+            .enter().append("g")
+            .attr("class", "g")
+            .attr("transform",function(d) { 
+              //console.log("DDDD",d)
+              return "translate(" + x0(d.categorie) + ",0)"; });
+      
+              
+        slice.selectAll("rect")
+            .data(function(d) { return d.values; })
+        .enter().append("rect")
+            .attr("width", x1.bandwidth())
+            .attr("x", function(d) { return x1(d.rate); })
+            .style("fill", function(d,i) { gh++;return i==0? colorNew[C]:colorOri[C++] })
+            .attr("y", function(d) { return y(0); })
+            .attr("height", function(d) { return heightBAR - y(0); })
+            .on("mouseover",function(d,h){
+             
+                d3.select(this).style("fill", function(){
+                  return gh%2==0?d3.rgb(colorNew[C]).darker(2):d3.rgb(colorOri[C]).darker(2)
+                });
+
+                d3.select(this).attr("y")//TO FIX
+                
+                svgB2.append("text").style("fill","black").attr("id","robaTextX").attr("x",x1(h.rate)).attr("y",d3.select(this).attr("y")).attr("transform", "translate(" + (80+(20*unis.length)) + "," + (-5) + ")").text(h.value);
+      
+            })
+          
+        slice.selectAll("rect")
+            .transition()
+            .delay(function (d) {return Math.random()*1000;})
+            .duration(1000)
+            .attr("y", function(d) { return y(d.value); })
+            .attr("height", function(d) { return heightBAR - y(d.value); });
+      
+ 
+        svgB2.append("text").attr("transform", "translate(" + (widthBAR+95) + "," + 48 + ")").text("NEW")
+        svgB2.append("text").attr("transform", "translate(" + (widthBAR+140) + "," + 48 + ")").text("ORI")
+        svgB2.selectAll("legendSlidebar")
+        .data(supp_data)
+        .enter()
+        .append("rect")
+        .attr("class","legendSlideBarX")
+       
+        .attr("x", 100)
+        .attr("y", function(d,i){ 
+                              return 45+ i*(30+5)}) // 100 is where the first dot appears. 25 is the distance between dots
+        .attr("width", 30)
+        .attr("height", 30).attr("transform", "translate(" + (widthBAR) + "," + 20 + ")")
+        .style("fill", function(d,i){ 
+             return  colorNew[i]
+    })
+    svgB2.selectAll("legendSlidebar2")
+        .data(supp_data)
+        .enter()
+        .append("rect")
+        .attr("class","legendSlideBarX")
+       
+        .attr("x", 100)
+        .attr("y", function(d,i){ 
+                          return 45+ i*(30+5)     }) // 100 is where the first dot appears. 25 is the distance between dots
+        .attr("width", 30)
+        .attr("height", 30).attr("transform", "translate(" + (widthBAR+40) + "," + 20 + ")")
+        .style("fill", function(d,i){ 
+             return  colorOri[i]
+    })
+
+
+    svgB2.selectAll("labelSLideBar2")
+  .data(supp_data)
+  .enter()
+  .append("text").attr("class","legendLabelS")
+    .attr("x", 100 + 30*1.2)
+    .attr("y", function(d,i){return 50+ i*(30+5)+ (20)})
+                            // 100 is where the first dot appears. 25 is the distance between dots
+    .style("fill", "black")
+    .text(function(d){ return d["categorie"]})
+    .attr("text-anchor", "left").attr("transform", "translate(" + (widthBAR+70) + "," + 20 + ")")
+    .style("alignment-baseline", "middle")
+            
+      
+    }
+
+
+
+
+
+
+
+
+    document.getElementById("data4").innerHTML=""
+    document.getElementById("data5").innerHTML=""
+    
+
+    var arr_scores=["Academic","Employer","FacultyStudent","CitationsPerFaculty","InternationalFaculty","InternationalStudent"]
+    var initial_per =[40,10,20,20,5,5];
+    var sliders_val=[...initial_per]
+    
+    function compute_overall(name_arr,vals){
+      var res={}
+      name_arr.forEach(n=>{
+        var sco = selected_year_data[n];
+        var new_ove=0,old_ove;
+        for(s in sco){
+          if(s==6)old_ove=sco[s];
+          else{
+            new_ove+=parseFloat(sco[s]).toFixed(1)*(vals[s]/100);
+          }
+        }
+        res[n]=[new_ove.toFixed(2).toString(),old_ove];
+      })
+      return res;
+    }
+
+    function createSlider(i,def){
+    var data = [0, 20, 40, 60, 80, 100];
+
+    
+      var sliderSimple = d3
+        .sliderBottom()
+        .min(d3.min(data))
+        .max(d3.max(data))
+        .width(300)
+        .tickFormat(d3.format('d'))
+        .ticks(5)
+        .default(def)
+        .fill('#2196f3')
+        .on('onchange', val => {
+          d3.select('p#value-simple').text(d3.format('d')(Math.round(val)));
+          sliders_val[i]=Math.round(val);
+        });
+  
+      var gSimple;
+      if(i==0){
+      gSimple= d3
+       .select('#data4')
+        .append('svg').attr('transform', 'translate(0,'+30+')').attr("id","SVGSLID")
+        
+        .attr('width', 380)
+        .attr('height', 800)
+        
+        .append('g').attr("id","slider_"+i)
+        .attr('transform', 'translate(40,'+30+')')
+      }
+      else{
+        gSimple= d3
+       .select('#SVGSLID')
+       
+        
+        .append('g').attr("id","slider_"+i)
+        .attr('transform', 'translate(40,'+105*i+')')
+      }
+        
+  
+      gSimple.call(sliderSimple);
+  
+    d3.select('p#value-simple').text(d3.format('.2%')(sliderSimple.value()));
+    d3.select("#slider_"+i).append("text").attr('transform', 'translate(40,'+-10+')').text(arr_scores[i])
+
+    
+      }
+    
+    for(e in arr_scores ){
+      createSlider(e,initial_per[e]);
+    }
+    d3.select("#data4") .append("input")
+    .attr("type", "button").attr("id","button_newoverall").style("position","relative").style("left","10%").style("top","0")
+    .attr("name", "Compare Overall")
+    .attr("value", "Compare Overall").on("click",function(){
+      var sum=0;
+      for(e in sliders_val){
+       sum+=Math.round(sliders_val[e]);
+      }
+      
+      if(sum!=100){
+        //error
+        var missing_="Percentage must sum to 100!";
+        d3.select("#data4").append("div").attr("id","errorData4");
+        document.getElementById("errorData4").innerHTML="<h3 style='color:blue'> "+missing_+"( Your %: "+sum+")</h3>";
+
+      }
+      else{
+        if(document.getElementById("errorData4")!=null) document.getElementById("errorData4").innerHTML="";
+        if(sliders_val.toString()===initial_per.toString()){
+          var missing_="Change percentage to show differences!";
+          d3.select("#data4").append("div").attr("id","errorData4");
+          document.getElementById("errorData4").innerHTML="<h3 style='color:blue'> "+missing_+"</h3>";
+          
+        }
+        else{
+          var overalls = compute_overall(names.concat(newRemove),sliders_val);
+          bargraph(overalls);
+        }
+      }
+    })
+
+
+  
 }
 
 
