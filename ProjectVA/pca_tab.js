@@ -33,7 +33,7 @@ var pca_selected=[];
 var dimensions;
 var bru;
 //set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 120, left: 60},
+var margin = {top: 10, right: 0, bottom: 120, left: 60},
     width2 =container_width*0.4,
     height2 = container_heigth *0.35 ;
 
@@ -44,14 +44,14 @@ var svg = d3.select("#pca_scatter")
     .attr("height", height2 + margin.top + margin.bottom )
   .append("g")
     .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
+          "translate(" + 30 + "," + margin.top + ")");
   var svg2 = d3.select("#pca_scatter")
           .append("svg")
-            .attr("width", width2 + margin.left + margin.right)
-            .attr("height", height2 + margin.top + margin.bottom)
+            .attr("width", width2*1.27 + margin.left + margin.right)
+            .attr("height", height2*1.2 + margin.top + margin.bottom)
           .append("g")
             .attr("transform",
-                  "translate(" + margin.left + "," + margin.top + ")");
+                  "translate(" + 0+ "," + margin.top + ")");
         
 //Read the data
 
@@ -63,13 +63,13 @@ function(data) {
     .domain([-4, 7])
     .range([ 0, width2 ]);
   svg.append("g")
-    .attr("transform", "translate(0," + height2 + ")")
+    .attr("transform", "translate(0," + height2*1.3 + ")")
     .call(d3.axisBottom(x));
 
   // Add Y axis
   var y = d3.scaleLinear()
     .domain([-3, 5])
-    .range([ height2, 0]);
+    .range([ height2*1.3, 0]);
   svg.append("g")
     .call(d3.axisLeft(y));
 
@@ -89,7 +89,7 @@ function(data) {
       svg.selectAll("circle").transition().duration(5000).attr("r",2);
 
       bru=d3.brush()                 // Add the brush feature using the d3.brush function
-      .extent( [ [0,0], [width2,height2] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+      .extent( [ [0,0], [width2, height2*1.3] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
       .on("end brush", updateChart)
        // Each time the brush selection changes, trigger the 'updateChart' function
     
@@ -105,7 +105,7 @@ function(data) {
   function updateChart(event) {
     console.log(event)
     var end = new Date().getTime();
-    if(end-start < 500 && event.type=="brush") return;
+    if(end-start < 150 && event.type=="brush") return;
     start=new Date().getTime();
     extent = event.selection
 
@@ -194,12 +194,12 @@ function(data) {
       name_d = dimensions[i]
       y2[name_d] = d3.scaleLinear()
         .domain( d3.extent(data, function(d) { return +d[name_d]; }) )
-        .range([height2, 0])
+        .range([height2*1.4, 0])
     }
   
     // Build the X scale -> it find the best position for each Y axis
     var x2 = d3.scalePoint()
-      .range([0, width2])
+      .range([0, width2*1.3])
       .padding(1)
       .domain(dimensions);
       // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
@@ -231,8 +231,8 @@ svg2
     .each(function(d) { d3.select(this).call(d3.axisLeft().scale(y2[d])); })
     // Add axis title
     .append("text")
-    .attr("transform","translate(0,"+(height2+15)+") rotate(35)")
-      .style("text-anchor", "start")
+    .attr("transform","translate(0,"+(height2*1.40+15)+") rotate(-20)")
+      .style("text-anchor", "end")
       .text(function(d) { return d; })
       .style("font-size", "13px")
       .style("fill", "black");
