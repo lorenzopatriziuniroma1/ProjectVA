@@ -11,7 +11,6 @@ var width_data=container_width;
 var height_data= container_heigth;
 
 
-
 var margin2 = {top: 0, right:0, bottom:0, left:0}
 
 var radius= width_data*0.25
@@ -440,7 +439,7 @@ if(names.length===0){starPlot(); return;}
     .attr("width",width_data*0.45)
     .attr("height",height_data*0.6);
   
-    var g = svgT.append("g").attr("transform", "translate(" + 20 + "," + margin.top + ")");
+    var g = svgT.append("g").attr("transform", "translate(" + 20 + "," + margin.top/2 + ")");
 
 var formatNumber = d3.format(".1f");
 
@@ -719,7 +718,13 @@ function angleToCoordinate(angle, value){
 }
 
 d3.select("#starplot").remove();
+d3.select("#littlelegend").remove();
 d3.select("#yearSel").remove();
+
+
+
+var svgLeggends=d3.select("#legends").append("svg").attr("width",width_data).attr("id","littlelegend").attr("transform","translate("+(-width_data*0.2)+","+"-15) scale(0.6)")
+
 
 var svgS= d3.select("#data2")
 .append("svg")
@@ -985,9 +990,9 @@ svgS.insert("rect","text").attr("transform", "translate(" + margin2.left + "," +
 
 }
 
+size=20
 
-
-svgS.selectAll("mydotsS")
+svgLeggends.selectAll("mydotsS")
   .data(arr_sorted)
   .enter()
   
@@ -996,9 +1001,9 @@ svgS.selectAll("mydotsS")
   .attr("id",function(d,i){return "Lab"+arr_sorted[i]})
   .attr("class","LegendDotS")
   
-    .attr("x", 100)
-    .attr("y", function(d,i){  return 100 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
-    .attr("width", size).attr("transform", "translate(" + (widthT+90) + "," + 0 + ")")
+    .attr("x", 10)
+    .attr("y", function(d,i){  return 10 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
+    .attr("width", size).attr("transform", "translate(" + (0+10) + "," + 0 + ")")
     .attr("height", size)
     .attr("fill", function(d,i){ 
       var b = clicked_label.includes("Lab"+arr_sorted[i])
@@ -1035,12 +1040,12 @@ svgS.selectAll("mydotsS")
     
 
 // Add one dot in the legend for each name.
-svgS.selectAll("mylabelsS")
+svgLeggends.selectAll("mylabelsS")
   .data(arr_sorted)
   .enter()
   .append("text").attr("class","LegendLabelS")
-    .attr("x", 100 + size*1.2).attr("transform", "translate(" + (widthT+90) + "," + 0 + ")")
-    .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
+    .attr("x", 20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
+    .attr("y", function(d,i){ return 10 + i*(size+5) + (size*0.9)}) // 100 is where the first dot appears. 25 is the distance between dots
     .style("fill", function(d,i){ return colors[i]})
     .text(function(d,i){ return format_etichetta(arr_sorted[i])+" - ("+format_number(selected_year_data[arr_sorted[i]][6])+")"})
     .attr("text-anchor", "left")
@@ -1156,17 +1161,19 @@ size=20;
 }
 
 starting_Legend=arr_sorted.length;
-svgS.selectAll("mydotsS")
+svgLeggends.selectAll("mydotsS")
   .data(newRemove)
   .enter()
   .append("rect")
   .attr("class","legendDotS")
   .attr("id",function(d,i){return "Lab"+newRemove[i]})
-    .attr("x", 100)
-    .attr("y", function(d,i){ if(starting_Legend>=0)return  100+i*(size+5)
-                              else return 100+ i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
-    .attr("width", size)
-    .attr("height", size).attr("transform", "translate(" + (widthT+90) + "," + (++starting_Legend)*20 + ")")
+
+  .attr("x", width_data/2+10)
+  .attr("y", function(d,i){  
+    return 10+ i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
+  .attr("width", size).attr("transform", "translate(" + (0+10) + "," + 0 + ")")
+  .attr("height", size)
+    
     .style("fill", function(d,i){ 
       var b = clicked_label.includes("Lab"+newRemove[i])
       return b==true?"#F8D210":supplement_colors[i]
@@ -1201,16 +1208,15 @@ svgS.selectAll("mydotsS")
     
 // Add one dot in the legend for each name.
 
-svgS.selectAll("mylabelsS")
+svgLeggends.selectAll("mylabelsS")
   .data(newRemove)
   .enter()
   .append("text").attr("class","legendLabelS")
-    .attr("x", 100 + size*1.2)
-    .attr("y", function(d,i){if(starting_Legend>=0) return 100+(i)*(size+5) + (size/2)
-                            else return 100 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
+
+  .attr("x", width_data/2+20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
+  .attr("y", function(d,i){ return 10 + i*(size+5) + (size*0.9)})
     .style("fill", function(d,i){ return supplement_colors[i]})
     .text(function(d,i){ return format_etichetta(newRemove[i])+" ("+format_number(selected_year_data[newRemove[i]][6])+")"})
-    .attr("text-anchor", "left").attr("transform", "translate(" + (widthT+90) + "," + (starting_Legend)*20+ ")")
     .style("alignment-baseline", "middle")
 
     
