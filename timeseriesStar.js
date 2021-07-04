@@ -136,15 +136,23 @@ function format_number(s){
 
 function format_etichetta(s){
   var r=s.toUpperCase().split(" ");
-  for(var i=0;i<r.length;i++){  //check abbreviation in name
-    if(r[i].includes("(")&&r[i].includes(")")){
-      return r[i].replace("(","").replace(")","");
-    }
+  var c=""
+  if(s.includes("(")){
+    c= s.toUpperCase().substring(
+      s.lastIndexOf("(") + 1, 
+      s.lastIndexOf(")")
+    
+  );
+
   }
   var x="";
   for(var i=0;i<r.length;i++){
+    r[i]=r[i].replace("(","").replace(")","")
     if(r[i].includes("UNIVERS")){
       x+="UNI."
+    }
+    else if(r[i].includes("TECHNOL")){
+      x+="TECH."
     }
     else if(r[i].includes("INSTITUTE")){
       x+="INST."
@@ -152,18 +160,24 @@ function format_etichetta(s){
     else if(r[i].includes("COLLEGE")){
       x+="COLL."
     }
-    else if(r[i]=="OF"||r[i]=="THE"){
+    else if(r[i]=="OF"||r[i]=="THE"||r[i]=="DE"){
       continue;
     }
     else{
       x+=r[i];
     }
     x+=" "
-    if(i>3)break;
+    if(i>2)break;
   }
   
-  
-  return x;
+  if(c==""){
+    return x;
+  }
+  else{
+    console.log(c,x);
+
+     return x.length>c.length? c:x
+  }
 }
 
 //from value to key
@@ -1234,8 +1248,16 @@ svgS.selectAll("mylabelsS")
         for(u in unis){
           var t={};var vl=[];
           t["categorie"]=format_etichetta(unis[u]);
-          vl.push({"value":overalls[unis[u]][0],"rate":"new"})
-          vl.push({"value":overalls[unis[u]][1],"rate":"old"})
+          vl.push({"value":overalls[unis[u]][0],"rate":"new","cat":format_etichetta(unis[u]),"type":"A"})
+          vl.push({"value":overalls[unis[u]][1],"rate":"old","cat":format_etichetta(unis[u]),"type":"A"})
+          t["values"]=vl;
+          r.push(t)
+        }
+        for(u in newRemove){
+          var t={};var vl=[];
+          t["categorie"]=format_etichetta(newRemove[u]);
+          vl.push({"value":overalls[newRemove[u]][0],"rate":"new","cat":format_etichetta(newRemove[u]),"type":"B"})
+          vl.push({"value":overalls[newRemove[u]][1],"rate":"old","cat":format_etichetta(newRemove[u]),"type":"B"})
           t["values"]=vl;
           r.push(t)
         }
@@ -1243,8 +1265,8 @@ svgS.selectAll("mylabelsS")
       }
 
 
-      var unis = Object.keys(overalls)
-
+      var unis = sort_name_by_med(Object.keys(overalls))
+      console.log(unis)
         //Size, Focus, Reasearch, Age, Status
       
       var marginBAR = {top: 20, right: 20, bottom: 30, left: 40},
@@ -1253,7 +1275,7 @@ svgS.selectAll("mylabelsS")
       
       var x0 = d3.scaleBand()
       
-          .range([0, widthBAR-20]).round([.1]).paddingInner([0.50]).paddingOuter([0.3])
+          .range([0, widthBAR-20]).round([.1]).paddingInner([0.60]).paddingOuter([0.3])
       
       var x1 = d3.scaleBand();
       
@@ -1273,6 +1295,11 @@ svgS.selectAll("mylabelsS")
           "#ffdbff",
           "#aed1ff",
           "#00cceb"]
+      const supplement_colorNew=["#8f0678",
+        "#af749f",
+        "#c6c6c6",
+        "#dcd78a",
+        "#e8e83c"]
       const colorNew = ["#de8f40",
           "#eebf97",
           "#f1f1f1",
@@ -1291,6 +1318,11 @@ svgS.selectAll("mylabelsS")
         var categoriesNames =[];
         unis.forEach(u=>{
           categoriesNames.push(format_etichetta(u))
+        })
+        var new2Remove=[];
+        newRemove.forEach(u=>{
+          categoriesNames.push(format_etichetta(u));
+          new2Remove.push(format_etichetta(u));
         })
         var rateNames = ["new","old"];
       
@@ -1316,35 +1348,76 @@ svgS.selectAll("mylabelsS")
             .text("Value");
       
         svgB2.select('.y').transition().duration(500).delay(1300).style('opacity','1');
-        var supp_data=CallS;var C=0,gh=0;
-        console.log(supp_data)
+        var supp_data=CallS;var C=0,D=0;
+        //console.log(supp_data)
+        var this_rect="";
         var slice = svgB2.selectAll(".slice")
             .data(supp_data)
             .enter().append("g")
             .attr("class", "g")
-            .attr("transform",function(d) { 
+            .attr("transform",function(d) {
+              
               //console.log("DDDD",d)
               return "translate(" + x0(d.categorie) + ",0)"; });
       
-              
+           
         slice.selectAll("rect")
             .data(function(d) { return d.values; })
-        .enter().append("rect")
+        .enter().append("rect").attr("id","RECT_"+d.cat)
             .attr("width", x1.bandwidth())
             .attr("x", function(d) { return x1(d.rate); })
-            .style("fill", function(d,i) { gh++;return i==0? colorNew[C]:colorOri[C++] })
+            .style("fill", function(d,i) { 
+              if(d.type=="A"){
+                
+              return i==0? colorNew[C]:colorOri[C++] 
+              }
+              else{
+                return i==0? supplement_colorNew[D]:supplement_colors[D++]
+                }
+            })
             .attr("y", function(d) { return y(0); })
             .attr("height", function(d) { return heightBAR - y(0); })
             .on("mouseover",function(d,h){
-             
+               
+                
                 d3.select(this).style("fill", function(){
-                  return gh%2==0?d3.rgb(colorNew[C]).darker(2):d3.rgb(colorOri[C]).darker(2)
+                  if(h.type=="A"){
+                    var selectedU=categoriesNames.indexOf(h.cat);
+                    return h.rate=="new"?d3.rgb(colorNew[selectedU]).darker(2):d3.rgb(colorOri[selectedU]).darker(2)
+                  }
+                  else{
+                    var selectedU=new2Remove.indexOf(h.cat);
+                    return h.rate=="new"?d3.rgb(supplement_colorNew[selectedU]).darker(2):d3.rgb(supplement_colors[selectedU]).darker(2)
+                  }
                 });
 
-                d3.select(this).attr("y")//TO FIX
+                //TO FIX
                 
-                svgB2.append("text").style("fill","black").attr("id","robaTextX").attr("x",x1(h.rate)).attr("y",d3.select(this).attr("y")).attr("transform", "translate(" + (80+(20*unis.length)) + "," + (-5) + ")").text(h.value);
+                svgB2.append("text").style("fill",function(){
+                  if(h.type=="A"){
+                    var selectedU=categoriesNames.indexOf(h.cat);
+                    return h.rate=="new"?d3.rgb(colorNew[selectedU]):d3.rgb(colorOri[selectedU])
+                  }
+                  else{
+                    var selectedU=new2Remove.indexOf(h.cat);
+                    return h.rate=="new"?d3.rgb(supplement_colorNew[selectedU]):d3.rgb(supplement_colors[selectedU])
+                  }
+                }).attr("id","robaTextX").attr("transform",function(){ return  "translate(" + x0(h.cat) + ",-5)" }).attr("x",d3.select(this).attr("x")).attr("y",d3.select(this).attr("y")).text(h.value);
       
+            })
+            .on("mouseout",function(d,h){
+              d3.select(this).style("fill", function(){
+              if(h.type=="A"){
+                var selectedU=categoriesNames.indexOf(h.cat);
+                return h.rate=="new"?d3.rgb(colorNew[selectedU]):d3.rgb(colorOri[selectedU])
+              }
+              else{
+                var selectedU=new2Remove.indexOf(h.cat);
+                return h.rate=="new"?d3.rgb(supplement_colorNew[selectedU]):d3.rgb(supplement_colors[selectedU])
+              }
+            })
+              
+              svgB2.select("#robaTextX").remove()
             })
           
         slice.selectAll("rect")
@@ -1369,7 +1442,10 @@ svgS.selectAll("mylabelsS")
         .attr("width", 30)
         .attr("height", 30).attr("transform", "translate(" + (widthBAR) + "," + 20 + ")")
         .style("fill", function(d,i){ 
-             return  colorNew[i]
+          console.log("AAA",d)
+             if(d.values[0].type=="A")
+                return  colorNew[i]
+              else return  supplement_colorNew[i-unis.length]
     })
     svgB2.selectAll("legendSlidebar2")
         .data(supp_data)
@@ -1383,7 +1459,9 @@ svgS.selectAll("mylabelsS")
         .attr("width", 30)
         .attr("height", 30).attr("transform", "translate(" + (widthBAR+40) + "," + 20 + ")")
         .style("fill", function(d,i){ 
+          if(d.values[0].type=="A")
              return  colorOri[i]
+          else return supplement_colors[i-unis.length]
     })
 
 
