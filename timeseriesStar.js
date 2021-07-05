@@ -1306,7 +1306,22 @@ svgS.selectAll("mylabelsS")
         }
         return r;
       }
+      function check_55(arr_x){
+        const thresh=4;
+        var s=0;
+        for(i in arr_x){
+          if(parseFloat(arr_x[i])==5.5){
+            s++;
+          }
+          if(s>thresh){
+            return true; // too many missing data!
+          }
+          if(s>0){ // some Val missing
 
+          }
+        }
+        return false;
+      }
 
       var unis = sort_name_by_med(Object.keys(overalls))
       console.log(unis)
@@ -1363,9 +1378,17 @@ svgS.selectAll("mylabelsS")
           categoriesNames.push(format_etichetta(u))
         })
         var new2Remove=[];
+        var deleteIncomplete=[];
         newRemove.forEach(u=>{
+          console.log(selected_year_data[u],overalls)
+          if(selected_year_data[u][6]=="N/A"|| check_55(selected_year_data[u])){
+            deleteIncomplete.push(format_etichetta(u))
+            
+          }
+          else{
           categoriesNames.push(format_etichetta(u));
           new2Remove.push(format_etichetta(u));
+          }
         })
         var rateNames = ["new","old"];
       
@@ -1391,8 +1414,21 @@ svgS.selectAll("mylabelsS")
             .text("Value");
       
         svgB2.select('.y').transition().duration(500).delay(1300).style('opacity','1');
-        var supp_data=CallS;var C=0,D=0;
-        //console.log(supp_data)
+        var supp_data=[];var C=0,D=0,co=false;
+        for(delx in CallS){
+          for(dely in deleteIncomplete){
+            if(CallS[delx].categorie==deleteIncomplete[dely]){
+              co=true
+            }
+          }
+          if(co){
+            co=false;
+            // deleteIncomplete[dely] has no overall or not enough parameters.
+            continue;
+          }
+          supp_data.push(CallS[delx])
+        }
+        console.log("S",supp_data)
         var this_rect="";
         var slice = svgB2.selectAll(".slice")
             .data(supp_data)
