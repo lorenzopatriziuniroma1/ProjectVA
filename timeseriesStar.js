@@ -154,20 +154,23 @@ function format_etichetta(s){
     else if(r[i].includes("TECHNOL")){
       x+="TECH."
     }
+    else if(r[i].includes("NATION")){
+      x+="NAT."
+    }
     else if(r[i].includes("INSTITUTE")){
       x+="INST."
     }
     else if(r[i].includes("COLLEGE")){
       x+="COLL."
     }
-    else if(r[i]=="OF"||r[i]=="THE"||r[i]=="DE"){
+    else if(r[i]=="OF"||r[i]=="THE"||r[i]=="DE"||r[i]=="DI"||r[i]=="DEGLI"||r[i]=="DELLA"||r[i]=="LA"||r[i]=="LE"||r[i]=="LES"){
       continue;
     }
     else{
       x+=r[i];
     }
     x+=" "
-    if(i>2)break;
+    if(x.split(" ").length>2)break;
   }
   
   if(c==""){
@@ -537,7 +540,34 @@ for(let n=0;n< names.length;n++){
 
   svgT.append("path").attr("transform", "translate(" +40 + "," + margin.top + ")").datum(dataDone).attr("fill", "none")
   .attr("stroke", colors[position_wrt_selected])
-  .attr("stroke-width", 5).attr("class","line").attr("d",line);
+  .attr("stroke-width", 5).attr("class","line").attr("d",line)
+  .on("mouseover",function(d,h){
+    console.log(names[n],d_mean[names[n]]);
+    d3.select(this).attr("stroke", "yellow");
+
+
+  var redTxt=svgT.append("text").attr("transform", "translate(40," + margin.top + ")").attr("id","overline").attr("x", width_data*0.3) 
+.attr("y",y(d_mean[names[n]])+30)
+.text(function(d) {
+  return format_etichetta(names[n]) +" - Overall mean: "+parseFloat(d_mean[names[n]]).toFixed(2);  // Value of the text
+ })   
+.attr("cc",function() {
+  
+ return this.getBBox().width;
+})
+
+svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top + ")").attr("id","overSline").attr("x", width_data*0.3) 
+.attr("y", y(d_mean[names[n]])+10)
+.attr("width",redTxt.attr("cc"))
+.attr("height", 22.5)
+.attr("fill",colors[ArrOfMEANS.indexOf(d_mean[names[n]])]).style("opacity","0.25")
+
+  }).on("mouseout",function(d,h){
+    d3.select(this).attr("stroke", d3.rgb(colors[ArrOfMEANS.indexOf(d_mean[names[n]])]));
+    svgT.select("#overSline").remove();
+    svgT.select("#overline").remove();
+  });
+
 
   svgT.append("g").selectAll("circle").data(yCoords).enter()
     .append("circle").attr("transform", "translate(" +40 + "," + margin.top + ")").attr("id",""+names[n])
@@ -574,20 +604,33 @@ for(let n=0;n< names.length;n++){
     Index=3
   }
   
-  var ret=svgT.append("text").attr("transform", "translate(" + 0 + "," + margin.top + ")").attr("id","over").attr("x",function(d){return x(xCoords[Index])+10}).attr("y",function(d){return y(i)+20})
+  var ret=svgT.append("text").attr("transform", "translate(" + 0 + "," + margin.top + ")").attr("id","overC").attr("x",function(d){return x(xCoords[Index])+12}).attr("y",function(d){return y(i)+25})
   .attr("cc",
   function(){
     console.log(this);
     return this.getBBox().width
   })
  .text(function(d) {
-   return i.toFixed(2)+"";  });
+   return i.toFixed(2)+"";  })
+  
+  .attr("cc",function() {
+  
+    return this.getBBox().width+5;
+   });
+
+   svgT.append("rect").attr("transform", "translate(" +0 + "," + margin.top + ")").attr("id","overSC").attr("x", function(d){return x(xCoords[Index])+10}) 
+   .attr("y", function(d){return y(i)+10})
+   .attr("width",ret.attr("cc"))
+   .attr("height", 22)
+   .attr("fill",colors[ArrOfMEANS.indexOf(d_mean[names[n]])]).style("opacity","0.25")
+
   })
   .on("mouseout",function(d,i){
     
     d3.select(this).attr("fill", "black")
     .attr("r", ""+5 );
-    svgT.select("#over").remove()
+    svgT.select("#overC").remove()
+    svgT.select("#overSC").remove()
   });
 
 //   svgS.insert("rect","text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overSR").attr("x", cx[index]-25) 
