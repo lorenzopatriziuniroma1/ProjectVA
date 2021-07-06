@@ -106,10 +106,10 @@ function handleClick(d, i) { // Add interactivity
     }
 
     if(selected.length==0){ //non va BOH
-      d3.select("#selectmapyea2").attr("visibility",function(){return "visible"});
+      d3.select("#selectmapyea2").style("visibility",function(){return "visible"});
     }
     else{
-      d3.select("#selectmapyea2").attr("visibility",function(){return "hidden"});
+      d3.select("#selectmapyea2").style("visibility",function(){return "hidden"});
     }
     console.log(selected)
 }

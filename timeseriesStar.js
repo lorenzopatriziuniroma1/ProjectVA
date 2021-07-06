@@ -5,8 +5,10 @@ let ArrOfMEANS;let d_mean;  var arr_sorted=[];
 var d_2016,d_2018,d_2019,d_2020;
 var what_miss={};
 let clicked_label=[], newRemove;
-
-
+var sliders_val,sliders_list;
+var c_initial=true;
+const arr_scores=["Academic","Employer","FacultyStudent","CitationsPerFaculty","InternationalFaculty","InternationalStudent"]
+const initial_per =[40,10,20,20,5,5];
 var width_data=container_width;
 var height_data= container_heigth;
 
@@ -1556,62 +1558,56 @@ svgS.selectAll("mylabelsS")
     .attr("text-anchor", "left").attr("transform", "translate(" + (widthBAR+70) + "," + 20 + ")")
     .style("alignment-baseline", "middle")
             
-      
+      c_initial=false
     }
 
-
-
-
-
-
-
-
-    document.getElementById("data4").innerHTML=""
-    document.getElementById("data5").innerHTML=""
     
-
-    var arr_scores=["Academic","Employer","FacultyStudent","CitationsPerFaculty","InternationalFaculty","InternationalStudent"]
-    var initial_per =[40,10,20,20,5,5];
-    var sliders_val=[...initial_per]
-    
-    function compute_overall(name_arr,vals){
-      var res={}
-      name_arr.forEach(n=>{
-        var sco = selected_year_data[n];
-        var new_ove=0,old_ove;
-        for(s in sco){
-          if(s==6)old_ove=sco[s];
-          else{
-            new_ove+=parseFloat(sco[s]).toFixed(1)*(vals[s]/100);
+    function createAnalytic(initial){
+      function compute_overall(name_arr,vals){
+        var res={}
+        name_arr.forEach(n=>{
+          var sco = selected_year_data[n];
+          var new_ove=0,old_ove;
+          for(s in sco){
+            if(s==6)old_ove=sco[s];
+            else{
+              new_ove+=parseFloat(sco[s]).toFixed(1)*(vals[s]/100);
+            }
           }
-        }
-        res[n]=[new_ove.toFixed(2).toString(),old_ove];
-      })
-      return res;
-    }
+          res[n]=[new_ove.toFixed(2).toString(),old_ove];
+        })
+        return res;
+      }
+      if(initial){
+        document.getElementById("data4").innerHTML=""
+        document.getElementById("data5").innerHTML=""
+     sliders_list =[]
+     sliders_val=[...initial_per]
+    
+      
 
-    function createSlider(i,def){
-    var data = [0, 20, 40, 60, 80, 100];
+      function createSlider(i,def){
+      var data = [0, 20, 40, 60, 80, 100];
 
     
-      var sliderSimple = d3
-        .sliderBottom()
-        .min(d3.min(data))
-        .max(d3.max(data))
-        .width(300)
-        .tickFormat(d3.format('d'))
-        .ticks(5)
-        .default(def)
-        .fill('#2196f3')
-        .on('onchange', val => {
-          d3.select('p#value-simple').text(d3.format('d')(Math.round(val)));
-          sliders_val[i]=Math.round(val);
-        });
+        var sliderSimple = d3
+          .sliderBottom()
+          .min(d3.min(data))
+          .max(d3.max(data))
+          .width(300)
+          .tickFormat(d3.format('d'))
+          .ticks(5)
+          .default(def)
+          .fill('#2196f3')
+          .on('onchange', val => {
+            d3.select('p#value-simple').text(d3.format('d')(Math.round(val)));
+            sliders_val[i]=Math.round(val);
+          });
   
-      var gSimple;
-      if(i==0){
-      gSimple= d3
-       .select('#data4')
+        var gSimple;
+        if(i==0){
+        gSimple= d3
+        .select('#data4')
         .append('svg').attr('transform', 'translate(0,'+30+')').attr("id","SVGSLID")
         
         .attr('width', 380)
@@ -1619,35 +1615,35 @@ svgS.selectAll("mylabelsS")
         
         .append('g').attr("id","slider_"+i)
         .attr('transform', 'translate(40,'+30+')')
-      }
-      else{
-        gSimple= d3
-       .select('#SVGSLID')
+        }
+        else{
+          gSimple= d3
+          .select('#SVGSLID')
        
         
-        .append('g').attr("id","slider_"+i)
-        .attr('transform', 'translate(40,'+105*i+')')
-      }
+          .append('g').attr("id","slider_"+i)
+          .attr('transform', 'translate(40,'+105*i+')')
+        }
         
   
-      gSimple.call(sliderSimple);
+        gSimple.call(sliderSimple);
   
-    d3.select('p#value-simple').text(d3.format('.2%')(sliderSimple.value()));
-    d3.select("#slider_"+i).append("text").attr('transform', 'translate(40,'+-10+')').text(arr_scores[i])
-
+        d3.select('p#value-simple').text(d3.format('.2%')(sliderSimple.value()));
+        d3.select("#slider_"+i).append("text").attr('transform', 'translate(40,'+-10+')').text(arr_scores[i])
+        sliders_list.push(sliderSimple);
     
       }
     
-    for(e in arr_scores ){
-      createSlider(e,initial_per[e]);
-    }
-    d3.select("#data4") .append("input")
-    .attr("type", "button").attr("id","button_newoverall").style("position","relative").style("left","10%").style("top","0")
-    .attr("name", "Compare Overall")
-    .attr("value", "Compare Overall").on("click",function(){
+      for(e in arr_scores ){
+        createSlider(e,initial_per[e]);
+      }
+      d3.select("#data4") .append("input")
+        .attr("type", "button").attr("id","button_newoverall").style("position","relative").style("left","10%").style("top","0")
+        .attr("name", "Compare Overall")
+        .attr("value", "Compare Overall").on("click",function(){
       var sum=0;
       for(e in sliders_val){
-       sum+=Math.round(sliders_val[e]);
+        sum+=Math.round(sliders_val[e]);
       }
       
       if(sum!=100){
@@ -1670,10 +1666,27 @@ svgS.selectAll("mylabelsS")
           bargraph(overalls);
         }
       }
+
     })
+  }
+  else{//changing year = changing graph
+    for(s in sliders_list){
+      sliders_list[s].default(sliders_val[s]);
+    }
+    var overalls = compute_overall(names.concat(newRemove),sliders_val);
+          bargraph(overalls);
+
+  }
+}
 
 
-  
+ if(c_initial){
+   
+  createAnalytic(true) 
+ }
+ else{
+   createAnalytic(false);
+ }
 }
 
 
