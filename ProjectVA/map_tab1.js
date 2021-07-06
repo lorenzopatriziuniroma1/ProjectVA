@@ -442,7 +442,7 @@ function createBarGraph(year_datax){
 
   var marginBAR = {top: 20, right: 20, bottom: height*0.3, left: 40},
     widthBAR = width*0.7 - marginBAR.left - marginBAR.right,
-    heightBAR = height*1.7 - marginBAR.top - marginBAR.bottom;
+    heightBAR = height*1.3 - marginBAR.top - marginBAR.bottom;
 
 var x0 = d3.scaleBand()
 

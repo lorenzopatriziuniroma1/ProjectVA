@@ -1603,6 +1603,7 @@ svgLeggends.selectAll("mylabelsS")
           .width(300)
           .tickFormat(d3.format('d'))
           .ticks(5)
+          .step(5)
           .default(def)
           .fill('#2196f3')
           .on('onchange', val => {
@@ -1618,7 +1619,7 @@ svgLeggends.selectAll("mylabelsS")
         
         .attr('width', 380)
         .attr('height', 800)
-        
+
         .append('g').attr("id","slider_"+i)
         .attr('transform', 'translate(40,'+30+')')
         }
