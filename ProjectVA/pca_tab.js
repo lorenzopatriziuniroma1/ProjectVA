@@ -90,7 +90,7 @@ function(data) {
 
       bru=d3.brush()                 // Add the brush feature using the d3.brush function
       .extent( [ [0,0], [width2, height2*1.3] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
-      .on("end brush", updateChart)
+      .on(" brush end", updateChart)
        // Each time the brush selection changes, trigger the 'updateChart' function
     
   // Add brushing
@@ -105,7 +105,7 @@ function(data) {
   function updateChart(event) {
     console.log(event)
     var end = new Date().getTime();
-    if(end-start < 150 && event.type=="brush") return;
+   // if(end-start < 150 && event.type=="brush") return;
     start=new Date().getTime();
     extent = event.selection
 
@@ -128,7 +128,7 @@ function(data) {
       return ret; } );
 
     if (pca_selected.length==0){
-      svg2.selectAll(".myPath").transition().duration(2000).style("opacity", 0.5).style("stroke", "#69b3a2");
+      svg2.selectAll(".myPath").transition().duration(2000).style("opacity", 0.5).style("stroke", "#69b3a2").on("mouseover",handleMouseOn);
       svg_map_pca.selectAll("circle").attr("r",5)
       .style("fill",palette_divergent_map[2]).transition().duration(2000).style("opacity", 1).style("stroke", "none")
     }else{
@@ -158,7 +158,17 @@ function(data) {
               }
 
           )
-          .style("stroke-width","1.5px");
+          .style("stroke-width","1.5px")
+          .on("mouseover",
+          function(d){
+            if( pca_selected.some(function(el) { 
+              return el.Institution== d.Institution } )){
+                return handleMouseOn;
+              }
+              return null;
+          }
+          
+          );
     
           svg_map_pca
           .selectAll("circle")
@@ -266,8 +276,9 @@ function onchange() {
   // Add Y axis
   var y = d3.scaleLinear()
     .domain([-3, 5])
-    .range([ height2, 0]);
+    .range([ height2*1.3, 0]);
    pca_selected=[];
+
     d3.csv("ProjectVA/pca_csv/pca_year_v2_"+selectValue+".csv").then (function(data) {
 
       
