@@ -94,6 +94,8 @@ function handleClick(d, i) { // Add interactivity
       selected.splice(index, 1);
       d3.select(this).style("fill",  d3.select(this).attr("co"));
       display_data(selected)  
+      
+      
     }else{
         if(selected.length<5){
             selected.push(i);
@@ -101,6 +103,13 @@ function handleClick(d, i) { // Add interactivity
               
             display_data(selected)  
         }
+    }
+
+    if(selected.length==0){ //non va BOH
+      d3.select("#selectmapyea2").style("visibility",function(){return "visible"});
+    }
+    else{
+      d3.select("#selectmapyea2").style("visibility",function(){return "hidden"});
     }
     console.log(selected)
 }
@@ -817,5 +826,12 @@ dropdownButton2 // Add a button
 
     // recover the option that has been chosen
    var year =d3.select(this).property("value")
-   updateLittleMap(year)
+   if(selected.length==0){
+     updateLittleMap(year)
+   }
+   else{
+    var missing_="Deselect all uni to change year on Map";
+    d3.select("#data1").append("div").attr("id","errorData");
+    document.getElementById("errorData").innerHTML="<h3 style='color:blue'> "+missing_+"</h3>";
+   }
   })
