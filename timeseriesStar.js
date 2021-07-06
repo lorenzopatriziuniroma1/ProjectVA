@@ -1609,8 +1609,9 @@ svgLeggends.selectAll("mylabelsS")
           .on('onchange', val => {
             d3.select('p#value-simple').text(d3.format('d')(Math.round(val)));
             sliders_val[i]=Math.round(val);
-          });
-  
+          })
+        ;
+ 
         var gSimple;
         if(i==0){
         gSimple= d3
@@ -1644,6 +1645,31 @@ svgLeggends.selectAll("mylabelsS")
       for(e in arr_scores ){
         createSlider(e,initial_per[e]);
       }
+
+      var tooltip3 = d3.select("#map")
+      .append("div")	
+      .attr("class", "tooltip")				
+      .style("opacity", 0)
+      .attr("margin",margin);
+
+      d3.selectAll(".slider").on("mouseover", function(d,f){
+
+        console.log(d.pageX)
+      
+        var res=0
+        for(var i=0; i<sliders_list.length ;i++){
+          res+=sliders_val[i]
+        }
+      
+        tooltip3.html( " rank ="+ res)	
+        .style("left", (d.pageX) + "px")		
+        .style("top", (d.pageY - 28) + "px")
+
+        .style("opacity", .9);
+      }).on("mouseout", function(d,f){
+        tooltip3.style("opacity",0)
+      });
+
       d3.select("#data4") .append("input")
         .attr("type", "button").attr("id","button_newoverall").style("position","relative").style("left","10%").style("top","0")
         .attr("name", "Compare Overall")
