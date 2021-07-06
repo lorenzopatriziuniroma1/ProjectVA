@@ -240,10 +240,13 @@ var zoom = d3.zoom()
     old=event.transform
    g.attr("transform",event.transform);
 
+
+var scale=1/(event.transform.k)
+if(scale<0.05) scale=0.05
 g.selectAll(".University")
    //.attr("d", path.projection(projection))
    .attr("transform", function(d) {
-    return "translate(" + projection([parseFloat(d["Longitude"]),parseFloat(d["Latitude"])]) + ")"+" scale("+1/(event.transform.k/2)+")";
+    return "translate(" + projection([parseFloat(d["Longitude"]),parseFloat(d["Latitude"])]) + ")"+" scale("+scale+")";
    });
   // g.selectAll("circle").style("opacity",function(d){ console.log(d["CurrentRank"]>3); return (d["CurrentRank"]<3) ?  10 :  0;})
 

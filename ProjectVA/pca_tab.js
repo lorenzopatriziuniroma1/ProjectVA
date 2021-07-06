@@ -455,16 +455,16 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
 var zoom = d3.zoom()
 .scaleExtent([1, 85])
 .on('zoom', function(event) {
-  if(event.transform.x*event.transform.k>width2*0.8){
+  if(event.transform.x*event.transform.k>(width2*2+width2*0.2)*0.8){
     event.transform.x=old.x;
   }
-  if(event.transform.x/event.transform.k<-width2*0.8){
+  if(event.transform.x/event.transform.k<-(width2*2+width2*0.2)*0.8){
     event.transform.x=old.x;
   }
-  if(event.transform.y*event.transform.k>height2*0.8){
+  if(event.transform.y*event.transform.k>(height2*2+height2*0.2)*0.8){
     event.transform.y=old.y;
   }
-  if(event.transform.y/event.transform.k<-height2*0.8){
+  if(event.transform.y/event.transform.k<-(height2*2+height2*0.2)*0.8){
     event.transform.y=old.y;
   }
     old=event.transform
