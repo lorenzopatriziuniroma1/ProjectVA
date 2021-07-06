@@ -1661,7 +1661,7 @@ svgLeggends.selectAll("mylabelsS")
           res+=sliders_val[i]
         }
       
-        tooltip3.html( " rank ="+ res)	
+        tooltip3.html( " total ="+ res)	
         .style("left", (d.pageX) + "px")		
         .style("top", (d.pageY - 28) + "px")
 
