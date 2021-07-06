@@ -428,9 +428,9 @@ function createBarGraph(year_datax){
   }
   //Size, Focus, Reasearch, Age, Status
 
-  var marginBAR = {top: 20, right: 20, bottom: 30, left: 40},
-    widthBAR = 960 - marginBAR.left - marginBAR.right,
-    heightBAR = 500 - marginBAR.top - marginBAR.bottom;
+  var marginBAR = {top: 20, right: 20, bottom: height*0.3, left: 40},
+    widthBAR = width*0.7 - marginBAR.left - marginBAR.right,
+    heightBAR = height*1.7 - marginBAR.top - marginBAR.bottom;
 
 var x0 = d3.scaleBand()
 
@@ -459,7 +459,7 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
     .attr("width", widthBAR + marginBAR.left*120 + marginBAR.right)
     .attr("height", heightBAR + marginBAR.top + marginBAR.bottom)
   .append("g")
-    .attr("transform", "translate(" + marginBAR.left + "," + marginBAR.top + ")");
+    .attr("transform", "translate(" + marginBAR.left + "," + 0 + ")");
 
   var Call=map_usage(year_datax);
   var d_year_numeric=Call[1];var d_year = Call[0];
