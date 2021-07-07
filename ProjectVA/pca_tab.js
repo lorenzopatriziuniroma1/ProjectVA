@@ -305,12 +305,12 @@ function onchange() {
       name_d = dimensions[i]
       y2[name_d] = d3.scaleLinear()
         .domain( d3.extent(data, function(d) { return +d[name_d]; }) )
-        .range([height2, 0])
+        .range([height2*1.4, 0])
     }
   
     // Build the X scale -> it find the best position for each Y axis
     var x2 = d3.scalePoint()
-      .range([0, width2])
+      .range([0, width2*1.3])
       .padding(1)
       .domain(dimensions);
       // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
