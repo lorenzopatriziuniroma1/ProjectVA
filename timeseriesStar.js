@@ -11,7 +11,7 @@ const arr_scores=["Academic","Employer","FacultyStudent","CitationsPerFaculty","
 const initial_per =[40,10,20,20,5,5];
 var width_data=container_width;
 var height_data= container_heigth;
-
+var textScoreTotal;
 
 var margin2 = {top: 0, right:0, bottom:0, left:0}
 
@@ -1567,7 +1567,8 @@ svgLeggends.selectAll("mylabelsS")
       c_initial=false
     }
 
-    
+
+
     function createAnalytic(initial){
       function compute_overall(name_arr,vals){
         var res={}
@@ -1590,7 +1591,20 @@ svgLeggends.selectAll("mylabelsS")
      sliders_list =[]
      sliders_val=[...initial_per]
     
-      
+     function updateText(){
+
+var res=0;
+      for(var kk=0;kk<sliders_val.length;kk++){
+        res+=sliders_val[kk]
+      }
+      textScoreTotal.text("Total="+res)
+
+      if(res!=100){
+        d3.select("#button_newoverall").attr("disabled","")
+      }else{
+        d3.select("#button_newoverall").attr("disabled",null)
+      }
+     }
 
       function createSlider(i,def){
       var data = [0, 20, 40, 60, 80, 100];
@@ -1600,7 +1614,7 @@ svgLeggends.selectAll("mylabelsS")
           .sliderBottom()
           .min(d3.min(data))
           .max(d3.max(data))
-          .width(300)
+          .width(400)
           .tickFormat(d3.format('d'))
           .ticks(5)
           .step(5)
@@ -1609,6 +1623,7 @@ svgLeggends.selectAll("mylabelsS")
           .on('onchange', val => {
             d3.select('p#value-simple').text(d3.format('d')(Math.round(val)));
             sliders_val[i]=Math.round(val);
+            updateText();
           })
         ;
  
@@ -1618,8 +1633,8 @@ svgLeggends.selectAll("mylabelsS")
         .select('#data4')
         .append('svg').attr('transform', 'translate(0,'+30+')').attr("id","SVGSLID")
         
-        .attr('width', 380)
-        .attr('height', 800)
+        .attr('width', width_data*0.4)
+        .attr('height',100*6)
 
         .append('g').attr("id","slider_"+i)
         .attr('transform', 'translate(40,'+30+')')
@@ -1627,8 +1642,6 @@ svgLeggends.selectAll("mylabelsS")
         else{
           gSimple= d3
           .select('#SVGSLID')
-       
-        
           .append('g').attr("id","slider_"+i)
           .attr('transform', 'translate(40,'+105*i+')')
         }
@@ -1646,32 +1659,13 @@ svgLeggends.selectAll("mylabelsS")
         createSlider(e,initial_per[e]);
       }
 
-      var tooltip3 = d3.select("#map")
-      .append("div")	
-      .attr("class", "tooltip")				
-      .style("opacity", 0)
-      .attr("margin",margin);
 
-      d3.selectAll(".slider").on("mouseover", function(d,f){
+ 
 
-        console.log(d.pageX)
-      
-        var res=0
-        for(var i=0; i<sliders_list.length ;i++){
-          res+=sliders_val[i]
-        }
-      
-        tooltip3.html( " total ="+ res)	
-        .style("left", (d.pageX) + "px")		
-        .style("top", (d.pageY - 28) + "px")
 
-        .style("opacity", .9);
-      }).on("mouseout", function(d,f){
-        tooltip3.style("opacity",0)
-      });
-
-      d3.select("#data4") .append("input")
-        .attr("type", "button").attr("id","button_newoverall").style("position","relative").style("left","10%").style("top","0")
+      textScoreTotal=d3.select("#data4").append("p").text("Total=100").style("margin-left","3%")
+      d3.select("#data4") .append("input").attr("class","btn btn-sm btn-primary")
+        .attr("type", "button").attr("id","button_newoverall").style("position","relative").style("left","3%").style("top","0")
         .attr("name", "Compare Overall")
         .attr("value", "Compare Overall").on("click",function(){
       var sum=0;
@@ -1701,6 +1695,7 @@ svgLeggends.selectAll("mylabelsS")
       }
 
     })
+
   }
   else{//changing year = changing graph
     for(s in sliders_list){
