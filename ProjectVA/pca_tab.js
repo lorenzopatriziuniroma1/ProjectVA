@@ -103,7 +103,7 @@ function(data) {
   var start = new Date().getTime();
 
   function updateChart(event) {
-    console.log(event)
+
     var end = new Date().getTime();
    // if(end-start < 150 && event.type=="brush") return;
     start=new Date().getTime();
@@ -128,47 +128,33 @@ function(data) {
       return ret; } );
 
     if (pca_selected.length==0){
-      svg2.selectAll(".myPath").transition().duration(2000).style("opacity", 0.5).style("stroke", "#69b3a2").on("mouseover",handleMouseOn);
+      svg2.selectAll(".myPath").on("mouseover",handleMouseOn).transition().duration(2000).style("opacity", 0.5).style("stroke", "#69b3a2");
       svg_map_pca.selectAll("circle").attr("r",5)
       .style("fill",palette_divergent_map[2]).transition().duration(2000).style("opacity", 1).style("stroke", "none")
     }else{
       // svg2.selectAll(".myPath").transition().duration(2000).style("opacity", 0.05).style("stroke", "#69b3a2")
    svg_map_pca.selectAll("circle").transition().duration(2000).style("opacity",0.5).style("stroke", "none")
       
+
+   svg2.selectAll(".myPath").on("mouseover",(d,n)=>{return })
+  .transition().duration(2000)
+     .style("opacity", 0)
+
       svg2.selectAll(".myPath")
-      // .filter( function(d) {
-      //   return pca_selected.some(function(el) { 
-      //     return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })})
+       .filter( function(d) {
+        return pca_selected.some(function(el) { 
+           return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })})
+           .on("mouseover",handleMouseOn)
       .transition().duration(2000)
-         .style("opacity", 
-          
+         .style("opacity", 1)
+         .style("stroke", 
           function(d){
-            if( pca_selected.some(function(el) { 
-              return el.Institution== d.Institution } )){
-                return 1;
-              }
-              return 0.00005;
-          }
-
-          ).style("stroke", 
-          function(d){
-
             if(color_multidim.get(d.Country) == undefined) return "grey"; 
                 return colores_range2(color_multidim.get(d.Country),0,50)
               }
-
           )
           .style("stroke-width","1.5px")
-          .on("mouseover",
-          function(d){
-            if( pca_selected.some(function(el) { 
-              return el.Institution== d.Institution } )){
-                return handleMouseOn;
-              }
-              return null;
-          }
-          
-          );
+         ;
     
           svg_map_pca
           .selectAll("circle")
@@ -324,8 +310,7 @@ function onchange() {
          // remove old elements
          appending.exit().remove();
          appending.enter().append("path")
-         console.log("ciao")
-         console.log(appending)
+
      // add new elements
      appending
      .transition()
@@ -359,7 +344,7 @@ function onchange() {
 
         var circle = g_map_pca.selectAll("circle").data(data)
 
-        console.log(circle)
+
         circle.exit().remove()
           
         circle.enter().append("circle")
