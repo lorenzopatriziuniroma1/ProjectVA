@@ -1788,8 +1788,12 @@ var res=0;
 
 
  
+      d3.select("#button_newoverall").remove()
 
-
+      if(textScoreTotal != undefined){
+        textScoreTotal.remove()
+      }
+      
       textScoreTotal=d3.select("#link").append("p").text("Total=100").style("margin-left","3%")
       d3.select("#link").append("input").attr("class","btn btn-sm btn-primary")
         .attr("type", "button").attr("id","button_newoverall").style("position","relative").style("left","3%").style("top","0")
@@ -1828,38 +1832,8 @@ var res=0;
     for(s in sliders_list){
       sliders_list[s].default(sliders_val[s]);
     }
-    d3.select("#button_newoverall").remove()
-    d3.select("#data4") .append("input")
-        .attr("type", "button").attr("id","button_newoverall").style("position","relative").style("left","10%").style("top","0")
-        .attr("name", "Compare Overall")
-        .attr("value", "Compare Overall").on("click",function(){
-      var sum=0;
-      for(e in sliders_val){
-        sum+=Math.round(sliders_val[e]);
-      }
-      
-      if(sum!=100){
-        //error
-        var missing_="Percentage must sum to 100!";
-        d3.select("#data4").append("div").attr("id","errorData4");
-        document.getElementById("errorData4").innerHTML="<h3 style='color:blue'> "+missing_+"( Your %: "+sum+")</h3>";
 
-      }
-      else{
-        if(document.getElementById("errorData4")!=null) document.getElementById("errorData4").innerHTML="";
-        if(sliders_val.toString()===initial_per.toString()){
-          var missing_="Change percentage to show differences!";
-          d3.select("#data4").append("div").attr("id","errorData4");
-          document.getElementById("errorData4").innerHTML="<h3 style='color:blue'> "+missing_+"</h3>";
-          
-        }
-        else{
-          var overalls = compute_overall(names.concat(newRemove),sliders_val);
-          bargraph(overalls);
-        }
-      }
-
-    })
+   
     var overalls = compute_overall(names.concat(newRemove),sliders_val);
           bargraph(overalls);
 
