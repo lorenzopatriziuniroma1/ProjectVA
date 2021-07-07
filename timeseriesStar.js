@@ -3,9 +3,9 @@
 // d_means = dictionary with keys = name of university, value = mean
 let ArrOfMEANS;let d_mean;  var arr_sorted=[];
 var d_2016,d_2018,d_2019,d_2020;
-var what_miss={};
+var what_miss={};let data_all_time;
 let clicked_label=[], newRemove;
-var sliders_val,sliders_list;
+var sliders_val,sliders_list;let xCoords=[];
 var c_initial=true;
 const arr_scores=["Academic","Employer","FacultyStudent","CitationsPerFaculty","InternationalFaculty","InternationalStudent"]
 const initial_per =[40,10,20,20,5,5];
@@ -513,7 +513,7 @@ function customYAxis(g) {
 
 
 
-
+data_all_time=[];
 
 for(let n=0;n< names.length;n++){
   //to be used for the color...
@@ -521,13 +521,13 @@ for(let n=0;n< names.length;n++){
 
   
   let u=d[names[n]];
-  let xCoords=[new Date(2015, 12, 1), new Date(2018, 1, 1),new Date(2019, 1, 1),new Date(2020, 1, 1)];
+  xCoords=[new Date(2015, 12, 1), new Date(2018, 1, 1),new Date(2019, 1, 1),new Date(2020, 1, 1)];
   let yCoords=[];
   let dataDone =[];
   for(let l =0;l<4;l++){
     dataDone.push( { date:xCoords[l],rating:parseFloat(u.split("/")[l])});
     yCoords.push(parseFloat(u.split("/")[l]));
-    
+    data_all_time.push(dataDone);
   }
   
  
@@ -644,9 +644,136 @@ svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top + ")")
 
 
 }
+if(names.length>1){
 
+ 
+  let YYY=[0,0,0,0];
+  for(var q =0;q<names.length*4;q+=4){
+    for(w in YYY){
+      YYY[w]+=data_all_time[q][w].rating
+    }
+  }
+  var dataline=[]
+  for(yy in YYY ){
+    YYY[yy]/=names.length;
+    dataline.push( { date:xCoords[yy],rating:YYY[yy]});
+  }
+  console.log("DATAd",data_all_time,dataline);
+  var line = d3.line()
+  .x(function(d) { return x(d.date); })
+  .y(function(d) { return y(d.rating); })
+
+
+let Index=3;
+
+svgT.append("path").attr("transform", "translate(" +40 + "," + margin.top + ")").datum(dataline).attr("fill", "none")
+.attr("stroke", "#686868") .style("stroke-dasharray", ("10, 5"))
+.attr("stroke-width", 5).attr("class","line").attr("d",line)
+.on("mouseover",function(d,h){
+  
+  d3.select(this).attr("stroke", "yellow");
+
+  var m= 0;
+var redTxt=svgT.append("text").attr("transform", "translate(40," + margin.top + ")").attr("id","overline").attr("x", width_data*0.3) 
+.attr("y",function(){
+  
+  YYY.forEach(t=>{
+    m+=t
+  })
+  return y(m/4) +35
+})
+.text(function(d) {
+return  "GENERAL Overall mean: "+parseFloat(m/4).toFixed(2);  // Value of the text
+})   
+.attr("cc",function() {
+
+return this.getBBox().width;
+})
+
+svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top + ")").attr("id","overSline").attr("x", width_data*0.3) 
+.attr("y", y(m/4)+20)
+.attr("width",redTxt.attr("cc"))
+.attr("height", 20)
+.attr("fill","#686868").style("opacity","0.25")
+
+}).on("mouseout",function(d,h){
+  d3.select(this).attr("stroke", "#686868");
+  svgT.select("#overSline").remove();
+  svgT.select("#overline").remove();
+});
+
+
+svgT.append("g").selectAll("circle").data(YYY)
+.enter()
+  .append("circle").attr("transform", "translate(" +40 + "," + margin.top + ")").attr("id","AVGt")
+.attr("cx",function(d,i){
+      var p;
+      
+      p=xCoords[i]
+      
+      return x(p);
+      })
+.attr("cy",function(d,i){
+      var p = YYY[i];
+      
+      return y(p);
+  })
+  
+.attr("r","5")
+.attr("fill","black")	
+.on("mouseover",function(d,i){
+  var na=d3.select(this).attr("id")
+  d3.select(this).attr("fill", colors[name_index(na)])
+  .attr("r", ""+5 * 2)
+if (d3.select(this).attr("cx")==x(new Date(2015, 12, 1))){
+  Index=0;
+  
+}
+else if(d3.select(this).attr("cx")==x(new Date(2018, 1, 1))){
+  Index=1;
+}
+else if (d3.select(this).attr("cx")==x(new Date(2019, 1, 1))){
+  Index=2
+}
+else if (d3.select(this).attr("cx")==x(new Date(2020, 1, 1))){
+  Index=3
+}
+
+var ret=svgT.append("text").attr("transform", "translate(" + 0 + "," + margin.top + ")").attr("id","overC").attr("x",function(d){return x(xCoords[Index])+12}).attr("y",function(d){return y(i)+25})
+.attr("cc",
+function(){
+  console.log(this);
+  return this.getBBox().width
+})
+.text(function(d) {
+ return i.toFixed(2)+"";  })
+
+.attr("cc",function() {
+
+  return this.getBBox().width+5;
+ });
+
+ svgT.append("rect").attr("transform", "translate(" +0 + "," + margin.top + ")").attr("id","overSC").attr("x", function(d){return x(xCoords[Index])+10}) 
+ .attr("y", function(d){return y(i)+10})
+ .attr("width",ret.attr("cc"))
+ .attr("height", 22)
+ .attr("fill","#686868").style("opacity","0.3")
+
+})
+.on("mouseout",function(d,i){
+  
+  d3.select(this).attr("fill", "black")
+  .attr("r", ""+5 );
+  svgT.select("#overC").remove()
+  svgT.select("#overSC").remove()
+});
+
+}
     arr_sorted=[];
     arr_sorted=sort_name_by_med(names);
+
+
+    
     
 
 //     var size = 20
