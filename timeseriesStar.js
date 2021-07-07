@@ -12,7 +12,7 @@ const initial_per =[40,10,20,20,5,5];
 var width_data=container_width;
 var height_data= container_heigth;
 var textScoreTotal;
-
+var gSimple;
 var margin2 = {top: 0, right:0, bottom:0, left:0}
 
 var radius= width_data*0.25
@@ -1627,14 +1627,14 @@ var res=0;
           })
         ;
  
-        var gSimple;
+
         if(i==0){
         gSimple= d3
         .select('#data4')
         .append('svg').attr('transform', 'translate(0,'+30+')').attr("id","SVGSLID")
         
-        .attr('width', width_data*0.4)
-        .attr('height',100*6)
+        .attr('width', width_data*0.38)
+        .attr('height',100*6+50)
 
         .append('g').attr("id","slider_"+i)
         .attr('transform', 'translate(40,'+30+')')
@@ -1663,8 +1663,8 @@ var res=0;
  
 
 
-      textScoreTotal=d3.select("#data4").append("p").text("Total=100").style("margin-left","3%")
-      d3.select("#data4") .append("input").attr("class","btn btn-sm btn-primary")
+      textScoreTotal=d3.select("#link").append("p").text("Total=100").style("margin-left","3%")
+      d3.select("#link").append("input").attr("class","btn btn-sm btn-primary")
         .attr("type", "button").attr("id","button_newoverall").style("position","relative").style("left","3%").style("top","0")
         .attr("name", "Compare Overall")
         .attr("value", "Compare Overall").on("click",function(){
