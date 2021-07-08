@@ -43,7 +43,8 @@ var svg1 = d3.selectAll("#map")
 var g = svg1.append("g");
 
 
-
+var color_circle = d3.scaleOrdinal()
+    .range(sequential_color_divergent_from_blue);
 
 
 const projection = d3.geoMercator()
@@ -438,6 +439,8 @@ var color = d3.scaleOrdinal()
     "#aed1ff",
     "#00cceb"]);
 
+
+
 var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
     .attr("width", widthBAR + marginBAR.left*120 + marginBAR.right)
     .attr("height", heightBAR + marginBAR.top + marginBAR.bottom)
@@ -693,7 +696,8 @@ g.selectAll(".cityCircle")
 .on("mouseover", handleMouseOver)
 .on("mouseout", handleMouseOut)
 .on("click", handleClick) 
-.attr("r",5).style("fill",palette_divergent_map[2])
+.attr("r",5)
+.style("fill",palette_divergent_map[2])
 .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale"+transfomr;})
 .attr("id",function(d){return d.Institution})
 .attr("class","University cityCircle")
