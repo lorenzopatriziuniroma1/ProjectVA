@@ -1794,7 +1794,7 @@ var res=0;
         textScoreTotal.remove()
       }
       
-      textScoreTotal=d3.select("#link").append("p").text("Total=100").style("margin-left","3%")
+      textScoreTotal=d3.select("#link").append("p").attr("id","perc_txt").text("Total=100").style("margin-left","3%")
       d3.select("#link").append("input").attr("class","btn btn-sm btn-primary")
         .attr("type", "button").attr("id","button_newoverall").style("position","relative").style("left","3%").style("top","0")
         .attr("name", "Compare Overall")
