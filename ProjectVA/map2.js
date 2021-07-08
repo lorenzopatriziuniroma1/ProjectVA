@@ -30,8 +30,8 @@ var svg4 = d3.select("#md_country").append("svg")
 "translate(" + 0+ "," + (10) + ")");
 
 var  projection2 = d3.geoMercator()
-    .translate([width3/2 , height3/2 ]) // translate to center of screen
-    .scale([100]); // scale things down so see entire US
+    .translate([width3/2 , height3/2+50 ]) // translate to center of screen
+    .scale([200]); // scale things down so see entire US
     
 
 var path2 = d3.geoPath().projection(projection2);

@@ -47,8 +47,8 @@ var g = svg1.append("g");
 
 
 const projection = d3.geoMercator()
-    .translate([width / 2, height / 2]) // translate to center of screen
-    .scale([100]); // scale things down so see entire US
+    .translate([width / 2, height / 2+50]) // translate to center of screen
+    .scale([200]); // scale things down so see entire US
  
 var div = d3.select("body").append("div")	
     .attr("class", "tooltip")				

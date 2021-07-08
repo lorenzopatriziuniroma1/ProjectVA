@@ -390,8 +390,8 @@ var svg_map_pca = d3.select("#map3")
 
 
     const projection_map_pca = d3.geoMercator()
-    .translate([width2_map / 2, height2 / 2]) // translate to center of screen
-    .scale([100]); // scale things down so see entire US
+    .translate([width2_map / 2, container_heigth*0.4 / 2+50]) // translate to center of screen
+    .scale([200]); // scale things down so see entire US
  
 
     var tooltip3 = d3.select("#map3")
