@@ -920,7 +920,8 @@ d3.select("#yearSel").remove();
 
 
 
-var svgLeggends=d3.select("#legends").append("svg").attr("width",width_data).attr("id","littlelegend").attr("transform","translate("+(-width_data*0.2)+","+"-15) scale(0.6)")
+d3.select("#yourSelection").style("visibility", "visible")
+var svgLeggends=d3.select("#legends").append("svg").attr("width",width_data).attr("id","littlelegend").attr("transform","translate("+(width_data*0.2)+","+"-15) scale(0.8)")
 
 
 var svgS= d3.select("#data2")
@@ -1364,7 +1365,7 @@ svgLeggends.selectAll("mydotsS")
   .attr("class","legendDotS")
   .attr("id",function(d,i){return "Lab"+newRemove[i]})
 
-  .attr("x", width_data/2+10)
+  .attr("x", width_data*0.2+10)
   .attr("y", function(d,i){  
     return 10+ i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
   .attr("width", size).attr("transform", "translate(" + (0+10) + "," + 0 + ")")
@@ -1409,7 +1410,7 @@ svgLeggends.selectAll("mylabelsS")
   .enter()
   .append("text").attr("class","legendLabelS")
 
-  .attr("x", width_data/2+20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
+  .attr("x", width_data*0.2+20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
   .attr("y", function(d,i){ return 10 + i*(size+5) + (size*0.9)})
     .style("fill", function(d,i){ return supplement_colors[i]})
     .text(function(d,i){ return format_etichetta(newRemove[i])+" ("+format_number(selected_year_data[newRemove[i]][6])+")"})

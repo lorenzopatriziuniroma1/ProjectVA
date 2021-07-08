@@ -106,6 +106,7 @@ function handleClick(d, i) { // Add interactivity
     }
 
     if(selected.length==0){ //non va BOH
+      d3.select("#yourSelection").style("visibility","hidden")
       d3.select("#littlelegend").remove()
       d3.select("#perc_txt").remove()
       d3.select("#button_newoverall").remove();
