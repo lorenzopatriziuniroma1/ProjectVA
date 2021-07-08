@@ -14,7 +14,7 @@ svg3 = d3.select("#map2")
   .append("svg")
     .attr("width", width3)
     .attr("height", height3)
-    .style("background","#b3ccff")
+    .style("background",background)
 
   
     var tooltip2 = d3.select("#map2")
@@ -102,8 +102,8 @@ d3.json("GeoMap/custom.geo.json").then(function(uState) {
           return colores_range2(color.get(d.properties.name),0,50)
         })
         .attr("name", function(d) {  return d.properties.name})
-        .style("stroke","#b3ccff")
-        .style("stroke-width",".1px")
+        .style("stroke",stroke_color)
+        .style("stroke-width",".3px")
         .on("mouseover", handleMouseOver3)
         .on("mouseout", handleMouseOut3)
         .on("mousemove",handleMouseMove)
@@ -308,41 +308,7 @@ return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
      
  };
 
- var legend = svg3.append('g')
- .attr("transform", "translate(" + (width3-width3*0.4)  + "," + (height3-height3*0.4 ) + ")")
- .append('svg')
- .style("background","#b3ccff");
-
- size=13;
-   // Handmade legend
-   legend.append("rect")
-   .attr("x",container_width*0.24).attr("y",height3*0.22-10)    
-   .attr("width", size)
-   .attr("height", size)
-   .style("fill", palette_sequential_map[2])
-   legend.append("text").attr("x", width3*0.24+20).attr("y", height3*0.22).text("High #University").style("font-size", "15px").attr("alignment-baseline","middle")
-
-   legend.append("rect")
-   .attr("x",width3*0.24).attr("y",height3*0.22+20-10)    
-   .attr("width", size)
-   .attr("height", size)
-   .style("fill", palette_sequential_map[1])
-   legend.append("text").attr("x", width3*0.24+20).attr("y", height3*0.22+20).text("Middle #University").style("font-size", "15px").attr("alignment-baseline","middle")
-   
-   legend.append("rect")
-   .attr("x",width3*0.24).attr("y",height3*0.22-10+40)    
-   .attr("width", size)
-   .attr("height", size)
-   .style("fill", palette_sequential_map[0])
-   legend.append("text").attr("x", width3*0.24+20).attr("y", height3*0.22+40).text("Low #University").style("font-size", "15px").attr("alignment-baseline","middle")
-  
-   legend.append("rect")
-   .attr("x",width3*0.24).attr("y",height3*0.22-10+60)    
-   .attr("width", size)
-   .attr("height", size)
-   .style("fill", "gray")
-   legend.append("text").attr("x", width3*0.24+20).attr("y", height3*0.22+60).text("0 Univesity").style("font-size", "15px").attr("alignment-baseline","middle")
-
+create_legend(svg3)
  
 
 var allGroup3 = ["2016", "2018", "2019", "2020"].reverse()
@@ -401,22 +367,6 @@ return d3.line()(dimensions.map(function(p) { return [x2(p), y2[p](d[p])]; }));
 
 
  
-
-//       .filter(d=>{
-//         return  country_selected.indexOf(d.Country)>-1;
-//       })
-//       .style("fill", "none")
-//      .transition()
-//      .duration(5000)
-//      .attr("d",  path)
-//  .style("fill", "none")
-//  .style("stroke",function(d){
-
-//   if(color.get(d.Country) == undefined) return "grey"; 
-//   return colores_range2(color.get(d.Country),0,50)
-// })
-//  .style("stroke-width", "3")
-//  .style("opacity", 1)
 
 
 updateChart2()

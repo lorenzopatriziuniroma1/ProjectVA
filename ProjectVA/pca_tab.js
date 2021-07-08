@@ -149,7 +149,7 @@ function(data) {
          .style("opacity", 1)
          .style("stroke", 
           function(d){
-            if(color_multidim.get(d.Country) == undefined) return "grey"; 
+            if(color_multidim.get(d.Country) == undefined) return palette_sequential_map[3]; 
                 return colores_range2(color_multidim.get(d.Country),0,50)
               }
           )
@@ -337,7 +337,7 @@ function onchange() {
 
         g_map_pca.selectAll('path')
         .style("fill",function(d){
-        if(color.get(d.properties.name) == undefined) return "grey"; 
+        if(color.get(d.properties.name) == undefined) return palette_sequential_map[3]; 
           return colores_range2(color.get(d.properties.name),0,50)
         })
 
@@ -383,8 +383,8 @@ var width2_map=container_width;
 var svg_map_pca = d3.select("#map3")
   .append("svg")
     .attr("width", width2_map)
-    .attr("height", height2)
-    .style("background","#b3ccff")
+    .attr("height", container_heigth*0.4)
+    .style("background",background)
 
     var g_map_pca = svg_map_pca.append("g");
 
@@ -422,11 +422,11 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
     .append('path')
     .attr("d", path_map_pca)
     .style("fill",function(d){
-  if(color.get(d.properties.name) == undefined) return "grey"; 
+  if(color.get(d.properties.name) == undefined) return palette_sequential_map[3]; 
       return colores_range2(color.get(d.properties.name),0,50)
     })
-    .style("stroke","#b3ccff")
-    .style("stroke-width",".1px")
+    .style("stroke",stroke_color)
+    .style("stroke-width",".3px")
 
 
   g_map_pca.selectAll("circle")
@@ -491,38 +491,4 @@ svg_map_pca.call(zoom);
 
 
 
-var legend = svg_map_pca.append('g')
- .attr("transform", "translate(" + (width2_map-width2_map*0.4)  + "," + (height2-height2*0.4 ) + ")")
- .append('svg')
- .style("background","#b3ccff");
-
- size=13;
-   // Handmade legend
-   legend.append("rect")
-   .attr("x",width2_map*0.24).attr("y",height2*0.22-10)    
-   .attr("width", size)
-   .attr("height", size)
-   .style("fill", palette_sequential_map[2])
-   legend.append("text").attr("x", width2_map*0.24+20).attr("y", height2*0.22).text("High #University").style("font-size", "15px").attr("alignment-baseline","middle")
-
-   legend.append("rect")
-   .attr("x",width2_map*0.24).attr("y",height2*0.22+20-10)    
-   .attr("width", size)
-   .attr("height", size)
-   .style("fill", palette_sequential_map[1])
-   legend.append("text").attr("x", width2_map*0.24+20).attr("y", height2*0.22+20).text("Middle #University").style("font-size", "15px").attr("alignment-baseline","middle")
-   
-   legend.append("rect")
-   .attr("x",width2_map*0.24).attr("y",height2*0.22-10+40)    
-   .attr("width", size)
-   .attr("height", size)
-   .style("fill", palette_sequential_map[0])
-   legend.append("text").attr("x", width2_map*0.24+20).attr("y", height2*0.22+40).text("Low #University").style("font-size", "15px").attr("alignment-baseline","middle")
-  
-   legend.append("rect")
-   .attr("x",width2_map*0.24).attr("y",height2*0.22-10+60)    
-   .attr("width", size)
-   .attr("height", size)
-   .style("fill", "gray")
-   legend.append("text").attr("x", width2_map*0.24+20).attr("y", height2*0.22+60).text("0 Univesity").style("font-size", "15px").attr("alignment-baseline","middle")
-
+create_legend(svg_map_pca)
