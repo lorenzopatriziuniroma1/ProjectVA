@@ -5,7 +5,7 @@ function create_legend(svg){
     var legend = svg  .append('svg')
     .attr("width",170)
     .attr("height",90)  
-    .attr("transform", "translate(" + (width-width*0.1)  + "," + (height-height*0.4 ) + ")")
+    .attr("transform", "translate(" + (width-width*0.2)  + "," + (height-height*0.4 ) + ")")
    ;
  
    legend.append("rect")

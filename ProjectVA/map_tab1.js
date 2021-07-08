@@ -27,6 +27,8 @@ function map_singleX(attr){
    
   }
 
+var myColorCircle1 = d3.scaleLinear().domain([1,10])
+  .range(sequential_color_divergent_from_blue)
 
 var symbolGenerator = d3.symbol()
   .type(d3.symbolStar)
@@ -128,6 +130,11 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(csv) {
     data = csv;
     
+
+    myColorCircle1 = d3.scaleLinear().domain([0,d3.max(csv, function(d) { return d.OverallScore; })])
+  .range(sequential_color_divergent_from_blue)
+
+  console.log(d3.max(csv, function(d) { return d.OverallScore; }))
     var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
 
     g.selectAll('path')
@@ -155,12 +162,12 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   .on("mouseout", handleMouseOut)
   .on("click", handleClick) 
   .attr("r",5)
-  .style("fill","pink")
+  .style("fill",function(d){return myColorCircle1(d.OverallScore) })
   .attr("d",pathData)
   .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
   .attr("id",function(d){return d.Institution})
   .attr("class","University star")
-  .attr("co","pink")
+  .attr("co",function(d){return myColorCircle1(d.OverallScore) })
   .attr("Usize",function(d){
     return map_singleX(d.Size)
   })
@@ -188,11 +195,11 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   .on("mouseover", handleMouseOver)
   .on("mouseout", handleMouseOut)
   .on("click", handleClick) 
-  .attr("r",5).style("fill",palette_divergent_map[2])
+  .attr("r",5).style("fill",function(d){return myColorCircle1(d.OverallScore) })
   .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
   .attr("id",function(d){return d.Institution})
   .attr("class","University cityCircle")
-  .attr("co",palette_divergent_map[2])
+  .attr("co",function(d){return myColorCircle1(d.OverallScore) })
   .attr("Usize",function(d){
     return map_singleX(d.Size)
   })
@@ -679,6 +686,13 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
 function  updateLittleMap(year){
   d3.csv("ProjectVA/pca_csv/pca_year_v2_"+year+".csv").then(function(data) {
 
+
+
+
+    
+    myColorCircle1 = d3.scaleLinear().domain([0,d3.max(data, function(d) { return d.OverallScore; })])
+  .range(sequential_color_divergent_from_blue)
+
     var transfomr=svg1.select(".star").attr("transform").split("scale")[1]
 
 
@@ -697,11 +711,11 @@ g.selectAll(".cityCircle")
 .on("mouseout", handleMouseOut)
 .on("click", handleClick) 
 .attr("r",5)
-.style("fill",palette_divergent_map[2])
+.style("fill",function(d){return myColorCircle1(d.OverallScore) })
 .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale"+transfomr;})
 .attr("id",function(d){return d.Institution})
 .attr("class","University cityCircle")
-.attr("co",palette_divergent_map[2])
+.attr("co",function(d){return myColorCircle1(d.OverallScore) })
 .attr("Usize",function(d){
   return map_singleX(d.Size)
 })
@@ -735,12 +749,12 @@ g.selectAll(".star")
 .on("mouseover", handleMouseOver)
 .on("mouseout", handleMouseOut)
 .on("click", handleClick) 
-.style("fill","pink")
+.style("fill",function(d){return myColorCircle1(d.OverallScore) })
 .attr("d",pathData)
 .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale"+transfomr;})
 .attr("id",function(d){return d.Institution})
 .attr("class","University star")
-.attr("co","pink")
+.attr("co",function(d){return myColorCircle1(d.OverallScore) })
 .attr("Usize",function(d){
   return map_singleX(d.Size)
 })

@@ -8,6 +8,11 @@ function colores_range(n,start,end) {
   return colores_g[i];
 }
 
+
+var myColorCircle = d3.scaleLinear().domain([1,10])
+  .range(sequential_color_divergent_from_blue)
+
+
 function handleMouseOn(d,i){
   div.transition()		
   .duration(200)		
@@ -109,7 +114,7 @@ function(data) {
     start=new Date().getTime();
     extent = event.selection
 
-    myCircle.classed("selected", 
+    myCircle.attr("selected", 
     function(d){
       var ret=isBrushed(extent, x(d.pca_1), y(d.pca_2)); 
       const index = pca_selected.indexOf(d);
@@ -129,8 +134,7 @@ function(data) {
 
     if (pca_selected.length==0){
       svg2.selectAll(".myPath").on("mouseover",handleMouseOn).transition().duration(2000).style("opacity", 0.5).style("stroke", "#69b3a2");
-      svg_map_pca.selectAll("circle").attr("r",5)
-      .style("fill",palette_divergent_map[2]).transition().duration(2000).style("opacity", 1).style("stroke", "none")
+      svg_map_pca.selectAll("circle").attr("r",5).transition().duration(2000).style("opacity", 1).style("stroke", "none")
     }else{
       // svg2.selectAll(".myPath").transition().duration(2000).style("opacity", 0.05).style("stroke", "#69b3a2")
    svg_map_pca.selectAll("circle").transition().duration(2000).style("opacity",0.5).style("stroke", "none")
@@ -267,7 +271,9 @@ function onchange() {
 
     d3.csv("ProjectVA/pca_csv/pca_year_v2_"+selectValue+".csv").then (function(data) {
 
-      
+      myColorCircle = d3.scaleLinear().domain([0,d3.max(data, function(d) { return d.OverallScore; })])
+      .range(sequential_color_divergent_from_blue)
+    
       var circles=svg.selectAll("circle").data(data)
       circles.exit().remove()
       circles.enter().append("circle")
@@ -351,11 +357,10 @@ function onchange() {
         .attr("r",5) 
         .on("mouseover", handleMouseOver)
         .on("mouseout", handleMouseOut)
-        .style("fill",palette_divergent_map[2])
+        .style("fill",function(d){return myColorCircle(d.OverallScore) })
         .attr("transform", function(d) {return "translate(" + projection_map_pca([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
         .attr("id",function(d){return d.Institution})
-        .attr("id", function(d) { return d.Institution ;})
-        .attr("co",palette_divergent_map[2]);
+        .attr("co",function(d){return myColorCircle(d.OverallScore)} );
         
 
      
@@ -414,6 +419,10 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
 
   d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(csv) {
  var data=csv
+
+  myColorCircle = d3.scaleLinear().domain([0,d3.max(csv, function(d) { return d.OverallScore; })])
+  .range(sequential_color_divergent_from_blue)
+
     var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
     color_multidim=color
     g_map_pca.selectAll('path')
@@ -436,11 +445,11 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   .on("mouseover", handleMouseOver)
   .on("mouseout", handleMouseOut)
   .attr("r",5)
-  .style("fill",palette_divergent_map[2])
+  .style("fill", function(d){return myColorCircle(d.OverallScore) })
   .attr("transform", function(d) {return "translate(" + projection_map_pca([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
   .attr("id",function(d){return d.Institution})
   .attr("id", function(d) { return d.Institution ;})
-  .attr("co",palette_divergent_map[2]);
+  .attr("co",function(d){return myColorCircle(d.OverallScore) });
 
   });
 
