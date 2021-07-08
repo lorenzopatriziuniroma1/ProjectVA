@@ -37,7 +37,7 @@ var svg1 = d3.selectAll("#map")
   .append("svg")
     .attr("width", width) 
     .attr("height", height )
-    .style("background","#b3ccff")
+    .style("background",background)
     .style("margin-bottom","10px")
 
 var g = svg1.append("g");
@@ -136,10 +136,10 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
     .attr("d", path)
     .attr("class","country")
     .style("fill",function(d){
-  if(color.get(d.properties.name) == undefined) return "grey"; 
+  if(color.get(d.properties.name) == undefined) return palette_sequential_map[3]; 
       return colores_range2(color.get(d.properties.name),0,50)
     })
-    .style("stroke","#b3ccff")
+    .style("stroke",stroke_color)
     .style("stroke-width",".1px")
 
 
@@ -226,9 +226,9 @@ function colores_range2(n,start,end) {
   var colores_g =palette_sequential_map;
   var step=(end-start)/3;
   var i=0;
-  if(n<start+step){i=0}
+  if(n<start+step){i=2}
   if(start+step<=n && n<start+2*step){i=1}
-  if(start+2*step<=n){i=2}
+  if(start+2*step<=n){i=0}
   return colores_g[i];
 }
 
@@ -319,7 +319,7 @@ function changeMinMax(min,max){
    .attr("x",0).attr("y",10-10)    
    .attr("width", size)
    .attr("height", size)
-   .style("fill", palette_sequential_map[2])
+   .style("fill", palette_sequential_map[0])
    legend.append("text").attr("x",0+20).attr("y", 10).text("High #University").style("font-size", "15px").attr("alignment-baseline","middle")
 
    legend.append("rect")
@@ -333,14 +333,14 @@ function changeMinMax(min,max){
    .attr("x",0).attr("y",10-10+40)    
    .attr("width", size)
    .attr("height", size)
-   .style("fill", palette_sequential_map[0])
+   .style("fill", palette_sequential_map[2])
    legend.append("text").attr("x", 0+20).attr("y", 10+40).text("Low #University").style("font-size", "15px").attr("alignment-baseline","middle")
   
    legend.append("rect")
    .attr("x",0).attr("y",10-10+60)    
    .attr("width", size)
    .attr("height", size)
-   .style("fill", "gray")
+   .style("fill", palette_sequential_map[3])
    legend.append("text").attr("x", 0+20).attr("y", 10+60).text("0 Univesity").style("font-size", "15px").attr("alignment-baseline","middle")
 
   // Range
@@ -814,7 +814,7 @@ var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
 
 g.selectAll('.country')
 .style("fill",function(d){
-if(color.get(d.properties.name) == undefined) return "grey"; 
+if(color.get(d.properties.name) == undefined) return palette_sequential_map[3]; 
   return colores_range2(color.get(d.properties.name),0,50)
 })
 

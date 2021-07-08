@@ -81,9 +81,10 @@
 
       <script>
         var selected = [];
-        var palette_sequential_map = ["#edf8b1", "#7fcdbb", "#2c7fb8"];
+        var palette_sequential_map =['#bdd7e7','#bdd7e7','#6baed6','#2171b5'].reverse()//["#312ab8","#6e56ca","#9c83dc","#c5b2ee"]//["#066db8","#4c87cd","#74a1e2","#99bdf8"]//["#edf8b1", "#7fcdbb", "#2c7fb8"];
         var palette_divergent_map = ["#e7298a", "#66a61e", "#e6ab02"];
-
+var background="#001146"
+var stroke_color="#87CEEB"
         const container_width = d3.select(".container-fluid").node().getBoundingClientRect().width * 0.97;
         const container_heigth = window.innerHeight;
         d3.selection.prototype.moveToFront = function () {
