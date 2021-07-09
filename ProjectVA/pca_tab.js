@@ -68,13 +68,13 @@ function(data) {
     .domain([-4, 7])
     .range([ 0, width2 ]);
   svg.append("g")
-    .attr("transform", "translate(0," + height2*1.3 + ")")
+    .attr("transform", "translate(0," + height2*1.2 + ")")
     .call(d3.axisBottom(x));
 
   // Add Y axis
   var y = d3.scaleLinear()
     .domain([-3, 5])
-    .range([ height2*1.3, 0]);
+    .range([ height2*1.2, 0]);
   svg.append("g")
     .call(d3.axisLeft(y));
 
@@ -89,7 +89,7 @@ function(data) {
       .attr("cy", function (d) { return y(d.pca_2); } )
       .attr("r", 8)
       .style("fill", function (d) { return colores_range(d.OverallScore,0,100) } )
-      .style("opacity", 0.5);
+      .style("opacity", 0.9);
       
       svg.selectAll("circle").transition().duration(5000).attr("r",2);
 
