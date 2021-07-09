@@ -182,7 +182,8 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   })
   .attr("Ustatus",function(d){
     return map_singleX(d.Status)
-  })
+  }).style("stroke",stroke_color)
+  .style("stroke-width","1px")
   ;
 
 
@@ -772,7 +773,8 @@ g.selectAll(".star")
 })
 .attr("Ustatus",function(d){
   return map_singleX(d.Status)
-});
+}).style("stroke",stroke_color)
+.style("stroke-width","1px");
 
 for(var i=0; i<selected.length ; i++){
   d3.select("circle[id='"+selected[i].Institution+"']").style("fill","red")

@@ -360,7 +360,18 @@ function onchange() {
         .style("fill",function(d){return myColorCircle(d.OverallScore) })
         .attr("transform", function(d) {return "translate(" + projection_map_pca([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
         .attr("id",function(d){return d.Institution})
-        .attr("co",function(d){return myColorCircle(d.OverallScore)} );
+        .attr("co",function(d){return myColorCircle(d.OverallScore)} ).style("stroke",stroke_color)
+        .style("stroke-width","1px");
+
+        circle.attr("r",5) 
+        .on("mouseover", handleMouseOver)
+        .on("mouseout", handleMouseOut)
+        .style("fill",function(d){return myColorCircle(d.OverallScore) })
+        .attr("transform", function(d) {return "translate(" + projection_map_pca([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
+        .attr("id",function(d){return d.Institution})
+        .attr("co",function(d){return myColorCircle(d.OverallScore)} ).style("stroke",stroke_color)
+        .style("stroke-width","1px");
+
         
 
      
@@ -449,7 +460,9 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   .attr("transform", function(d) {return "translate(" + projection_map_pca([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
   .attr("id",function(d){return d.Institution})
   .attr("id", function(d) { return d.Institution ;})
-  .attr("co",function(d){return myColorCircle(d.OverallScore) });
+  .attr("co",function(d){return myColorCircle(d.OverallScore) })
+  .style("stroke",stroke_color)
+  .style("stroke-width","1px");
 
   });
 
