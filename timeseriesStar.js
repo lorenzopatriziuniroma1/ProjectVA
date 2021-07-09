@@ -666,7 +666,7 @@ if(names.length>1){
 
 let Index=3;
 
-svgT.append("path").attr("transform", "translate(" +40 + "," + margin.top + ")").datum(dataline).attr("fill", "none")
+svgT.append("path").attr("transform", "translate(" +40 + "," + margin.top/2 + ")").datum(dataline).attr("fill", "none")
 .attr("stroke", "#686868") .style("stroke-dasharray", ("10, 5"))
 .attr("stroke-width", 5).attr("class","line").attr("d",line)
 .on("mouseover",function(d,h){
@@ -674,7 +674,7 @@ svgT.append("path").attr("transform", "translate(" +40 + "," + margin.top + ")")
   d3.select(this).attr("stroke", "yellow");
 
   var m= 0;
-var redTxt=svgT.append("text").attr("transform", "translate(40," + margin.top + ")").attr("id","overline").attr("x", width_data*0.3) 
+var redTxt=svgT.append("text").attr("transform", "translate(40," + margin.top/2 + ")").attr("id","overline").attr("x", width_data*0.3) 
 .attr("y",function(){
   
   YYY.forEach(t=>{
@@ -690,7 +690,7 @@ return  "GENERAL Overall mean: "+parseFloat(m/4).toFixed(2);  // Value of the te
 return this.getBBox().width;
 })
 
-svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top + ")").attr("id","overSline").attr("x", width_data*0.3) 
+svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top/2 + ")").attr("id","overSline").attr("x", width_data*0.3) 
 .attr("y", y(m/4)+20)
 .attr("width",redTxt.attr("cc"))
 .attr("height", 20)
@@ -705,7 +705,7 @@ svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top + ")")
 
 svgT.append("g").selectAll("circle").data(YYY)
 .enter()
-  .append("circle").attr("transform", "translate(" +40 + "," + margin.top + ")").attr("id","AVGt")
+  .append("circle").attr("transform", "translate(" +40 + "," + margin.top/2 + ")").attr("id","AVGt")
 .attr("cx",function(d,i){
       var p;
       
@@ -739,7 +739,7 @@ else if (d3.select(this).attr("cx")==x(new Date(2020, 1, 1))){
   Index=3
 }
 
-var ret=svgT.append("text").attr("transform", "translate(" + 0 + "," + margin.top + ")").attr("id","overC").attr("x",function(d){return x(xCoords[Index])+12}).attr("y",function(d){return y(i)+25})
+var ret=svgT.append("text").attr("transform", "translate(" + 0 + "," + margin.top/2 + ")").attr("id","overC").attr("x",function(d){return x(xCoords[Index])+12}).attr("y",function(d){return y(i)+25})
 .attr("cc",
 function(){
   console.log(this);
@@ -753,7 +753,7 @@ function(){
   return this.getBBox().width+5;
  });
 
- svgT.append("rect").attr("transform", "translate(" +0 + "," + margin.top + ")").attr("id","overSC").attr("x", function(d){return x(xCoords[Index])+10}) 
+ svgT.append("rect").attr("transform", "translate(" +0 + "," + margin.top/2 + ")").attr("id","overSC").attr("x", function(d){return x(xCoords[Index])+10}) 
  .attr("y", function(d){return y(i)+10})
  .attr("width",ret.attr("cc"))
  .attr("height", 22)
@@ -816,7 +816,7 @@ function(){
 //     .attr("x", 30)
 //     .text("Rating");
 
-
+  clicked_label=[]
   starPlot();
 /*
 #
