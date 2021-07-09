@@ -46,7 +46,7 @@ var g = svg1.append("g");
 
 
 var color_circle = d3.scaleOrdinal()
-    .range(sequential_color_divergent_from_blue);
+    .range(sequential_color_divergent_from_blue2);
 
 
 const projection = d3.geoMercator()
@@ -131,8 +131,8 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
     data = csv;
     
 
-    myColorCircle1 = d3.scaleLinear().domain([0,d3.max(csv, function(d) { return d.OverallScore; })-10])
-  .range(sequential_color_divergent_from_blue)
+    myColorCircle1 = d3.scaleLinear().domain([0,d3.max(csv, function(d) { return d.OverallScore; })])
+  .range(sequential_color_divergent_from_blue2)
 
   console.log(d3.max(csv, function(d) { return d.OverallScore; }))
     var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
@@ -691,7 +691,7 @@ function  updateLittleMap(year){
 
     
     myColorCircle1 = d3.scaleLinear().domain([0,d3.max(data, function(d) { return d.OverallScore; })-10])
-  .range(sequential_color_divergent_from_blue)
+  .range(sequential_color_divergent_from_blue2)
 
     var transfomr=svg1.select(".star").attr("transform").split("scale")[1]
 

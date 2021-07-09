@@ -539,7 +539,7 @@ for(let n=0;n< names.length;n++){
 
   let Index=3;
 
-  svgT.append("path").attr("transform", "translate(" +40 + "," + margin.top + ")").datum(dataDone).attr("fill", "none")
+  svgT.append("path").attr("transform", "translate(" +40 + "," + margin.top/2  + ")").datum(dataDone).attr("fill", "none")
   .attr("stroke", colors[position_wrt_selected])
   .attr("stroke-width", 5).attr("class","line").attr("d",line)
   .on("mouseover",function(d,h){
@@ -547,7 +547,7 @@ for(let n=0;n< names.length;n++){
     d3.select(this).attr("stroke", "yellow");
 
 
-  var redTxt=svgT.append("text").attr("transform", "translate(40," + margin.top + ")").attr("id","overline").attr("x", width_data*0.3) 
+  var redTxt=svgT.append("text").attr("transform", "translate(40," + margin.top/2+ ")").attr("id","overline").attr("x", width_data*0.3) 
 .attr("y",y(d_mean[names[n]])+30)
 .text(function(d) {
   return format_etichetta(names[n]) +" - Overall mean: "+parseFloat(d_mean[names[n]]).toFixed(2);  // Value of the text
@@ -557,7 +557,7 @@ for(let n=0;n< names.length;n++){
  return this.getBBox().width;
 })
 
-svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top + ")").attr("id","overSline").attr("x", width_data*0.3) 
+svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top/2 + ")").attr("id","overSline").attr("x", width_data*0.3) 
 .attr("y", y(d_mean[names[n]])+10)
 .attr("width",redTxt.attr("cc"))
 .attr("height", 22.5)
@@ -571,7 +571,7 @@ svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top + ")")
 
 
   svgT.append("g").selectAll("circle").data(yCoords).enter()
-    .append("circle").attr("transform", "translate(" +40 + "," + margin.top + ")").attr("id",""+names[n])
+    .append("circle").attr("transform", "translate(" +40 + "," + margin.top/2 + ")").attr("id",""+names[n])
 	.attr("cx",function(d,i){
         var p;
         

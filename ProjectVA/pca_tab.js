@@ -272,7 +272,7 @@ function onchange() {
     d3.csv("ProjectVA/pca_csv/pca_year_v2_"+selectValue+".csv").then (function(data) {
 
       myColorCircle = d3.scaleLinear().domain([0,d3.max(data, function(d) { return d.OverallScore; })-20])
-      .range(sequential_color_divergent_from_blue)
+      .range(sequential_color_divergent_from_blue2)
     
       var circles=svg.selectAll("circle").data(data)
       circles.exit().remove()
@@ -421,7 +421,7 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
  var data=csv
 
   myColorCircle = d3.scaleLinear().domain([0,d3.max(csv, function(d) { return d.OverallScore; })])
-  .range(sequential_color_divergent_from_blue)
+  .range(sequential_color_divergent_from_blue2)
 
     var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
     color_multidim=color
