@@ -1,3 +1,4 @@
+var sliderRange;
 var width =container_width
 var height = container_heigth*0.4;
 
@@ -144,8 +145,12 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
     .attr("d", path)
     .attr("class","country")
     .style("fill",function(d){
-  if(color.get(d.properties.name) == undefined) return palette_sequential_map[3]; 
-      return colores_range2(color.get(d.properties.name),0,50)
+      var cou_name=d.properties.name;
+    if(cou_name=="Korea"){ //COUNTRIES WITH DIFFERENT NAMES HERE 
+      cou_name="South Korea"
+    }
+  if(color.get(cou_name) == undefined) return palette_sequential_map[3]; 
+      return colores_range2(color.get(cou_name),0,50)
     })
     .style("stroke",stroke_color)
     .style("stroke-width",".3px")
@@ -307,7 +312,7 @@ create_legend(svg1)
 
   // Range
  
-  var sliderRange = d3
+   sliderRange = d3
   .sliderBottom()
   .min(0)
   .max(100)
@@ -709,7 +714,8 @@ function  updateLittleMap(year){
   .range(sequential_color_divergent_from_blue2)
 
     var transfomr=svg1.select(".star").attr("transform").split("scale")[1]
-
+    sliderRange.value([0, 100])
+    changeMinMax(0,100);
 
 var circle = g.selectAll(".cityCircle").data([])
 
@@ -800,10 +806,13 @@ var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
 
 g.selectAll('.country')
 .style("fill",function(d){
-if(color.get(d.properties.name) == undefined) return palette_sequential_map[3]; 
-  return colores_range2(color.get(d.properties.name),0,50)
+  var cou_name=d.properties.name;
+if(cou_name=="Korea"){ //COUNTRIES WITH DIFFERENT NAMES HERE 
+  cou_name="South Korea"
+}
+if(color.get(cou_name) == undefined) return palette_sequential_map[3]; 
+  return colores_range2(color.get(cou_name),0,50)
 })
-
 createBarGraph(data)
 
 })
@@ -840,4 +849,5 @@ dropdownButton2 // Add a button
     d3.select("#data1").append("div").attr("id","errorData");
     document.getElementById("errorData").innerHTML="<h3 style='color:blue'> "+missing_+"</h3>";
    }
+  
   })
