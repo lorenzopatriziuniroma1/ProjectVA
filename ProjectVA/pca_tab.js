@@ -5,7 +5,7 @@ function colores_range(n,start,end) {
   if(n<start+step){i=0}
   if(start+step<=n && n<start+2*step){i=1}
   if(start+2*step<=n){i=2}
-  return colores_g[i];
+  return sequential_color_divergent_from_blue[i];
 }
 
 
@@ -53,7 +53,7 @@ var svg = d3.select("#pca_scatter")
   var svg2 = d3.select("#pca_scatter")
           .append("svg")
             .attr("width", width2*1.27 + margin.left + margin.right)
-            .attr("height", height2*1.2 + margin.top + margin.bottom)
+            .attr("height", height2*1.2 + margin.top + margin.bottom+25)
           .append("g")
             .attr("transform",
                   "translate(" + 0+ "," + margin.top + ")");

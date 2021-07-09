@@ -32,7 +32,7 @@ var myColorCircle1 = d3.scaleLinear().domain([1,10])
 
 var symbolGenerator = d3.symbol()
   .type(d3.symbolStar)
-  .size(80);
+  .size(140);
 
 var pathData = symbolGenerator();
 var svg1 = d3.selectAll("#map")
@@ -131,7 +131,7 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
     data = csv;
     
 
-    myColorCircle1 = d3.scaleLinear().domain([0,d3.max(csv, function(d) { return d.OverallScore; })])
+    myColorCircle1 = d3.scaleLinear().domain([0,d3.max(csv, function(d) { return d.OverallScore; })-10])
   .range(sequential_color_divergent_from_blue)
 
   console.log(d3.max(csv, function(d) { return d.OverallScore; }))
@@ -586,7 +586,7 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
             }
             
           })
-          .style("fill",palette_divergent_map[2])
+          .style("fill",function(d){return myColorCircle1(d.OverallScore) })
           d3.selectAll(".star").filter(function(){
            
             switch(h.class){
@@ -611,7 +611,7 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
             }
             
           })
-          .style("fill","pink")
+          .style("fill",function(d){return myColorCircle1(d.OverallScore) })
       });
 
   slice.selectAll("rect")
@@ -690,7 +690,7 @@ function  updateLittleMap(year){
 
 
     
-    myColorCircle1 = d3.scaleLinear().domain([0,d3.max(data, function(d) { return d.OverallScore; })])
+    myColorCircle1 = d3.scaleLinear().domain([0,d3.max(data, function(d) { return d.OverallScore; })-10])
   .range(sequential_color_divergent_from_blue)
 
     var transfomr=svg1.select(".star").attr("transform").split("scale")[1]
