@@ -182,7 +182,8 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   })
   .attr("Ustatus",function(d){
     return map_singleX(d.Status)
-  });
+  })
+  ;
 
 
   g.selectAll("circle")
@@ -214,7 +215,8 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   })
   .attr("Ustatus",function(d){
     return map_singleX(d.Status)
-  });
+  }).style("stroke",stroke_color)
+  .style("stroke-width","1px");
 
 
   d3.selectAll(".star").moveToFront()
@@ -730,7 +732,8 @@ g.selectAll(".cityCircle")
 })
 .attr("Ustatus",function(d){
   return map_singleX(d.Status)
-});
+}).style("stroke",stroke_color)
+.style("stroke-width","1px");
 
 //circle.enter().attr("r",0).transition().duration(2000).attr("r",5)
 
