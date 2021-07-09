@@ -110,11 +110,11 @@ function(data) {
   function updateChart(event) {
 
     var end = new Date().getTime();
-   // if(end-start < 150 && event.type=="brush") return;
+    if(end-start < 150 && event.type=="brush") return;
     start=new Date().getTime();
     extent = event.selection
 
-    myCircle.attr("selected", 
+    myCircle.classed("selected", 
     function(d){
       var ret=isBrushed(extent, x(d.pca_1), y(d.pca_2)); 
       const index = pca_selected.indexOf(d);
@@ -133,7 +133,7 @@ function(data) {
       return ret; } );
 
     if (pca_selected.length==0){
-      svg2.selectAll(".myPath").on("mouseover",handleMouseOn).transition().duration(2000).style("opacity", 0.5).style("stroke", "#69b3a2");
+      svg2.selectAll(".myPath").on("mouseover",handleMouseOn).transition().duration(2000).style("opacity", 0.5).style("stroke",function(d){return  colores_range(d.OverallScore,0,100) });
       svg_map_pca.selectAll("circle").attr("r",5).transition().duration(2000).style("opacity", 1).style("stroke", "none")
     }else{
       // svg2.selectAll(".myPath").transition().duration(2000).style("opacity", 0.05).style("stroke", "#69b3a2")
@@ -154,7 +154,7 @@ function(data) {
          .style("stroke", 
           function(d){
             if(color_multidim.get(d.Country) == undefined) return palette_sequential_map[3]; 
-                return colores_range2(color_multidim.get(d.Country),0,50)
+                return  colores_range(d.OverallScore,0,100) 
               }
           )
           .style("stroke-width","1.5px")
@@ -215,7 +215,7 @@ svg2
  .attr("class","myPath")
  .attr("d",  path)
  .style("fill", "none")
- .style("stroke", "#69b3a2")
+ .style("stroke", function (d) { return colores_range(d.OverallScore,0,100) })
  .style("opacity", 0.5)
  .on("mouseover", handleMouseOn)
 .on("mouseout", handleMouseOut2);
@@ -271,7 +271,7 @@ function onchange() {
 
     d3.csv("ProjectVA/pca_csv/pca_year_v2_"+selectValue+".csv").then (function(data) {
 
-      myColorCircle = d3.scaleLinear().domain([0,d3.max(data, function(d) { return d.OverallScore; })])
+      myColorCircle = d3.scaleLinear().domain([0,d3.max(data, function(d) { return d.OverallScore; })-20])
       .range(sequential_color_divergent_from_blue)
     
       var circles=svg.selectAll("circle").data(data)
@@ -325,7 +325,7 @@ function onchange() {
      .attr("class","myPath")
      .attr("d",  path)
      .style("fill", "none")
-     .style("stroke", "#69b3a2")
+     .style("stroke",function (d) { return colores_range(d.OverallScore,0,100) })
      .style("opacity", 0.5)
      
      appending
