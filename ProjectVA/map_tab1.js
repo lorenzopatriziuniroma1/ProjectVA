@@ -185,6 +185,8 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   .attr("id",function(d){return d.Institution})
   .attr("class","University star")
   .attr("co",function(d){return myColorCircle1(d.OverallScore) })
+  .attr("rand",function(d){return Math.random()*15/100*(Math.random() < 0.5 ? -1 : 1)})
+  .attr("rand2",function(d){return Math.random()*20/100*(Math.random() < 0.5 ? -1 : 1)})
   .attr("Usize",function(d){
     return map_singleX(d.Size)
   })
@@ -221,6 +223,8 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   .attr("id",function(d){return d.Institution})
   .attr("class","University cityCircle")
   .attr("co",function(d){return myColorCircle1(d.OverallScore) })
+  .attr("rand",function(d){return Math.random()*15/100*(Math.random() < 0.5 ? -1 : 1)})
+  .attr("rand2",function(d){return Math.random()*20/100*(Math.random() < 0.5 ? -1 : 1)})
   .attr("Usize",function(d){
     return map_singleX(d.Size)
   })
@@ -267,7 +271,6 @@ var old;
 var zoom = d3.zoom()
 .scaleExtent([1, 85])
 .on('zoom', function(event) {
-  //console.log(d3.event.transform)
   if(event.transform.x*event.transform.k>width*0.8){
     event.transform.x=old.x;
   }
@@ -286,70 +289,29 @@ var zoom = d3.zoom()
 
 var scale=1/(event.transform.k)
 
-
-
-if(scale<0.05 && scale>1/85) {
-  console.log("SCALE1",scale1on85)
-  scale1on85=false;
+if(scale<0.05){ 
   scale=0.05
-  g.selectAll(".University")
-   //.attr("d", path.projection(projection))
-   .attr("transform", function(d) {
-    return "translate(" + projection([parseFloat(d["Longitude"]),parseFloat(d["Latitude"])]) + ")"+" scale("+scale+")";
-   });
 }
-else if(scale<=1/85&&!scale1on85){
-  
-  scale1on85=true;
-  
-  console.log("SCALE2",scale1on85);
-  scale=0.020
-  g.selectAll(".University")
-   //.attr("d", path.projection(projection))
-   .attr("transform", function(d) {
-     if(event.transform.k!=old2){
-       old2=event.transform.k;
-       rand1= Math.random()*15/100*(Math.random() < 0.5 ? -1 : 1)
-       rand2= Math.random()*20/100*(Math.random() < 0.5 ? -1 : 1)
-     }
-     else{
-      rand1=0;
-      rand2=0
-     }
-    
-    return "translate(" + projection([parseFloat(d["Longitude"])+rand1,parseFloat(d["Latitude"])+rand2]) + ")"+" scale("+scale+")";
-   });
-}
+var uni=g.selectAll(".University")
+   uni.attr("transform", function(d,i) {
+    var rand=0,
+    rand2=0;
 
-else{
-if(scale1on85){
-    scale=0.020
-    console.log("SCALE3",scale1on85);
-    g.selectAll(".University")
-   //.attr("d", path.projection(projection))
-       .attr("transform", function(d) {
-        return "translate(" + projection([parseFloat(d["Longitude"])+rand1,parseFloat(d["Latitude"])+rand2]) + ")"+" scale("+scale+")";
-      });
-    }
-    else{
-      console.log("SCALE4",scale1on85);
-      g.selectAll(".University")
-      //.attr("d", path.projection(projection))
-          .attr("transform", function(d) {
-           return "translate(" + projection([parseFloat(d["Longitude"]),parseFloat(d["Latitude"])]) + ")"+" scale("+scale+")"});
-    }
-}
-  // g.selectAll("circle").style("opacity",function(d){ console.log(d["CurrentRank"]>3); return (d["CurrentRank"]<3) ?  10 :  0;})
+    if(scale<=0.05){ 
 
-//g.selectAll("path")  
-  // .attr("d", path.projection(projection)); 
+      rand=parseFloat(uni._groups[0][i].getAttribute("rand"))
+      rand2=parseFloat(uni._groups[0][i].getAttribute("rand2"))
+ 
+    }
+    return "translate(" + projection([parseFloat(d["Longitude"])+rand,parseFloat(d["Latitude"])+rand2]) + ")"+" scale("+scale+")";
+   });
+
   div.transition()		
   .duration(500)		
   .style("opacity", 10);
   div.transition()		
   .duration(500)		
   .style("opacity", 0);
-  
 });
 
 svg1.call(zoom);
@@ -801,6 +763,8 @@ g.selectAll(".cityCircle")
 .attr("id",function(d){return d.Institution})
 .attr("class","University cityCircle")
 .attr("co",function(d){return myColorCircle1(d.OverallScore) })
+.attr("rand",function(d){return Math.random()*15/100*(Math.random() < 0.5 ? -1 : 1)})
+.attr("rand2",function(d){return Math.random()*20/100*(Math.random() < 0.5 ? -1 : 1)})
 .attr("Usize",function(d){
   return map_singleX(d.Size)
 })
@@ -841,6 +805,8 @@ g.selectAll(".star")
 .attr("id",function(d){return d.Institution})
 .attr("class","University star")
 .attr("co",function(d){return myColorCircle1(d.OverallScore) })
+.attr("rand",function(d){return Math.random()*15/100*(Math.random() < 0.5 ? -1 : 1)})
+.attr("rand2",function(d){return Math.random()*20/100*(Math.random() < 0.5 ? -1 : 1)})
 .attr("Usize",function(d){
   return map_singleX(d.Size)
 })
