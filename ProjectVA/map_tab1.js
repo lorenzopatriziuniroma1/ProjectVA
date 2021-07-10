@@ -1,3 +1,4 @@
+var sliderRange;
 var width =container_width
 var height = container_heigth*0.4;
 
@@ -118,6 +119,10 @@ function handleClick(d, i) { // Add interactivity
       d3.select("#perc_txt").remove()
       d3.select("#button_newoverall").remove();
       d3.select("#selectmapyea2").style("visibility",function(){return "visible"});
+      d3.select("#title_timestarplot").style("visibility","hidden");
+      d3.select("#title_tool_overall").style("visibility","hidden");
+      
+      
     }
     else{
       d3.select("#selectmapyea2").style("visibility",function(){return "hidden"});
@@ -151,8 +156,12 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
     .attr("d", path)
     .attr("class","country")
     .style("fill",function(d){
-  if(color.get(d.properties.name) == undefined) return palette_sequential_map[3]; 
-      return colores_range2(color.get(d.properties.name),0,50)
+      var cou_name=d.properties.name;
+    if(cou_name=="Korea"){ //COUNTRIES WITH DIFFERENT NAMES HERE 
+      cou_name="South Korea"
+    }
+  if(color.get(cou_name) == undefined) return palette_sequential_map[3]; 
+      return colores_range2(color.get(cou_name),0,50)
     })
     .style("stroke",stroke_color)
     .style("stroke-width",".3px")
@@ -314,7 +323,7 @@ create_legend(svg1)
 
   // Range
  
-  var sliderRange = d3
+   sliderRange = d3
   .sliderBottom()
   .min(0)
   .max(100)
@@ -348,7 +357,7 @@ d3.select('#value-range').text(
 
 
 function createBarGraph(year_datax){
-  console.log(year_datax)
+  console.log("Y",year_datax)
   document.getElementById("data3").innerHTML=""
   //console.log(year_data)
   function map_usage(year_datay){
@@ -459,10 +468,10 @@ var color = d3.scaleOrdinal()
 
 
 var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
-    .attr("width", widthBAR + marginBAR.left*120 + marginBAR.right)
+    .attr("width", widthBAR + marginBAR.left*15 + marginBAR.right)
     .attr("height", heightBAR + marginBAR.top + marginBAR.bottom)
   .append("g")
-    .attr("transform", "translate(" + marginBAR.left + "," + 0 + ")");
+    .attr("transform", "translate(" + marginBAR.left + "," + 20 + ")");
 
   var Call=map_usage(year_datax);
   var d_year_numeric=Call[1];var d_year = Call[0];
@@ -472,7 +481,7 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
 
   x0.domain(categoriesNames);
   x1.domain(rateNames).range([0, x0.bandwidth()]);
-  y.domain([0, Object.keys(d_year).length]);
+  y.domain([0, Object.keys(d_year).length+25]);
 
   svgB.append("g")
       .attr("class", "x axis")
@@ -490,6 +499,18 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
       .style("text-anchor", "end")
       .style('font-weight','bold')
       .text("Value");
+
+      svgB.append('line')
+      .style("stroke", "#605D63")
+      .style("stroke-dasharray", ("10, 5"))
+      
+      .attr("x1", 0)
+      .attr("y1", y(Object.keys(d_year).length))
+      .attr("x2",  widthBAR-10 )
+      .attr("y2", y(Object.keys(d_year).length));  
+      
+      svgB.append('text').style("stroke","black")
+      .attr("transform", "translate("+widthBAR/2+","+(y(Object.keys(d_year).length)-15)+")").text("# Universities in ranking = "+Object.keys(d_year).length)
 
   svgB.select('.y').transition().duration(500).delay(1300).style('opacity','1');
   var supp_data=generate_J(d_year,d_year_numeric);
@@ -517,8 +538,10 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
         
           yText=d3.select(this).attr("y")
           Idx=Object.keys(d_year_numeric).indexOf(h.class);
-          svgB.append("text").style("fill",color(h.rate)).attr("transform", "translate(" + 1.17*(x0.bandwidth()*Idx )+ ","+ -5 + ")").attr("id","robaText").attr("x",x1(h.rate)+Idx*2).attr("y",yText).text(h.value);
-   
+          svgB.append("text").style("fill",color(h.rate))//.attr("transform", "translate(" + 1.18*(x0.bandwidth()*Idx )+ ","+ -5 + ")").attr("id","robaText").attr("x",x1(h.rate)+Idx*2).attr("y",yText).text(h.value);
+          .attr("id","robaText").attr("transform",function(){ return  "translate(" + x0(h.class) + ",-5)" }).attr("x",function(){
+           return  x1(h.rate) + 4;
+          }).attr("y",d3.select(this).attr("y")).text(h.value);
           d3.selectAll(".cityCircle").filter(function(){
             //console.log("UN FILTER",d3.select(this))
             switch(h.class){
@@ -645,7 +668,7 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
      
   legend.append("rect")
       .attr("x", widthBAR - 18)
-      .attr("y", 45)
+      .attr("y", 60)
       .attr("width", 22)
       .attr("height", 22)
       .style("fill", function(d) { return color(d); });
@@ -654,7 +677,7 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
   legend.transition().duration(100).style("opacity","1");
   
   function tabulate(data, columns) {
-    var table = svgB.append('foreignObject').attr("width",500).attr("height",500).attr("id","legendTable").attr("transform", function(d,i) { return "translate("+widthBAR+"," +15 + ")"; }).append("xhtml:table")
+    var table = svgB.append('foreignObject').attr("width",500).attr("height",500).attr("id","legendTable").attr("transform", function(d,i) { return "translate("+widthBAR+"," +30 + ")"; }).append("xhtml:table")
     var thead = table.append('thead')
     var	tbody = table.append('tbody');
     var jj=0;
@@ -704,7 +727,8 @@ function  updateLittleMap(year){
   .range(sequential_color_divergent_from_blue2)
 
     var transfomr=svg1.select(".star").attr("transform").split("scale")[1]
-
+    sliderRange.value([0, 100])
+    changeMinMax(0,100);
 
 var circle = g.selectAll(".cityCircle").data([])
 
@@ -795,10 +819,13 @@ var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
 
 g.selectAll('.country')
 .style("fill",function(d){
-if(color.get(d.properties.name) == undefined) return palette_sequential_map[3]; 
-  return colores_range2(color.get(d.properties.name),0,50)
+  var cou_name=d.properties.name;
+if(cou_name=="Korea"){ //COUNTRIES WITH DIFFERENT NAMES HERE 
+  cou_name="South Korea"
+}
+if(color.get(cou_name) == undefined) return palette_sequential_map[3]; 
+  return colores_range2(color.get(cou_name),0,50)
 })
-
 createBarGraph(data)
 
 })
@@ -835,4 +862,5 @@ dropdownButton2 // Add a button
     d3.select("#data1").append("div").attr("id","errorData");
     document.getElementById("errorData").innerHTML="<h3 style='color:blue'> "+missing_+"</h3>";
    }
+  
   })
