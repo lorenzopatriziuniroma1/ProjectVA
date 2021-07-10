@@ -1510,7 +1510,7 @@ svgLeggends.selectAll("mylabelsS")
           "#8d80c2"]
       
       var svgB2 = d3.select('#data5').append("svg").attr("id","BARsvg2")
-          .attr("width", widthBAR+300 + marginBAR.left*5+ marginBAR.right)
+          .attr("width", width_data*0.6)
           .attr("height", heightBAR+100 + marginBAR.top + marginBAR.bottom)
         .append("g")
           .attr("transform", "translate(" + marginBAR.left + "," + (marginBAR.top+100) + ")");
