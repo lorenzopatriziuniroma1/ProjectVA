@@ -1,7 +1,7 @@
 //need thos variables in both graphs
 // ArrOfMEANS = array with all the (time) means of scores in decreasing order
 // d_means = dictionary with keys = name of university, value = mean
-let ArrOfMEANS;let d_mean;  var arr_sorted=[];
+let ArrOfMEANS;let d_mean;  var arr_sorted=[]; var threhlen=3;
 var d_2016,d_2018,d_2019,d_2020;
 var what_miss={};let data_all_time;
 let clicked_label=[], newRemove;
@@ -136,6 +136,8 @@ function format_number(s){
 }
 
 function format_etichetta(s){
+ 
+ 
   var r=s.toUpperCase().split(" ");
   var c=""
   if(s.includes("(")){
@@ -175,7 +177,7 @@ function format_etichetta(s){
       x+=r[i];
     }
     x+=" "
-    if(x.split(" ").length>3)break;
+    if(x.split(" ").length>threhlen)break;
   }
   
   if(c==""){
@@ -1430,6 +1432,7 @@ svgLeggends.selectAll("mylabelsS")
 
     //console.log(names,newRemove, selected_year_data);
     function bargraph(overalls){
+      threhlen=2;
       d3.select("#BARsvg2").remove()
       function map_usage_unidata(){
         var r = [];
@@ -1688,7 +1691,7 @@ svgLeggends.selectAll("mylabelsS")
           else return supplement_colors[i-unis.length]
     })
 
-
+    threhlen=3;
     svgB2.selectAll("labelSLideBar2")
   .data(supp_data)
   .enter()
