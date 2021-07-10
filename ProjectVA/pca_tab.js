@@ -467,27 +467,23 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   .style("stroke",stroke_color)
   .style("stroke-width","1px");
 
+
+
+  
   });
 
+  var bounds = path_map_pca.bounds( uState)
+
+  var width=bounds[1][0]-bounds[0][0]
+  var height=bounds[1][1]-bounds[0][1]
 
 
 
   var old;
 var zoom = d3.zoom()
 .scaleExtent([1, 85])
+.translateExtent([[-width+width/2, -height+height/2], [width+width/2, height+height/2]])
 .on('zoom', function(event) {
-  if(event.transform.x*event.transform.k>(width2*2+width2*0.2)*0.8){
-    event.transform.x=old.x;
-  }
-  if(event.transform.x/event.transform.k<-(width2*2+width2*0.2)*0.8){
-    event.transform.x=old.x;
-  }
-  if(event.transform.y*event.transform.k>(height2*2+height2*0.2)*0.8){
-    event.transform.y=old.y;
-  }
-  if(event.transform.y/event.transform.k<-(height2*2+height2*0.2)*0.8){
-    event.transform.y=old.y;
-  }
     old=event.transform
    g_map_pca.attr("transform",event.transform);
 

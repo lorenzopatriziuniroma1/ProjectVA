@@ -252,7 +252,6 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   var width=bounds[1][0]-bounds[0][0]
   var height=bounds[1][1]-bounds[0][1]
 
-  console.log(bounds)
 
 
 

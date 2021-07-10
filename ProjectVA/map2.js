@@ -155,40 +155,42 @@ d3.json("GeoMap/custom.geo.json").then(function (uState) {
         .text(function (d) { return d; })
         .style("font-size", "13px")
         .style("fill", "black");
+
+
+
+
+
+        var bounds = path_map_pca.bounds( uState)
+
+        var width=bounds[1][0]-bounds[0][0]
+        var height=bounds[1][1]-bounds[0][1]
+
+        
+var zoom = d3.zoom()
+.scaleExtent([1, 85])
+.translateExtent([[-width+width/2, -height+height/2], [width+width/2, height+height/2]])
+.on('zoom', function (event) {
+  //console.log(d3.event.transform)
+
+  old = event.transform
+  g2.attr("transform", event.transform);
+
+  div.transition()
+    .duration(500)
+    .style("opacity", 10);
+  div.transition()
+    .duration(500)
+    .style("opacity", 0);
+});
+
+
+svg3.call(zoom);
+
     }
   )
 });
 
 
-var zoom = d3.zoom()
-  .scaleExtent([1, 85])
-  .on('zoom', function (event) {
-    //console.log(d3.event.transform)
-    if (event.transform.x * event.transform.k > width3 * 0.8) {
-      event.transform.x = old.x;
-    }
-    if (event.transform.x / event.transform.k < -width3 * 0.8) {
-      event.transform.x = old.x;
-    }
-    if (event.transform.y * event.transform.k > height3 * 0.8) {
-      event.transform.y = old.y;
-    }
-    if (event.transform.y / event.transform.k < -height3 * 0.8) {
-      event.transform.y = old.y;
-    }
-    old = event.transform
-    g2.attr("transform", event.transform);
-
-    div.transition()
-      .duration(500)
-      .style("opacity", 10);
-    div.transition()
-      .duration(500)
-      .style("opacity", 0);
-  });
-
-
-svg3.call(zoom);
 
 function handleMouseOver3(d, i) {  // Add interactivity
   tooltip2.html(" Country =" + i.properties.name)
