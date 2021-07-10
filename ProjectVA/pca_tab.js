@@ -45,7 +45,7 @@ var margin = {top: 10, right: 0, bottom: 120, left: 60},
 // append the svg object to the body of the page
 var svg = d3.select("#pca_scatter")
   .append("svg")
-    .attr("width",  width2 + margin.left + margin.right )
+    .attr("width",  width2*0.9 + margin.left + margin.right )
     .attr("height", height2 + margin.top + margin.bottom )
   .append("g")
     .attr("transform",

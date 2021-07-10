@@ -180,7 +180,7 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   .attr("r",5)
   .style("fill",function(d){return myColorCircle1(d.OverallScore) })
   .attr("d",pathData)
-  .attr("transform", function(d) {return "translate(" + projection([d.Longitude,d.Latitude]) + ")"+" scale(1.0)";})
+  .attr("transform", function(d) {var rand= Math.random()*300/100*(Math.random() < 0.5 ? -1 : 1); return "translate(" + projection([d.Longitude+rand,d.Latitude+rand]) + ")"+" scale(1.0)";})
   .attr("id",function(d){return d.Institution})
   .attr("class","University star")
   .attr("co",function(d){return myColorCircle1(d.OverallScore) })
@@ -471,7 +471,7 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
     .attr("width", widthBAR + marginBAR.left*15 + marginBAR.right)
     .attr("height", heightBAR + marginBAR.top + marginBAR.bottom)
   .append("g")
-    .attr("transform", "translate(" + marginBAR.left + "," + 20 + ")");
+    .attr("transform", "translate(" + marginBAR.left + "," + 20 + ") scale("+1+")");
 
   var Call=map_usage(year_datax);
   var d_year_numeric=Call[1];var d_year = Call[0];
