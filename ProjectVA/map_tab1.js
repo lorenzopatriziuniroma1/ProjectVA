@@ -1,7 +1,7 @@
 var sliderRange;var scale1on85=false;var rand1,rand2;var old2;
 var width =container_width
 var height = container_heigth*0.4;
-
+var bounds;
 var margin = {top: 100, right: 30, bottom: 80, left: 60}
 function map_singleX(attr){
   
@@ -139,14 +139,14 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(csv) {
     data = csv;
     
+
+     bounds = path.bounds( uState)
     myColorCircle1 = d3.scaleLinear().domain([0,100])
   .range(sequential_color_divergent_from_blue2)
 
   createHorizontalLegend(svg1,myColorCircle1,"legend_map1")
 
-  
 
-  console.log(d3.max(csv, function(d) { return d.OverallScore; }))
     var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
 
     g.selectAll('path')
@@ -246,44 +246,24 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   d3.selectAll(".star").moveToFront()
 
   createBarGraph(data)
-  });
+
+
+
+  var width=bounds[1][0]-bounds[0][0]
+  var height=bounds[1][1]-bounds[0][1]
+
+  console.log(bounds)
 
 
 
 
 
-})
-
-
-
-function colores_range2(n,start,end) {
-  var colores_g =palette_sequential_map;
-  var step=(end-start)/3;
-  var i=0;
-  if(n<start+step){i=2}
-  if(start+step<=n && n<start+2*step){i=1}
-  if(start+2*step<=n){i=0}
-  return colores_g[i];
-}
-
-
-var old;
-var zoom = d3.zoom()
+  var zoom = d3.zoom()
 .scaleExtent([1, 85])
+.translateExtent([[-width+width/2, -height+height/2], [width+width/2, height+height/2]])
 .on('zoom', function(event) {
-  if(event.transform.x*event.transform.k>width*0.8){
-    event.transform.x=old.x;
-  }
-  if(event.transform.x/event.transform.k<-width*0.8){
-    event.transform.x=old.x;
-  }
-  if(event.transform.y*event.transform.k>height*0.8){
-    event.transform.y=old.y;
-  }
-  if(event.transform.y/event.transform.k<-height*0.8){
-    event.transform.y=old.y;
-  }
-    old=event.transform
+
+console.log(event.transform)
    g.attr("transform",event.transform);
 
 
@@ -315,6 +295,32 @@ var uni=g.selectAll(".University")
 });
 
 svg1.call(zoom);
+
+
+  });
+
+
+
+
+
+
+})
+
+
+
+function colores_range2(n,start,end) {
+  var colores_g =palette_sequential_map;
+  var step=(end-start)/3;
+  var i=0;
+  if(n<start+step){i=2}
+  if(start+step<=n && n<start+2*step){i=1}
+  if(start+2*step<=n){i=0}
+  return colores_g[i];
+}
+
+
+var old;
+
 
 var data;
 
