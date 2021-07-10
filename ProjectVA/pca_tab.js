@@ -9,7 +9,7 @@ function colores_range(n,start,end) {
 }
 
 
-var myColorCircle = d3.scaleLinear().domain([1,10])
+var myColorCircle = d3.scaleLinear().domain([1,100])
   .range(sequential_color_divergent_from_blue)
 
 
@@ -431,8 +431,11 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(csv) {
  var data=csv
 
-  myColorCircle = d3.scaleLinear().domain([0,d3.max(csv, function(d) { return d.OverallScore; })])
+  myColorCircle = d3.scaleLinear().domain([0,100])
   .range(sequential_color_divergent_from_blue2)
+
+
+
 
     var color= d3.rollup(data, v =>{return v.length }, d => d.Country)
     color_multidim=color
@@ -514,3 +517,22 @@ svg_map_pca.call(zoom);
 
 
 create_legend(svg_map_pca)
+svg_map_pca.append("g")
+.attr("class", "legendLinear")
+.attr("id","ciao")
+.attr("transform", "translate(20,20)");
+
+var legendLinear2 = d3.legendColor()
+.shapeWidth(50)
+.orient('horizontal')
+.scale(myColorCircle);
+
+svg_map_pca.select("#ciao").call(legendLinear2);
+
+var c=d3.select("#ciao").selectAll(".cell").attr("transform", function(d,i){
+  return "translate("+(i*50+i*2)+",0)"
+})
+
+
+d3.select("#ciao").selectAll("text").attr("transform","translate(25,33)")
+console.log(c)

@@ -30,6 +30,10 @@ function map_singleX(attr){
 var myColorCircle1 = d3.scaleLinear().domain([1,10])
   .range(sequential_color_divergent_from_blue)
 
+var linear = d3.scaleLinear()
+  .domain([0,10])
+  .range(sequential_color_divergent_from_blue);
+
 var symbolGenerator = d3.symbol()
   .type(d3.symbolStar)
   .size(140);
@@ -130,9 +134,12 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   d3.csv("ProjectVA/pca_csv/pca_year_v2_2020.csv").then(function(csv) {
     data = csv;
     
-
-    myColorCircle1 = d3.scaleLinear().domain([0,d3.max(csv, function(d) { return d.OverallScore; })])
+    myColorCircle1 = d3.scaleLinear().domain([0,100])
   .range(sequential_color_divergent_from_blue2)
+
+  createHorizontalLegend(svg1,myColorCircle1,"legend_map1")
+
+  
 
   console.log(d3.max(csv, function(d) { return d.OverallScore; }))
     var color= d3.rollup(data, v =>{return v.length }, d => d.Country)

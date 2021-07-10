@@ -53,4 +53,19 @@ function create_legend(svg){
     .style("fill", palette_sequential_map[3])
     legend.append("text").attr("x", 0+20).attr("y", 10+60).text("0 Univesity").style("font-size", "15px").attr("alignment-baseline","middle")
        }
+
+
+function createHorizontalLegend(ghgh,kk,classDefined){
+  ghgh.append("g")
+  .attr("class", "legendLinear")
+  .attr("id",classDefined)
+  .attr("transform", "translate(20,20)");
+
+var legendLinear = d3.legendColor()
+  .shapeWidth(50)
+  .orient('horizontal')
+  .scale(kk);
+
+  ghgh.select("#"+classDefined).call(legendLinear);
+}
        
