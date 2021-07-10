@@ -115,6 +115,10 @@ function handleClick(d, i) { // Add interactivity
       d3.select("#perc_txt").remove()
       d3.select("#button_newoverall").remove();
       d3.select("#selectmapyea2").style("visibility",function(){return "visible"});
+      d3.select("#title_timestarplot").style("visibility","hidden");
+      d3.select("#title_tool_overall").style("visibility","hidden");
+      
+      
     }
     else{
       d3.select("#selectmapyea2").style("visibility",function(){return "hidden"});
@@ -495,7 +499,7 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
       
       .attr("x1", 0)
       .attr("y1", y(Object.keys(d_year).length))
-      .attr("x2",  widthBAR )
+      .attr("x2",  widthBAR-10 )
       .attr("y2", y(Object.keys(d_year).length));  
       
       svgB.append('text').style("stroke","black")
@@ -527,8 +531,10 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
         
           yText=d3.select(this).attr("y")
           Idx=Object.keys(d_year_numeric).indexOf(h.class);
-          svgB.append("text").style("fill",color(h.rate)).attr("transform", "translate(" + 1.17*(x0.bandwidth()*Idx )+ ","+ -5 + ")").attr("id","robaText").attr("x",x1(h.rate)+Idx*2).attr("y",yText).text(h.value);
-   
+          svgB.append("text").style("fill",color(h.rate))//.attr("transform", "translate(" + 1.18*(x0.bandwidth()*Idx )+ ","+ -5 + ")").attr("id","robaText").attr("x",x1(h.rate)+Idx*2).attr("y",yText).text(h.value);
+          .attr("id","robaText").attr("transform",function(){ return  "translate(" + x0(h.class) + ",-5)" }).attr("x",function(){
+           return  x1(h.rate) + 4;
+          }).attr("y",d3.select(this).attr("y")).text(h.value);
           d3.selectAll(".cityCircle").filter(function(){
             //console.log("UN FILTER",d3.select(this))
             switch(h.class){
@@ -655,7 +661,7 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
      
   legend.append("rect")
       .attr("x", widthBAR - 18)
-      .attr("y", 45)
+      .attr("y", 60)
       .attr("width", 22)
       .attr("height", 22)
       .style("fill", function(d) { return color(d); });
@@ -664,7 +670,7 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
   legend.transition().duration(100).style("opacity","1");
   
   function tabulate(data, columns) {
-    var table = svgB.append('foreignObject').attr("width",500).attr("height",500).attr("id","legendTable").attr("transform", function(d,i) { return "translate("+widthBAR+"," +15 + ")"; }).append("xhtml:table")
+    var table = svgB.append('foreignObject').attr("width",500).attr("height",500).attr("id","legendTable").attr("transform", function(d,i) { return "translate("+widthBAR+"," +30 + ")"; }).append("xhtml:table")
     var thead = table.append('thead')
     var	tbody = table.append('tbody');
     var jj=0;

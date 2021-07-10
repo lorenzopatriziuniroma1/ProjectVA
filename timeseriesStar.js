@@ -6,7 +6,7 @@ var d_2016,d_2018,d_2019,d_2020;
 var what_miss={};let data_all_time;
 let clicked_label=[], newRemove;
 var sliders_val,sliders_list;let xCoords=[];
-var c_initial=true;
+var c_initial;
 const arr_scores=["Academic","Employer","FacultyStudent","CitationsPerFaculty","InternationalFaculty","InternationalStudent"]
 const initial_per =[40,10,20,20,5,5];
 var width_data=container_width;
@@ -144,8 +144,9 @@ function format_etichetta(s){
       s.lastIndexOf(")")
     
   );
-
+  
   }
+ 
   var x="";
   for(var i=0;i<r.length;i++){
     r[i]=r[i].replace("(","").replace(")","")
@@ -161,17 +162,20 @@ function format_etichetta(s){
     else if(r[i].includes("INSTITUTE")){
       x+="INST."
     }
+    else if(r[i]=="DEGLI"||r[i]=="DI"||r[i]=="STUDI"){
+      continue;
+    }
     else if(r[i].includes("COLLEGE")){
       x+="COLL."
     }
-    else if(r[i]=="OF"||r[i]=="THE"||r[i]=="DE"||r[i]=="DI"||r[i]=="DEGLI"||r[i]=="DELLA"||r[i]=="LA"||r[i]=="LE"||r[i]=="LES"){
+    else if(r[i]=="OF"||r[i]=="THE"||r[i]=="DE"||r[i]=="DI"||r[i]=="DEGLI"||r[i]=="DELLA"||r[i]=="LA"||r[i]=="LE"||r[i]=="LES"||r[i]=="-"||r[i]=="--"){
       continue;
     }
     else{
       x+=r[i];
     }
     x+=" "
-    if(x.split(" ").length>2)break;
+    if(x.split(" ").length>3)break;
   }
   
   if(c==""){
@@ -467,14 +471,18 @@ if(names.length===0){starPlot(); return;}
     .append("svg")
     .attr("id","timeseries")
     .attr("width",width_data*0.45)
-    .attr("height",height_data*0.6);
+    .attr("height",height_data*0.6).attr("transform", "translate(" + 0 + "," +( height_data*0.05) + ")");
+
+    d3.select("#title_timestarplot").style("visibility","visible");
+    d3.select("#title_tool_overall").style("visibility","visible");
+
   
     var g = svgT.append("g").attr("transform", "translate(" + 20 + "," + margin.top/2 + ")");
 
 var formatNumber = d3.format(".1f");
 
 var x = d3.scaleTime()
-    .domain([new Date(2015, 10, 1), new Date(2020, 1, 1)])
+    .domain([new Date(2015, 11, 1), new Date(2020, 1, 1)])
     .range([0, width_data*0.4]);
 
 var y = d3.scaleLinear()
@@ -521,7 +529,7 @@ for(let n=0;n< names.length;n++){
 
   
   let u=d[names[n]];
-  xCoords=[new Date(2015, 12, 1), new Date(2018, 1, 1),new Date(2019, 1, 1),new Date(2020, 1, 1)];
+  xCoords=[new Date(2015, 12, 31), new Date(2018, 1, 1),new Date(2019, 1, 1),new Date(2020, 1, 1)];
   let yCoords=[];
   let dataDone =[];
   for(let l =0;l<4;l++){
@@ -591,7 +599,7 @@ svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top/2 + ")
     var na=d3.select(this).attr("id")
     d3.select(this).attr("fill", colors[name_index(na)])
     .attr("r", ""+5 * 2)
-  if (d3.select(this).attr("cx")==x(new Date(2015, 12, 1))){
+  if (d3.select(this).attr("cx")==x(new Date(2015, 12, 31))){
     Index=0;
     
   }
@@ -725,7 +733,7 @@ svgT.append("g").selectAll("circle").data(YYY)
   var na=d3.select(this).attr("id")
   d3.select(this).attr("fill", colors[name_index(na)])
   .attr("r", ""+5 * 2)
-if (d3.select(this).attr("cx")==x(new Date(2015, 12, 1))){
+if (d3.select(this).attr("cx")==x(new Date(2015, 12, 31))){
   Index=0;
   
 }
@@ -816,7 +824,8 @@ function(){
 //     .attr("x", 30)
 //     .text("Rating");
 
-  clicked_label=[]
+  clicked_label=[];
+  c_initial=true;
   starPlot();
 /*
 #
@@ -921,7 +930,7 @@ d3.select("#yearSel").remove();
 
 
 d3.select("#yourSelection").style("visibility", "visible")
-var svgLeggends=d3.select("#legends").append("svg").attr("width",width_data).attr("id","littlelegend").attr("transform","translate("+(width_data*0.2)+","+"-15) scale(0.8)")
+var svgLeggends=d3.select("#legends").append("svg").attr("width",width_data/2).attr("id","littlelegend").attr("transform","translate("+(width_data*0.32)+","+"-15) scale(0.8)")
 
 
 var svgS= d3.select("#data2")
@@ -934,7 +943,7 @@ var svgS= d3.select("#data2")
 
 //     svgS.attr("transform",event.transform)
 //   }))
-  .append("g").attr("transform", "translate("+(width_data*0.2-margin.left)+","+(height_data*0.2-margin.top*2)+") scale(0.6)");
+  .append("g").attr("transform", "translate("+(width_data*0.2-margin.left)+","+(height_data*0.2-margin.top)+") scale(0.6)");
 
 //prepare data
 var arr_of_stats =[]; //Academic scorer score,Employer score,Faculty Student score,CitationsPerFaculty score,InternationalFaculty score,InternationalStudent score,Overall Score 
