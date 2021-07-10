@@ -168,7 +168,7 @@ function format_etichetta(s){
     else if(r[i].includes("COLLEGE")){
       x+="COLL."
     }
-    else if(r[i]=="OF"||r[i]=="THE"||r[i]=="DE"||r[i]=="DI"||r[i]=="DEGLI"||r[i]=="DELLA"||r[i]=="LA"||r[i]=="LE"||r[i]=="LES"||r[i]=="-"||r[i]=="--"){
+    else if(r[i]=="OF"||r[i]=="DO"||r[i]=="LOS"||r[i]=="THE"||r[i]=="DE"||r[i]=="DI"||r[i]=="DEGLI"||r[i]=="DELLA"||r[i]=="LA"||r[i]=="LE"||r[i]=="LES"||r[i]=="-"||r[i]=="--"){
       continue;
     }
     else{
@@ -477,7 +477,7 @@ if(names.length===0){starPlot(); return;}
     d3.select("#title_tool_overall").style("visibility","visible");
 
   
-    var g = svgT.append("g").attr("transform", "translate(" + 20 + "," + margin.top/2 + ")");
+    var g = svgT.append("g").attr("transform", "translate(" +13 + "," + margin.top/2 + ")");
 
 var formatNumber = d3.format(".1f");
 
