@@ -7,7 +7,7 @@ var country_selected = [];
 var dimension
 var margin = { top: 80, right: 30, bottom: 150, left: 60 }
 
-var colores_g = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
+var colores_g = [ "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
 
 var c20b = d3.scaleOrdinal(colores_g);
 
@@ -223,6 +223,7 @@ function handleMouseMove(d, i) {
 }
 
 var color_index=1
+var country_color={}
 function handleMouseClick3(d, i) {
   var t = d3.select(d.target)
 
@@ -252,8 +253,11 @@ function handleMouseClick3(d, i) {
     .style("fill", c20b(color_index))
     .style("stroke", "black")
     .style("stroke-width", ".3px")
-color_index+=1
+
   country_selected.push(i.properties.name);
+  country_color[i.properties.name]=c20b(color_index)
+
+  color_index+=1
   updateChart2();
 }
 
@@ -265,6 +269,7 @@ function updateChart2() {
 
     var color = d3.rollup(data2, v => { return v.length }, d => d.Country)
 
+    console.log(country_color)
     //    ['CurrentRank', 'LastRank','Age','Academicscorerscore',  'Employerscore','FacultyStudentscore', 'CitationsPerFacultyscore', 'InternationalFacultyscore', 'InternationalStudentscore', 'OverallScore']
     var c = d3.rollup(data2, v => {
       var l = v.length;
@@ -331,8 +336,7 @@ function updateChart2() {
       .attr("d", path)
       .style("fill", "none")
       .style("stroke", function (d) {
-        if (color.get(d.Country) == undefined) return "grey";
-        return colores_range2(color.get(d.Country), 0, 50)
+        return country_color[d.Country]
       })
       .style("stroke-width", "3")
       .style("opacity", 1)
@@ -350,8 +354,7 @@ console.log(lines.enter().size())
       .attr("d", path)
       .style("fill", "none")
       .style("stroke", function (d) {
-        if (color.get(d.Country) == undefined) return "grey";
-        return colores_range2(color.get(d.Country), 0, 50)
+        return country_color[d.Country]
       })
       .style("stroke-width", "3")
       .style("opacity", 1)
@@ -363,8 +366,7 @@ console.log(lines.enter().size())
       .attr("d", path)
       .style("fill", "none")
       .style("stroke", function (d) {
-        if (color.get(d.Country) == undefined) return "grey";
-        return colores_range2(color.get(d.Country), 0, 50)
+        return country_color[d.Country]
       })
       .style("stroke-width", "3")
       .style("opacity", 1)
