@@ -470,7 +470,11 @@ var margin = {top: 50, right: 20, bottom: 60, left: 90},
     widthT = 600 - margin.left - margin.right,
     heightT = 500 - margin.top - margin.bottom;
 
-if(names.length===0){starPlot(); return;}
+if(names.length===0){
+
+  d3.select("#title_timestarplot").style("visibility","visible");
+    d3.select("#title_tool_overall").style("visibility","visible");
+  starPlot(); return;}
 
     var svgT= d3.select("#data1")
     .append("svg")
@@ -590,7 +594,7 @@ svgT.append("text").attr("transform", "translate(40," + margin.top/2+ ")").attr(
     svgT.select("#overline1").remove();
   });
 
-
+  
   svgT.append("g").selectAll("circle").data(yCoords).enter()
     .append("circle").attr("transform", "translate(" +40 + "," + margin.top/2 + ")").attr("id",""+names[n])
 	.attr("cx",function(d,i){
@@ -606,12 +610,12 @@ svgT.append("text").attr("transform", "translate(40," + margin.top/2+ ")").attr(
         return y(p);
     })
     
-	.attr("r","5")
-	.attr("fill","black")	
+	.attr("r","10")
+	.attr("fill",colors[position_wrt_selected])	
   .on("mouseover",function(d,i){
     var na=d3.select(this).attr("id")
-    d3.select(this).attr("fill", colors[name_index(na)])
-    .attr("r", ""+5 * 2)
+    d3.select(this).attr("fill","#4ae54a")
+    .attr("r", ""+10 * 2)
   if (d3.select(this).attr("cx")==x(new Date(2015, 12, 31))){
     Index=0;
     
@@ -659,9 +663,9 @@ svgT.append("text").attr("transform", "translate(40," + margin.top/2+ ")").attr(
    
   })
   .on("mouseout",function(d,i){
-    
-    d3.select(this).attr("fill", "black")
-    .attr("r", ""+5 );
+    var na=d3.select(this).attr("id")
+    d3.select(this).attr("fill", colors[name_index(na)])
+    .attr("r", ""+10 );
     svgT.select("#overC").remove()
     svgT.select("#overC1").remove()
     svgT.select("#overSC").remove()
@@ -831,48 +835,7 @@ function(){
     arr_sorted=sort_name_by_med(names);
 
 
-    
-    
 
-//     var size = 20
-// svgT.selectAll("mydots")
-//   .data(arr_sorted)
-//   .enter()
-//   .append("rect")
-//   .attr("class","LegendDot")
-//     .attr("x", 100)
-//     .attr("y", function(d,i){ return 100 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
-//     .attr("width", size).attr("transform", "translate(" + (widthT +20)+ "," + -10 + ")")
-//     .attr("height", size)
-//     .style("fill", function(d){ return colors[name_index(d)]})
-
-// Add one dot in the legend for each name.
-// svgT.selectAll("mylabels")
-//   .data(arr_sorted)
-//   .enter()
-//   .append("text").attr("class","LegendLabel")
-//     .attr("x", 100 + size*1.2).attr("transform", "translate(" + (widthT+20) + "," + -10 + ")")
-//     .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
-//     .style("fill", function(d){ return colors[name_index(d)]})
-//     .text(function(d){ return format_etichetta(d) +" ("+d_mean[d].toFixed(2)+")"})
-//     .attr("text-anchor", "left")
-//     .style("alignment-baseline", "middle")
-
-//   svgT.append("text")
-//     .attr("class", "x label")
-//     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-//     .attr("text-anchor", "center")
-//     .attr("x", widthT/2)
-//     .attr("y", heightT +50)
-//     .text("Years");
-//     svgT.append("text")
-//     .attr("transform", "translate(" + margin.left + "," + 1 + ")")
-//     .attr("class", "y label")
-//     .attr("text-anchor", "end")
-//     .attr("y", 6)
-//     .attr("dy", ".75em")
-//     .attr("x", 30)
-//     .text("Rating");
 
   
   starPlot();
@@ -994,7 +957,8 @@ svgLeggends
 .attr("ry", 5)
 
 var coom_svgs=d3.zoom().scaleExtent([0.3,105]).on("zoom", zoomed)
-
+d3.select("#zoomin").remove();
+d3.select("#zoomout").remove()
 
 var svgS= d3.select("#data2")
 .append("svg")
@@ -1224,12 +1188,12 @@ for (var i = 0; i < names.length; i ++){
       return cy[i];
   })
   
-.attr("r","5").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
-.attr("fill","black")
+.attr("r","10").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
+.attr("fill",colors[name_index(dN)])
 .on("mouseover",function(d,i){
   
-    d3.select(this).attr("fill", colors[name_index(dN)])
-    .attr("r", ""+5 * 2)
+    d3.select(this).attr("fill", "black")
+    .attr("r", ""+10 * 2)
   var index=arr.indexOf(i);
 
 
@@ -1263,8 +1227,8 @@ svgS.insert("rect","#overS").attr("transform", "translate(" + margin2.left + ","
 
 .on("mouseout",function(d,i){
   
-  d3.select(this).attr("fill", "black")
-  .attr("r", ""+5 );
+  d3.select(this).attr("fill", colors[name_index(dN)])
+  .attr("r", ""+10 );
   svgS.select("#overS").remove()
   svgS.select("#overSR").remove()
 })
@@ -1396,13 +1360,13 @@ for (var i = 0; i < newRemove.length; i ++){
       return cy[i];
   })
   
-.attr("r","5").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
-.attr("fill","black")
+.attr("r","10").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
+.attr("fill",supplement_colors[P])
 .on("mouseover",function(d,i){
   
-     d3.select(this).attr("fill", supplement_colors[P]);
+     d3.select(this).attr("fill", "black");
     
-    d3.select(this).attr("r", ""+5 * 2)
+    d3.select(this).attr("r", ""+10 * 2)
   var index=arr.indexOf(i);
 
 
@@ -1433,8 +1397,8 @@ var rectlabel=svgS.insert("rect","#overS").attr("transform", "translate(" + marg
 
 .on("mouseout",function(d,i){
   
-  d3.select(this).attr("fill", "black")
-  .attr("r", ""+5 );
+  d3.select(this).attr("fill", supplement_colors[P])
+  .attr("r", ""+10 );
   svgS.select("#overS").remove()
   svgS.select("#overSR").remove()
 });
@@ -1551,7 +1515,7 @@ svgLeggends.selectAll("mylabelsS")
       }
 
       var unis = sort_name_by_med(Object.keys(overalls))
-      console.log(unis)
+      //console.log(unis)
         //Size, Focus, Reasearch, Age, Status
       
       var marginBAR = {top: 20, right: 20, bottom: 30, left: 40},
