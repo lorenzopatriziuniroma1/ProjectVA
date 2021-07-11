@@ -989,34 +989,40 @@ svgLeggends
 .attr("rx", 5)
 .attr("ry", 5)
 
-var coom_svgs=d3.zoom().scaleExtent([0.3,105]).on("zoom", function(event) {
-  svgS.attr("transform",event.transform)
- })
+var coom_svgs=d3.zoom().scaleExtent([0.3,105]).on("zoom", zoomed)
 
 
 var svgS= d3.select("#data2")
 .append("svg")
 .attr("id","starplot")
 .attr("width",width_data*0.5)
-.attr("height",height_data*0.7)                                                //  <------------------  --------        ----------------TODO Regola zoom
-  .append("g").attr("transform", "translate("+(width_data*0.2-margin.left)+","+(height_data*0.2-margin.top*2)+") scale(0.6)");
+.attr("height",height_data*0.7)  
+.call(coom_svgs)    .on("wheel.zoom", null)                                              //  <------------------  --------        ----------------TODO Regola zoom
+  .append("g").attr("transform", "translate("+(width_data*0.2-margin.left)+","+(height_data*0.2-margin.top*2)+") scale(1)")
+;
+
 
   coom_svgs.scaleTo(svgS.transition().duration(750),.6)
   var scale=0.6;
   d3.select("#data2").append("button").attr("type","button").attr("class","btn btn-outline-primary").attr("id","zoomin").attr("width",width_data*0.5)
   .attr("height",height_data*0.7) .text("+").on("click", function() {
     scale=scale*1.2
-    coom_svgs.scaleTo(svgS.transition().duration(750),scale)
+    coom_svgs.scaleBy(svgS.transition().duration(750),1.2)
   })
 
 
   d3.select("#data2").append("button").attr("type","button").attr("class","btn btn-outline-primary").attr("id","zoomout").attr("width",width_data*0.5)
   .attr("height",height_data*0.7) .text("-").on("click", function() {
     scale=scale*0.8
-    coom_svgs.scaleTo(svgS.transition().duration(750), scale)
+    coom_svgs.scaleBy(svgS.transition().duration(750), 0.8)
   })
 
 
+  function zoomed (event) {
+    console.log(event.transform)
+    event.transform.k=scale
+    svgS.attr("transform",event.transform)
+   }
 
 //prepare data
 var arr_of_stats =[]; //Academic scorer score,Employer score,Faculty Student score,CitationsPerFaculty score,InternationalFaculty score,InternationalStudent score,Overall Score 

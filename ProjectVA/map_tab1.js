@@ -258,7 +258,7 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
 
 
   var zoom = d3.zoom()
-.scaleExtent([1, 85])
+.scaleExtent([0.5, 85])
 .translateExtent([[-width+width/2, -height+height/2], [width+width/2, height+height/2]])
 .on('zoom', function(event) {
 
