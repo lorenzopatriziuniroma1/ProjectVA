@@ -345,6 +345,12 @@ function format_Overall(stringScore){
 }
 
 async function display_data(selected_on_map){
+
+
+
+  clicked_label=[];
+  c_initial=true;
+  delayO1=500;var delayO2=1300
     
     //document.getElementById("show_data").remove();
     d3.select("#BARsvg").style("visibility","hidden").attr("height", 0)
@@ -721,7 +727,7 @@ svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top/2 + ")
 .attr("y", y(m/4)+20)
 .attr("width",redTxt.attr("cc"))
 .attr("height", 20)
-.attr("fill","white").style("opacity","0.0.85")
+.attr("fill","white").style("opacity","0.85")
 var m= 0;
 svgT.append("text").attr("transform", "translate(40," + margin.top/2 + ")").attr("id","overline1").attr("x", width_data*0.3) 
 .attr("y",function(){
@@ -868,9 +874,7 @@ function(){
 //     .attr("x", 30)
 //     .text("Rating");
 
-  clicked_label=[];
-  c_initial=true;
-  delayO1=500;var delayO2=1300
+  
   starPlot();
 /*
 #
@@ -1214,12 +1218,11 @@ var redTxt=svgS.append("text").attr("transform", "translate(" + margin2.left + "
 
 
 
-svgS.insert("rect","text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overSR").attr("x", cx[index]-25) 
-.attr("y", cy[index]-20)
+svgS.insert("rect","#overS").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overSR").attr("x", cx[index]-25) 
+.attr("y", cy[index]-30)
 .attr("width", redTxt.attr("cc"))
-.attr("height", 12)
-.attr("fill",colors[name_index(dN)])
-.attr("opacity","0.5")
+.attr("height", 26)
+.attr("fill","white").style("opacity","1.0").attr("pointer-events", "none")
 
 
 })
@@ -1379,17 +1382,17 @@ for (var i = 0; i < newRemove.length; i ++){
  })   
 .attr("cc",function() {
   console.log(this)
-  console.log("porcosdiao")
+
  return this.getBBox().width;
 })
    
 console.log("Green= "+redTxt.attr("cc"))
 
-var rectlabel=svgS.insert("rect","text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overSR").attr("x", cx[index]-25) 
-.attr("y", cy[index]-25)
+var rectlabel=svgS.insert("rect","#overS").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overSR").attr("x", cx[index]-25) 
+.attr("y", cy[index]-30)
 .attr("width",redTxt.attr("cc"))
-.attr("height", 24)
-.attr("fill","#BCE1DE")
+.attr("height", 26)
+.attr("fill","white").style("opacity","1.0").attr("pointer-events", "none")
 
 
 })
@@ -1753,6 +1756,7 @@ svgLeggends.selectAll("mylabelsS")
 
 
     function createAnalytic(initial){
+      
       function compute_overall(name_arr,vals){
         var res={}
         name_arr.forEach(n=>{
@@ -1886,6 +1890,7 @@ var res=0;
   }
   else{//changing year = changing graph
     for(s in sliders_list){
+      
       sliders_list[s].default(sliders_val[s]);
     }
 
