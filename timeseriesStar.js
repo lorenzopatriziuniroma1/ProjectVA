@@ -989,17 +989,34 @@ svgLeggends
 .attr("rx", 5)
 .attr("ry", 5)
 
+var coom_svgs=d3.zoom().scaleExtent([0.3,105]).on("zoom", function(event) {
+  svgS.attr("transform",event.transform)
+ })
+
+
 var svgS= d3.select("#data2")
 .append("svg")
 .attr("id","starplot")
 .attr("width",width_data*0.5)
 .attr("height",height_data*0.7)                                                //  <------------------  --------        ----------------TODO Regola zoom
-// .call(d3.zoom().scaleExtent([0.3,105]).on("zoom", function(event) {
-//   //console.log(d3.event.transform)
+  .append("g").attr("transform", "translate("+(width_data*0.2-margin.left)+","+(height_data*0.2-margin.top*2)+") scale(0.6)");
 
-//     svgS.attr("transform",event.transform)
-//   }))
-  .append("g").attr("transform", "translate("+(width_data*0.2-margin.left)+","+(height_data*0.2-margin.top)+") scale(0.6)");
+  coom_svgs.scaleTo(svgS.transition().duration(750),.6)
+  var scale=0.6;
+  d3.select("#data2").append("button").attr("type","button").attr("class","btn btn-outline-primary").attr("id","zoomin").attr("width",width_data*0.5)
+  .attr("height",height_data*0.7) .text("+").on("click", function() {
+    scale=scale*1.2
+    coom_svgs.scaleTo(svgS.transition().duration(750),scale)
+  })
+
+
+  d3.select("#data2").append("button").attr("type","button").attr("class","btn btn-outline-primary").attr("id","zoomout").attr("width",width_data*0.5)
+  .attr("height",height_data*0.7) .text("-").on("click", function() {
+    scale=scale*0.8
+    coom_svgs.scaleTo(svgS.transition().duration(750), scale)
+  })
+
+
 
 //prepare data
 var arr_of_stats =[]; //Academic scorer score,Employer score,Faculty Student score,CitationsPerFaculty score,InternationalFaculty score,InternationalStudent score,Overall Score 
@@ -1230,7 +1247,7 @@ svgS.insert("rect","text").attr("transform", "translate(" + margin2.left + "," +
 .attr("width", redTxt.attr("cc"))
 .attr("height", 12)
 .attr("fill",colors[name_index(dN)])
-.attr("opacity","0.5")
+.attr("opacity","1")
 
 
 })
