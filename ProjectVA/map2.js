@@ -32,7 +32,8 @@ var svg4 = d3.select("#md_country").append("svg")
   .attr("transform",
     "translate(" + 0 + "," + (10) + ")");
 
-    var g_path=svg4.append("g")
+    var g_path=svg4.append("g").attr("transform",
+    "translate(" + 0 + "," + (10) + ")")
 var projection2 = d3.geoMercator()
   .translate([width3 / 2, height3 / 2 + 50]) // translate to center of screen
   .scale([200]); // scale things down so see entire US
@@ -84,7 +85,7 @@ function unshow(d, i) {
     .duration(200)
     .style("opacity", 0);
 }
-
+var y2
 d3.json("GeoMap/custom.geo.json").then(function (uState) {
 
 
@@ -129,7 +130,7 @@ d3.json("GeoMap/custom.geo.json").then(function (uState) {
 
 
       // For each dimension, I build a linear scale. I store all in a y object
-      var y2 = {}
+       y2 = {}
       for (i in dimensions) {
         name_d = dimensions[i]
         y2[name_d] = d3.scaleLinear()
@@ -230,9 +231,7 @@ function handleMouseClick3(d, i) {
 
   var old=t.attr("old")
   var old2="rgb("+parseInt(old.slice(1,3),16)+", "+parseInt(old.slice(3,5),16)+", "+parseInt(old.slice(5,7),16)+")";
-  console.log(t.style("fill") )
-  console.log(old)
-  console.log(old2)
+  
   
   if (t.style("fill") !== t.attr("old")) {
     t
@@ -269,7 +268,7 @@ function updateChart2() {
 
     var color = d3.rollup(data2, v => { return v.length }, d => d.Country)
 
-    console.log(country_color)
+
     //    ['CurrentRank', 'LastRank','Age','Academicscorerscore',  'Employerscore','FacultyStudentscore', 'CitationsPerFacultyscore', 'InternationalFacultyscore', 'InternationalStudentscore', 'OverallScore']
     var c = d3.rollup(data2, v => {
       var l = v.length;
@@ -296,13 +295,6 @@ function updateChart2() {
 
 
     // For each dimension, I build a linear scale. I store all in a y object
-    var y2 = {}
-    for (i in dimensions) {
-      name_d = dimensions[i]
-      y2[name_d] = d3.scaleLinear()
-        .domain(d3.extent(data, function (d) { return +d[name_d]; }))
-        .range([height3, 0])
-    }
 
 
     // Build the X scale -> it find the best position for each Y axis
@@ -321,6 +313,8 @@ function updateChart2() {
       if (country_selected.indexOf(k) <= -1){c.delete(k)}
     }
 
+ 
+    console.log(c.values())
      lines = g_path.selectAll(".myPathCountry")
       .data(c.values())
       //.filter(function (d) { console.log(d);return country_selected.indexOf(d.Country) > -1; });
@@ -342,8 +336,8 @@ function updateChart2() {
       .style("opacity", 1)
 
 
-console.log(lines.enter().size())
 
+      
     if(lines.enter().size()==0 && lines.exit().size()==0){
       lines
       .attr("class", "myPathCountry")
@@ -397,40 +391,6 @@ dropdownButton3.on("change", function (d) {
   var year = d3.select(this).property("value")
   year_3 = year
   d3.csv("ProjectVA/pca_csv/pca_year_v2_" + year + ".csv").then(function (data) {
-
-
-    var color = d3.rollup(data, v => { return v.length }, d => d.Country)
-
-    g2.selectAll('path')
-      .style("fill", function (d) {
-        if (country_selected.some(el => { return el == d.properties.name })) return  country_color[d.properties.name];
-        if (color.get(d.properties.name) == undefined) return "grey";
-        return colores_range2(color.get(d.properties.name), 0, 50)
-      })
-
-
-
-    var y2 = {}
-    for (i in dimensions) {
-      name_d = dimensions[i]
-      y2[name_d] = d3.scaleLinear()
-        .domain(d3.extent(data, function (d) { return +d[name_d]; }))
-        .range([height3, 0])
-    }
-
-    // Build the X scale -> it find the best position for each Y axis
-    var x2 = d3.scalePoint()
-      .range([0, width3])
-      .padding(1)
-      .domain(dimensions);
-    // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
-    function path(d) {
-      return d3.line()(dimensions.map(function (p) { return [x2(p), y2[p](d[p])]; }));
-    };
-
-
-
-
 
 
 

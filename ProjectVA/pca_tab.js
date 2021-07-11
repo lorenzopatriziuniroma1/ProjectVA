@@ -9,7 +9,7 @@ function colores_range(n,start,end) {
 }
 
 
-var myColorCircle = d3.scaleLinear().domain([1,100])
+var myColorCircle = d3.scaleLinear().domain([0,100])
   .range(sequential_color_divergent_from_blue)
 
 
@@ -273,7 +273,7 @@ function onchange() {
 
      // Add X axis
   var x = d3.scaleLinear()
-  .domain([-4, 8])
+  .domain([-4, 7])
   .range([ 0, width2 *0.9]);
 
 

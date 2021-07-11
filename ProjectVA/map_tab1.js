@@ -476,12 +476,13 @@ var xAxis = d3.axisBottom(x0)
 var yAxis = d3.axisLeft(y)
     
 
-var color = d3.scaleOrdinal()
-    .range(["#f22105",
-    "#ff7eac",
-    "#ffdbff",
-    "#aed1ff",
-    "#00cceb"]);
+var array_google=["#dd4477", "#994499", "#22aa99", "#e67300", "#6633cc",]
+var color = d3.scaleOrdinal().range(array_google)
+    // .range(["#f22105",
+    // "#ff7eac",
+    // "#ffdbff",
+    // "#aed1ff",
+    // "#00cceb"]);
 
 
 
