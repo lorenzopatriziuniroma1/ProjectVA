@@ -276,7 +276,7 @@ var uni=g.selectAll(".University")
     var rand=0,
     rand2=0;
 
-    if(scale<=0.05){ 
+    if(1/event.transform.k<=1/83){ 
 
       rand=parseFloat(uni._groups[0][i].getAttribute("rand"))
       rand2=parseFloat(uni._groups[0][i].getAttribute("rand2"))

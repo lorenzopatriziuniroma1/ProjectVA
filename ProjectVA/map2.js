@@ -160,7 +160,7 @@ d3.json("GeoMap/custom.geo.json").then(function (uState) {
         .append("text")
         .attr("transform", "translate(0," + (height3 + 20) + ") rotate(35)")
         .style("text-anchor", "start")
-        .text(function (d) { return d; })
+        .text(function (d) { return map_label[d]; })
         .style("font-size", "13px")
         .style("fill", "black");
 

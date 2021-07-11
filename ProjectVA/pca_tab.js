@@ -48,6 +48,7 @@ var svg = d3.select("#pca_scatter")
     .attr("width",  width2*0.9 + margin.left + margin.right )
     .attr("height", height2 + margin.top + margin.bottom )
   .append("g")
+  .style("background","whitesmoke")
     .attr("transform",
           "translate(" + 30 + "," + margin.top + ")");
   var svg2 = d3.select("#pca_scatter")
@@ -66,9 +67,10 @@ function(data) {
   // Add X axis
   var x = d3.scaleLinear()
     .domain([-4, 7])
-    .range([ 0, width2 ]);
+    .range([ 0, width2*0.9 ]);
   svg.append("g")
     .attr("transform", "translate(0," + height2*1.2 + ")")
+
     .call(d3.axisBottom(x));
 
   // Add Y axis
@@ -89,19 +91,22 @@ function(data) {
       .attr("cy", function (d) { return y(d.pca_2); } )
       .attr("r", 8)
       .style("fill", function (d) { return colores_range(d.OverallScore,0,100) } )
-      .style("opacity", 0.9);
+      .style("opacity", 0.9)
+      .classed("selected2",true);
       
-      svg.selectAll("circle").transition().duration(5000).attr("r",2);
+      svg.selectAll("circle").transition().duration(5000).attr("r",3);
 
-      bru=d3.brush()                 // Add the brush feature using the d3.brush function
-      .extent( [ [0,0], [width2, height2*1.3] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+      bru=d3.brush()               // Add the brush feature using the d3.brush function
+      .extent( [ [0,0], [width2, height2*1.2] ] )
+       // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
       .on(" brush end", updateChart)
        // Each time the brush selection changes, trigger the 'updateChart' function
-    
+
   // Add brushing
   svg
     .call(bru )
 
+   // svg.select("rect").style("fill","grey").style("opacity",0.1)
 
     svg
   // Function that is triggered when brushing is performed
@@ -114,14 +119,19 @@ function(data) {
     start=new Date().getTime();
     extent = event.selection
 
-    myCircle.classed("selected", 
+    myCircle.
+    classed("selected2", function(d){
+      return !isBrushed(extent, x(d.pca_1), y(d.pca_2))
+
+    }).
+    classed("selected", 
     function(d){
+
       var ret=isBrushed(extent, x(d.pca_1), y(d.pca_2)); 
       const index = pca_selected.indexOf(d);
       if(ret){
         if (index <= -1) {
           pca_selected.push(d);
-        
         }
       }else{
         
@@ -133,6 +143,7 @@ function(data) {
       return ret; } );
 
     if (pca_selected.length==0){
+      myCircle.classed("selected2",true)
       svg2.selectAll(".myPath").on("mouseover",handleMouseOn).transition().duration(2000).style("opacity", 0.5).style("stroke",function(d){return  colores_range(d.OverallScore,0,100) });
       svg_map_pca.selectAll("circle").attr("r",5).transition().duration(2000).style("opacity", 1).style("stroke", "none")
     }else{
@@ -233,7 +244,7 @@ svg2
     .append("text")
     .attr("transform","translate(0,"+(height2*1.40+15)+") rotate(-20)")
       .style("text-anchor", "end")
-      .text(function(d) { return d; })
+      .text(function(d) { return map_label[d]; })
       .style("font-size", "13px")
       .style("fill", "black");
 })
@@ -258,15 +269,20 @@ var options = select
 
 function onchange() {
     selectValue = d3.select('#pca_select').property('value')
-    // Add X axis
-    var x = d3.scaleLinear()
-    .domain([-4, 7])
-    .range([ 0, width2 ]);
-  
-  // Add Y axis
-  var y = d3.scaleLinear()
-    .domain([-3, 5])
-    .range([ height2*1.3, 0]);
+
+
+     // Add X axis
+  var x = d3.scaleLinear()
+  .domain([-4, 8])
+  .range([ 0, width2 *0.9]);
+
+
+// Add Y axis
+var y = d3.scaleLinear()
+  .domain([-3, 5])
+  .range([ height2*1.2, 0]);
+
+
    pca_selected=[];
 
     d3.csv("ProjectVA/pca_csv/pca_year_v2_"+selectValue+".csv").then (function(data) {
@@ -279,12 +295,13 @@ function onchange() {
       circles.enter().append("circle")
 
 
-      circles.transition().duration(2000) 
+      circles     .classed("selected2",true).transition().duration(2000) 
       .attr("cx", function (d) { return x(d.pca_1); } )
       .attr("cy", function (d) { return y(d.pca_2); } )
 
-      .style("fill", function (d) { return colores_range(d.OverallScore,0,100) } )
-      .style("opacity", 0.5);
+      .style("fill", function (d) { return colores_range(d.OverallScore,0,100) } )      
+ 
+      .style("opacity", 0.9);
 
 
 
@@ -531,4 +548,3 @@ var c=d3.select("#ciao").selectAll(".cell").attr("transform", function(d,i){
 
 
 d3.select("#ciao").selectAll("text").attr("transform","translate(25,33)")
-console.log(c)

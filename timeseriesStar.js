@@ -932,8 +932,19 @@ d3.select("#yearSel").remove();
 
 
 d3.select("#yourSelection").style("visibility", "visible")
-var svgLeggends=d3.select("#legends").append("svg").attr("width",width_data/2).attr("id","littlelegend").attr("transform","translate("+(width_data*0.32)+","+"-15) scale(0.8)")
-
+var svgLeggends=d3.select("#legends").append("svg").attr("width",width_data/2).attr("id","littlelegend").attr("transform","translate("+(width_data/2-width_data/4)+","+"-15) scale(0.8)")
+svgLeggends
+.append("rect")
+.style("stroke","black")
+.style("stroke-width","1")
+.attr("width","95%")
+.attr("height","95%")
+.attr("transform","translate("+5+","+"3)")
+.style("opacity",0.7)
+.attr("fill","white")
+.attr("fill-opacity","0.4")
+.attr("rx", 5)
+.attr("ry", 5)
 
 var svgS= d3.select("#data2")
 .append("svg")
@@ -1376,7 +1387,7 @@ svgLeggends.selectAll("mydotsS")
   .attr("class","legendDotS")
   .attr("id",function(d,i){return "Lab"+newRemove[i]})
 
-  .attr("x", width_data*0.2+10)
+  .attr("x", width_data/4+10)
   .attr("y", function(d,i){  
     return 10+ i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
   .attr("width", size).attr("transform", "translate(" + (0+10) + "," + 0 + ")")
@@ -1421,7 +1432,7 @@ svgLeggends.selectAll("mylabelsS")
   .enter()
   .append("text").attr("class","legendLabelS")
 
-  .attr("x", width_data*0.2+20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
+  .attr("x", width_data/4+20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
   .attr("y", function(d,i){ return 10 + i*(size+5) + (size*0.9)})
     .style("fill", function(d,i){ return supplement_colors[i]})
     .text(function(d,i){ return format_etichetta(newRemove[i])+" ("+format_number(selected_year_data[newRemove[i]][6])+")"})
