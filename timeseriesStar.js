@@ -1,7 +1,7 @@
 //need thos variables in both graphs
 // ArrOfMEANS = array with all the (time) means of scores in decreasing order
 // d_means = dictionary with keys = name of university, value = mean
-let ArrOfMEANS;let d_mean;  var arr_sorted=[]; var threhlen=3;
+let ArrOfMEANS;let d_mean;  var arr_sorted=[]; var threhlen=3;var delayO1=500;var delayO2=1300;
 var d_2016,d_2018,d_2019,d_2020;
 var what_miss={};let data_all_time;
 let clicked_label=[], newRemove;
@@ -828,6 +828,7 @@ function(){
 
   clicked_label=[];
   c_initial=true;
+  delayO1=500;var delayO2=1300
   starPlot();
 /*
 #
@@ -1560,8 +1561,8 @@ svgLeggends.selectAll("mylabelsS")
             .style("text-anchor", "end")
             .style('font-weight','bold')
             .text("Value");
-      
-        svgB2.select('.y').transition().duration(500).delay(1300).style('opacity','1');
+        
+        svgB2.select('.y').transition().duration(delayO1).delay(delayO2).style('opacity','1');
         var supp_data=[];var C=0,D=0,co=false;
         for(delx in CallS){
           for(dely in deleteIncomplete){
@@ -1848,6 +1849,7 @@ var res=0;
 
    
     var overalls = compute_overall(names.concat(newRemove),sliders_val);
+    delayO1=0;delayO2=0;
           bargraph(overalls);
 
   }
