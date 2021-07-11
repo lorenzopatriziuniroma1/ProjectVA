@@ -18,11 +18,8 @@ var margin2 = {top: 0, right:0, bottom:0, left:0}
 var radius= width_data*0.25
 //colors of timeseries and Starplot in decreasing order using divergent palette - max 5 universities at once!
 
-const colors = ["#f22105",
-      "#ff7eac",
-      "#ffdbff",
-      "#aed1ff",
-      "#00cceb"];
+const colors = [ "#e31a1c","#fc4e2a","#fd8d3c","#feb24c", "#fed976"];
+
 const supplement_colors=[
         "#609732",
          "#BAE397",
@@ -170,7 +167,7 @@ function format_etichetta(s){
     else if(r[i].includes("COLLEGE")){
       x+="COLL."
     }
-    else if(r[i]=="OF"||r[i]=="DO"||r[i]=="LOS"||r[i]=="THE"||r[i]=="DE"||r[i]=="DI"||r[i]=="DEGLI"||r[i]=="DELLA"||r[i]=="LA"||r[i]=="LE"||r[i]=="LES"||r[i]=="-"||r[i]=="--"){
+    else if(r[i]=="OF"||r[i]=="AT"||r[i]=="DO"||r[i]=="LOS"||r[i]=="THE"||r[i]=="DE"||r[i]=="DI"||r[i]=="DEGLI"||r[i]=="DELLA"||r[i]=="LA"||r[i]=="LE"||r[i]=="LES"||r[i]=="-"||r[i]=="--"){
       continue;
     }
     else{
@@ -554,7 +551,7 @@ for(let n=0;n< names.length;n++){
   .attr("stroke-width", 5).attr("class","line").attr("d",line)
   .on("mouseover",function(d,h){
     console.log(names[n],d_mean[names[n]]);
-    d3.select(this).attr("stroke", "yellow");
+    d3.select(this).attr("stroke", "#4ae54a");
 
 
   var redTxt=svgT.append("text").attr("transform", "translate(40," + margin.top/2+ ")").attr("id","overline").attr("x", width_data*0.3) 
@@ -565,18 +562,26 @@ for(let n=0;n< names.length;n++){
 .attr("cc",function() {
   
  return this.getBBox().width;
-})
+}).style("stroke","white")
 
 svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top/2 + ")").attr("id","overSline").attr("x", width_data*0.3) 
 .attr("y", y(d_mean[names[n]])+10)
-.attr("width",redTxt.attr("cc"))
+.attr("width",redTxt.attr("cc")).attr("pointer-events", "none")
 .attr("height", 22.5)
-.attr("fill",colors[ArrOfMEANS.indexOf(d_mean[names[n]])]).style("opacity","0.25")
+.attr("fill","white").style("opacity","0.75")
+
+svgT.append("text").attr("transform", "translate(40," + margin.top/2+ ")").attr("id","overline1").attr("x", width_data*0.3) 
+.attr("y",y(d_mean[names[n]])+30)
+.text(function(d) {
+  return format_etichetta(names[n]) +" - Overall mean: "+parseFloat(d_mean[names[n]]).toFixed(2);  // Value of the text
+ })   
+
 
   }).on("mouseout",function(d,h){
     d3.select(this).attr("stroke", d3.rgb(colors[ArrOfMEANS.indexOf(d_mean[names[n]])]));
     svgT.select("#overSline").remove();
     svgT.select("#overline").remove();
+    svgT.select("#overline1").remove();
   });
 
 
@@ -615,7 +620,7 @@ svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top/2 + ")
     Index=3
   }
   
-  var ret=svgT.append("text").attr("transform", "translate(" + 0 + "," + margin.top + ")").attr("id","overC").attr("x",function(d){return x(xCoords[Index])+12}).attr("y",function(d){return y(i)+25})
+  var ret=svgT.append("text").attr("transform", "translate(" + 0 + "," + margin.top/2 + ")").attr("id","overC").attr("x",function(d){return x(xCoords[Index])+12}).attr("y",function(d){return y(i)+25})
   .attr("cc",
   function(){
     console.log(this);
@@ -627,20 +632,32 @@ svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top/2 + ")
   .attr("cc",function() {
   
     return this.getBBox().width+5;
-   });
+   })
+   .style("stroke","white");
 
-   svgT.append("rect").attr("transform", "translate(" +0 + "," + margin.top + ")").attr("id","overSC").attr("x", function(d){return x(xCoords[Index])+10}) 
+   svgT.append("rect").attr("transform", "translate(" +0 + "," + margin.top/2 + ")").attr("id","overSC").attr("x", function(d){return x(xCoords[Index])+10}) 
    .attr("y", function(d){return y(i)+10})
    .attr("width",ret.attr("cc"))
    .attr("height", 22)
-   .attr("fill",colors[ArrOfMEANS.indexOf(d_mean[names[n]])]).style("opacity","0.25")
+   .attr("fill","white").style("opacity","0.85")
 
+   svgT.append("text").attr("transform", "translate(" + 0 + "," + margin.top/2 + ")").attr("id","overC1").attr("x",function(d){return x(xCoords[Index])+12}).attr("y",function(d){return y(i)+25})
+ 
+ .text(function(d) {
+   return i.toFixed(2)+"";  })
+  
+  .attr("cc",function() {
+  
+    return this.getBBox().width+5;
+   })
+   
   })
   .on("mouseout",function(d,i){
     
     d3.select(this).attr("fill", "black")
     .attr("r", ""+5 );
     svgT.select("#overC").remove()
+    svgT.select("#overC1").remove()
     svgT.select("#overSC").remove()
   });
 
@@ -681,7 +698,7 @@ svgT.append("path").attr("transform", "translate(" +40 + "," + margin.top/2 + ")
 .attr("stroke-width", 5).attr("class","line").attr("d",line)
 .on("mouseover",function(d,h){
   
-  d3.select(this).attr("stroke", "yellow");
+  d3.select(this).attr("stroke", "#4ae54a");
 
   var m= 0;
 var redTxt=svgT.append("text").attr("transform", "translate(40," + margin.top/2 + ")").attr("id","overline").attr("x", width_data*0.3) 
@@ -698,18 +715,32 @@ return  "GENERAL Overall mean: "+parseFloat(m/4).toFixed(2);  // Value of the te
 .attr("cc",function() {
 
 return this.getBBox().width;
-})
+}).style("stroke","white")
 
 svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top/2 + ")").attr("id","overSline").attr("x", width_data*0.3) 
 .attr("y", y(m/4)+20)
 .attr("width",redTxt.attr("cc"))
 .attr("height", 20)
-.attr("fill","#686868").style("opacity","0.25")
+.attr("fill","white").style("opacity","0.0.85")
+var m= 0;
+svgT.append("text").attr("transform", "translate(40," + margin.top/2 + ")").attr("id","overline1").attr("x", width_data*0.3) 
+.attr("y",function(){
+  
+  YYY.forEach(t=>{
+    m+=t
+  })
+  return y(m/4) +35
+})
+.text(function(d) {
+return  "GENERAL Overall mean: "+parseFloat(m/4).toFixed(2);  // Value of the text
+})   
+
 
 }).on("mouseout",function(d,h){
   d3.select(this).attr("stroke", "#686868");
   svgT.select("#overSline").remove();
   svgT.select("#overline").remove();
+  svgT.select("#overline1").remove();
 });
 
 
@@ -761,13 +792,23 @@ function(){
 .attr("cc",function() {
 
   return this.getBBox().width+5;
- });
+ }).style("stroke","white")
 
  svgT.append("rect").attr("transform", "translate(" +0 + "," + margin.top/2 + ")").attr("id","overSC").attr("x", function(d){return x(xCoords[Index])+10}) 
  .attr("y", function(d){return y(i)+10})
  .attr("width",ret.attr("cc"))
  .attr("height", 22)
- .attr("fill","#686868").style("opacity","0.3")
+ .attr("fill","white").style("opacity","0.85")
+
+ svgT.append("text").attr("transform", "translate(" + 0 + "," + margin.top/2 + ")").attr("id","overC1").attr("x",function(d){return x(xCoords[Index])+12}).attr("y",function(d){return y(i)+25})
+
+.text(function(d) {
+ return i.toFixed(2)+"";  })
+
+.attr("cc",function() {
+
+  return this.getBBox().width+5;
+ })
 
 })
 .on("mouseout",function(d,i){
@@ -775,6 +816,7 @@ function(){
   d3.select(this).attr("fill", "black")
   .attr("r", ""+5 );
   svgT.select("#overC").remove()
+  svgT.select("#overC1").remove()
   svgT.select("#overSC").remove()
 });
 
@@ -1256,7 +1298,7 @@ svgLeggends.selectAll("mylabelsS")
     .attr("x", 20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
     .attr("y", function(d,i){ return 10 + i*(size+5) + (size*0.9)}) // 100 is where the first dot appears. 25 is the distance between dots
     .style("fill", function(d,i){ return colors[i]})
-    .text(function(d,i){ return format_etichetta(arr_sorted[i])+" - ("+format_number(selected_year_data[arr_sorted[i]][6])+")"})
+    .text(function(d,i){ return format_etichetta(arr_sorted[i])})
     .attr("text-anchor", "left")
     .style("alignment-baseline", "middle")
 
