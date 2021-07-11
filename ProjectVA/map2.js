@@ -403,10 +403,8 @@ dropdownButton3.on("change", function (d) {
 
     g2.selectAll('path')
       .style("fill", function (d) {
-        if (country_selected.some(el => { return el == d.properties.name })) return "red";
+        if (country_selected.some(el => { return el == d.properties.name })) return  country_color[d.properties.name];
         if (color.get(d.properties.name) == undefined) return "grey";
-
-
         return colores_range2(color.get(d.properties.name), 0, 50)
       })
 
