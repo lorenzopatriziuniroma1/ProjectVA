@@ -7,6 +7,9 @@ var country_selected = [];
 var dimension
 var margin = { top: 80, right: 30, bottom: 150, left: 60 }
 
+var colores_g = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
+
+var c20b = d3.scaleOrdinal(colores_g);
 
 var year_3 = 2020
 
@@ -29,6 +32,7 @@ var svg4 = d3.select("#md_country").append("svg")
   .attr("transform",
     "translate(" + 0 + "," + (10) + ")");
 
+    var g_path=svg4.append("g")
 var projection2 = d3.geoMercator()
   .translate([width3 / 2, height3 / 2 + 50]) // translate to center of screen
   .scale([200]); // scale things down so see entire US
@@ -104,6 +108,10 @@ d3.json("GeoMap/custom.geo.json").then(function (uState) {
         .attr("name", function (d) { return d.properties.name })
         .style("stroke", stroke_color)
         .style("stroke-width", ".3px")
+        .attr("old", function (d) {
+          return this.style.fill
+        
+        })
         .on("mouseover", handleMouseOver3)
         .on("mouseout", handleMouseOut3)
         .on("mousemove", handleMouseMove)
@@ -214,10 +222,18 @@ function handleMouseMove(d, i) {
     .style("top", (d.pageY - 50) + "px")
 }
 
+var color_index=1
 function handleMouseClick3(d, i) {
   var t = d3.select(d.target)
 
-  if (t.style("fill") == "red") {
+
+  var old=t.attr("old")
+  var old2="rgb("+parseInt(old.slice(1,3),16)+", "+parseInt(old.slice(3,5),16)+", "+parseInt(old.slice(5,7),16)+")";
+  console.log(t.style("fill") )
+  console.log(old)
+  console.log(old2)
+  
+  if (t.style("fill") !== t.attr("old")) {
     t
       .style("fill", t.attr("old"))
       .style("stroke", "#b3ccff")
@@ -233,13 +249,15 @@ function handleMouseClick3(d, i) {
   }
   t
     .attr("old", t.style("fill"))
-    .style("fill", "red")
+    .style("fill", c20b(color_index))
     .style("stroke", "black")
     .style("stroke-width", ".3px")
-
+color_index+=1
   country_selected.push(i.properties.name);
   updateChart2();
 }
+
+var lines 
 
 function updateChart2() {
   selectedPercentage = d3.select('#map_percentage').property('value')
@@ -298,16 +316,18 @@ function updateChart2() {
       if (country_selected.indexOf(k) <= -1){c.delete(k)}
     }
 
-    var lines = svg4
-      .selectAll(".myPathCountry")
+     lines = g_path.selectAll(".myPathCountry")
       .data(c.values())
       //.filter(function (d) { console.log(d);return country_selected.indexOf(d.Country) > -1; });
 
       var lex=lines.exit();
       lex.transition().duration(1000).style("opacity",0).remove()
 
-      lines.enter().append("path")
+      var lin=lines.enter()
+      lin.append("path")
       .attr("class", "myPathCountry")
+      .on("mouseover", show)
+      .on("mouseout", unshow)
       .attr("d", path)
       .style("fill", "none")
       .style("stroke", function (d) {
@@ -316,9 +336,11 @@ function updateChart2() {
       })
       .style("stroke-width", "3")
       .style("opacity", 1)
-      .on("mouseover", show)
-      .on("mouseout", unshow)
 
+
+console.log(lines.enter().size())
+
+    if(lines.enter().size()==0 && lines.exit().size()==0){
       lines
       .attr("class", "myPathCountry")
       .on("mouseover", show)
@@ -333,7 +355,20 @@ function updateChart2() {
       })
       .style("stroke-width", "3")
       .style("opacity", 1)
-
+    }else{
+      lines
+      .attr("class", "myPathCountry")
+      .on("mouseover", show)
+      .on("mouseout", unshow)
+      .attr("d", path)
+      .style("fill", "none")
+      .style("stroke", function (d) {
+        if (color.get(d.Country) == undefined) return "grey";
+        return colores_range2(color.get(d.Country), 0, 50)
+      })
+      .style("stroke-width", "3")
+      .style("opacity", 1)
+    }
   })
 
 };
