@@ -1880,8 +1880,18 @@ var res=0;
         if(document.getElementById("errorData4")!=null) document.getElementById("errorData4").innerHTML="";
         if(sliders_val.toString()===initial_per.toString()){
           var missing_="Change percentage to show differences!";
-          d3.select("#data4").append("div").attr("id","errorData4");
-          document.getElementById("errorData4").innerHTML="<h3 style='color:blue'> "+missing_+"</h3>";
+         
+
+          document.getElementById("toast_id").innerHTML=missing_;
+
+          var toast= document.getElementById("liveToast").cloneNode(true);
+  
+        toast.setAttribute('id',missing_.replace(/[^a-zA-Z]/g, ""));
+        document.getElementById("toastlist").appendChild(toast); 
+          $('#'+missing_.replace(/[^a-zA-Z]/g, "")).toast('show');
+
+
+
           
         }
         else{
@@ -1929,7 +1939,7 @@ SELECT YEAR BUTTON FOR STARPLOT
 var allGroup = ["2016", "2018", "2019", "2020"].reverse()
 
 // Initialize the button
-var dropdownButton = d3.select("#data3")
+var dropdownButton = d3.select("#selectmapyea")
   .append('select').attr("id","yearSel").attr('class','justify-content-center form-select text-center btn-outline-primary')
 // add the options to the button
 dropdownButton // Add a button
@@ -1969,7 +1979,7 @@ dropdownButton.on("change", function(d) {
       
    }
 
-
+   var year=d3.select(this).property("value")
 
     // run the updateChart function with this selected option
     //console.log("EY",names,newRemove)

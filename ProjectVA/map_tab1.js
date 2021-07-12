@@ -3,6 +3,7 @@ var width =container_width
 var height = container_heigth*0.4;
 var bounds;
 var margin = {top: 100, right: 30, bottom: 80, left: 60}
+d3.select("#youarSelection2").style("display",function(){return "none"});
 function map_singleX(attr){
   
   if(attr==="XL"||attr==="FC"||attr=="5"||attr=="5.0"||attr=="VH"||attr==="A"){
@@ -118,14 +119,14 @@ function handleClick(d, i) { // Add interactivity
       d3.select("#littlelegend").remove()
       d3.select("#perc_txt").remove()
       d3.select("#button_newoverall").remove();
-      d3.select("#selectmapyea2").style("visibility",function(){return "visible"});
+      d3.select("#selectmapyea2").style("display",function(){return "block"});
       d3.select("#title_timestarplot").style("visibility","hidden");
       d3.select("#title_tool_overall").style("visibility","hidden");
-      
-      
+      d3.select("#youarSelection2").style("display",function(){return "none"});
     }
     else{
-      d3.select("#selectmapyea2").style("visibility",function(){return "hidden"});
+      d3.select("#selectmapyea2").style("display",function(){return "none"});
+      d3.select("#youarSelection2").style("display",function(){return "block"});
     }
     console.log(selected)
 }
@@ -885,13 +886,9 @@ dropdownButton2 // Add a button
 
     // recover the option that has been chosen
    var year =d3.select(this).property("value")
-   if(selected.length==0){
+
      updateLittleMap(year)
-   }
-   else{
-    var missing_="Deselect all uni to change year on Map";
-    d3.select("#data1").append("div").attr("id","errorData");
-    document.getElementById("errorData").innerHTML="<h3 style='color:blue'> "+missing_+"</h3>";
-   }
+
+
   
   })
