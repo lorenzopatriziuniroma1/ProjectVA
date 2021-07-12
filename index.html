@@ -10,6 +10,12 @@
     "ProjectVA/image/tocco.jpg" 
             type = "image/x-icon">
     <style>
+
+      .bootstrap-select.btn-group .dropdown-menu .select li a:hover {
+        color: whitesmoke !important;
+        background: #bf5279 !important;
+    }
+    
       #map .path {
         stroke: white;
         stroke-width: 0.5px;
@@ -135,11 +141,11 @@ var stroke_color="black"
       <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
           <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
-            type="button" role="tab" aria-controls="nav-home" aria-selected="true">Home</button>
+            type="button" role="tab" aria-controls="nav-home" aria-selected="true">Tab 1</button>
           <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button"
-            role="tab" aria-controls="nav-profile" aria-selected="false">Profile</button>
+            role="tab" aria-controls="nav-profile" aria-selected="false">Tab 2</button>
           <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button"
-            role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
+            role="tab" aria-controls="nav-contact" aria-selected="false">Tab 3</button>
         </div>
       </nav>
 
@@ -155,8 +161,8 @@ var stroke_color="black"
               <div class="row align-items-center">
                 <div class="col">
                   <div class="row align-items-center">
-                    University Overall:<div id="value-range" style="width: 5%;"></div>
-                    <div id="slider-range" style="width: 40%;"></div>
+                    <p class="d-inline">University Overall:</p><div id="value-range" style="width: 5%;"></div>
+                    <div class="d-inline" id="slider-range" style="width: 40%;"></div>
                   </div>
                 </div>
 
@@ -171,15 +177,15 @@ var stroke_color="black"
             </div>
 
             
-            <div class="row justify-content-center"  id="yourSelection2" style="height: 10%;">
+            <div class="row justify-content-center"  id="youarSelection2" style="height: 10%;">
             
               <div class="col" id="legends">
-                <p class="text-center" style="visibility:hidden" id="yourSelection">Your selection</p>
+                <p class="text-center fw-bolder text-primary" style="visibility:hidden" id="yourSelection">Your selection</p>
               </div>
               </div>
 
             <div class="row justify-content-center">
-              <p class="text-center" id="title_timestarplot" style="visibility: hidden ; ">Timeseries and Starplot</p>
+              <p class="text-center fw-bolder text-primary" id="title_timestarplot" style="visibility: hidden ; ">Timeseries and Starplot</p>
               <div class="col" id="data1">
               </div>
 
@@ -188,7 +194,7 @@ var stroke_color="black"
             </div>
 
             <div class="row justify-content-center">
-              <p class="text-center" id="title_tool_overall" style="visibility: hidden ; margin-top: 20px; ">Analytic tool for New Overall Score</p>
+              <p class="text-center fw-bolder text-primary" id="title_tool_overall" style="visibility: hidden ; margin-top: 20px; ">Weight analisys to compute overall score</p>
               <div class="col-4" id="data4">
               </div>
               <div class="col" id="data5">
@@ -239,11 +245,11 @@ var stroke_color="black"
 
           <div class="row" style="margin-top: 10px;">
             <div class="col" id="country_year" style="width: 100%">
-<p class="text-center" >Year</p>
+<p class="text-center  text-primary" >Year</p>
             </div>
 
             <div class="col " id="selectpercentage">
-              <p class="text-center" >Percentage</p>
+              <p class="text-center  text-primary" >Percentage</p>
             </div>
 
           </div>

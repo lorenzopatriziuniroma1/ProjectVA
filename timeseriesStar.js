@@ -972,6 +972,8 @@ var svgS= d3.select("#data2")
 
   coom_svgs.scaleTo(svgS.transition().duration(750),.6)
   var scale=0.6;
+
+
   d3.select("#data2").append("button").attr("type","button").attr("class","btn btn-outline-primary").attr("id","zoomin").attr("width",width_data*0.5)
   .attr("height",height_data*0.7) .text("+").on("click", function() {
     scale=scale*1.2
@@ -1804,6 +1806,12 @@ var res=0;
           .step(5)
           .default(def)
           .fill('#2196f3')
+          .handle(
+            d3
+              .symbol()
+              .type(d3.symbolCircle)
+              .size(200)()
+          )
           .on('onchange', val => {
             d3.select('p#value-simple').text(d3.format('d')(Math.round(val)));
             sliders_val[i]=Math.round(val);
@@ -1922,14 +1930,15 @@ var allGroup = ["2016", "2018", "2019", "2020"].reverse()
 
 // Initialize the button
 var dropdownButton = d3.select("#data3")
-  .append('select').attr("id","yearSel").attr('class','justify-content-center form-select text-center')
-
+  .append('select').attr("id","yearSel").attr('class','justify-content-center form-select text-center btn-outline-primary')
 // add the options to the button
 dropdownButton // Add a button
   .selectAll('myOptions') 
  	.data(allGroup)
   .enter()
 	.append('option')
+  .style("background-color","white")
+  .style("color","#0d6efd")
   .text(function (d) { return d; }) // text showed in the menu
   .attr("value", function (d) { return d; }) // corresponding value returned by the button
 

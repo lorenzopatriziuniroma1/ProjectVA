@@ -210,7 +210,7 @@ function(data) {
   
     // Build the X scale -> it find the best position for each Y axis
     var x2 = d3.scalePoint()
-      .range([0, width2*1.3])
+      .range([0, width2*1.5])
       .padding(1)
       .domain(dimensions);
       // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
@@ -256,7 +256,8 @@ var years = ["2020", "2019", "2018","2016"];
 
 var select = d3.select('#pca_year')
   .append('select')
-  	.attr('class','justify-content-center form-select text-center')
+
+    .attr('class','justify-content-center form-select text-center btn-outline-primary')
     .attr('id',"pca_select")
     .on('change',onchange);
 
@@ -265,6 +266,8 @@ var options = select
       .data(years).enter()
       .append('option')
       .attr("class"," text-center")
+      .style("background-color","white")
+      .style("color","#0d6efd")
           .text(function (d) { return d; });
 
 function onchange() {
@@ -319,7 +322,7 @@ var y = d3.scaleLinear()
   
     // Build the X scale -> it find the best position for each Y axis
     var x2 = d3.scalePoint()
-      .range([0, width2*1.3])
+      .range([0, width2*1.5])
       .padding(1)
       .domain(dimensions);
       // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
@@ -498,7 +501,7 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
 
   var old;
 var zoom = d3.zoom()
-.scaleExtent([1, 85])
+.scaleExtent([0.5, 85])
 .translateExtent([[-width+width/2, -height+height/2], [width+width/2, height+height/2]])
 .on('zoom', function(event) {
     old=event.transform

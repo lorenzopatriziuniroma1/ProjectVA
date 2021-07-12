@@ -350,6 +350,12 @@ create_legend(svg1)
   .step(1)
   .default([0, 100])
   .fill('#2196f3')
+  .handle(
+    d3
+      .symbol()
+      .type(d3.symbolCircle)
+      .size(200)()
+  )
   .on('onchange', val => {
     d3.select('#value-range').text(val.join('-'));
  
@@ -862,7 +868,7 @@ var allGroup2 = ["2016", "2018", "2019", "2020"].reverse()
 
 // Initialize the button
 var dropdownButton2 = d3.select("#selectmapyea")
-  .append('select').attr("id","selectmapyea2").attr('class','justify-content-center form-select text-center')
+  .append('select').attr("id","selectmapyea2").attr('class','justify-content-center form-select text-center btn-outline-primary')
 
 // add the options to the button
 dropdownButton2 // Add a button
@@ -870,6 +876,8 @@ dropdownButton2 // Add a button
    .data(allGroup2)
   .enter()
   .append('option')
+  .style("background-color","white")
+  .style("color","#0d6efd")
   .text(function (d) { return d; }) // text showed in the menu
   .attr("value", function (d) { return d; }) // corresponding value returned by the button
 

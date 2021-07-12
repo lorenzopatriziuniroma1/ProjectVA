@@ -45,7 +45,7 @@ var g2 = svg3.append("g");
 
 var selectPercentage = d3.select("div #selectpercentage")
   .append('select')
-  .attr('class', 'form-select text-center')
+  .attr('class','justify-content-center form-select text-center btn-outline-primary')
   .attr('id', "map_percentage")
   .on('change', updateChart2);
 
@@ -59,6 +59,8 @@ var options2 = selectPercentage
   .selectAll('option')
   .data(percentage).enter()
   .append('option')
+  .style("background-color","white")
+  .style("color","#0d6efd")
   .text(function (d) { return d; });
 
 var selectedPercentage = 100;
@@ -176,7 +178,7 @@ d3.json("GeoMap/custom.geo.json").then(function (uState) {
 
         
 var zoom = d3.zoom()
-.scaleExtent([1, 85])
+.scaleExtent([0.5, 85])
 .translateExtent([[-width+width/2, -height+height/2], [width+width/2, height+height/2]])
 .on('zoom', function (event) {
   //console.log(d3.event.transform)
@@ -376,7 +378,7 @@ var allGroup3 = ["2016", "2018", "2019", "2020"].reverse()
 
 // Initialize the button
 var dropdownButton3 = d3.select("#country_year")
-  .append('select').attr("id", "selectmapyea2").attr('class', 'justify-content-center form-select text-center')
+  .append('select').attr("id", "selectmapyea2").attr('class','justify-content-center form-select text-center btn-outline-primary')
 
 // add the options to the button
 dropdownButton3 // Add a button
@@ -384,6 +386,8 @@ dropdownButton3 // Add a button
   .data(allGroup3)
   .enter()
   .append('option')
+  .style("background-color","white")
+  .style("color","#0d6efd")
   .text(function (d) { return d; }) // text showed in the menu
   .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
