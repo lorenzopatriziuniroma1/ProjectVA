@@ -236,8 +236,8 @@ function handleMouseClick3(d, i) {
   if (t.style("fill") !== t.attr("old")) {
     t
       .style("fill", t.attr("old"))
-      .style("stroke", "#b3ccff")
-      .style("stroke-width", ".1px")
+      .style("stroke", stroke_color)
+
 
 
     var index = country_selected.indexOf(i.properties.name);
