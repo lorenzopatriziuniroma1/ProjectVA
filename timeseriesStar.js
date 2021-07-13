@@ -949,9 +949,9 @@ svgLeggends
 .attr("width","95%")
 .attr("height","95%")
 .attr("transform","translate("+5+","+"3)")
-.style("opacity",0.7)
+//.style("opacity",0.7)
 .attr("fill","#69a9bf")
-.attr("fill-opacity","0.3")
+.attr("fill-opacity","0.6")
 .attr("rx", 5)
 .attr("ry", 5)
 
@@ -1302,6 +1302,10 @@ svgLeggends.selectAll("mylabelsS")
     .text(function(d,i){ return format_etichetta(arr_sorted[i])})
     .attr("text-anchor", "left")
     .style("alignment-baseline", "middle")
+    .attr( "font-weight","bold")
+    .style("stroke","black")
+    .style("stroke-width","0.6px")
+
 
 
 
@@ -1473,7 +1477,9 @@ svgLeggends.selectAll("mylabelsS")
        format_number(selected_year_data[newRemove[i]][6])=="NaN"?sryn="(year N/A)":sryn="(O.S "+format_number(selected_year_data[newRemove[i]][6])+")";
       return format_etichetta(newRemove[i])+" "+sryn })
     .style("alignment-baseline", "middle")
-
+    .attr( "font-weight","bold")
+    .style("stroke","black")
+    .style("stroke-width","0.6px")
     
 
 
@@ -1528,7 +1534,7 @@ svgLeggends.selectAll("mylabelsS")
       
       var x0 = d3.scaleBand()
       
-          .range([0, widthBAR-20]).round([.1]).paddingInner([0.60]).paddingOuter([0.3])
+          .range([0, container_width*0.4-20]).round([.1]).paddingInner([0.60]).paddingOuter([0.3])
       
       var x1 = d3.scaleBand();
       
@@ -1716,8 +1722,8 @@ svgLeggends.selectAll("mylabelsS")
             .attr("height", function(d) { return heightBAR - y(d.value); });
       
  
-        svgB2.append("text").attr("transform", "translate(" + (widthBAR+95) + "," + 48 + ")").text("NEW")
-        svgB2.append("text").attr("transform", "translate(" + (widthBAR+140) + "," + 48 + ")").text("ORI")
+        svgB2.append("text").attr("transform", "translate(" + (container_width*0.4+95) + "," + 48 + ")").text("NEW")
+        svgB2.append("text").attr("transform", "translate(" + (container_width*0.4+140) + "," + 48 + ")").text("ORI")
         svgB2.selectAll("legendSlidebar")
         .data(supp_data)
         .enter()
@@ -1728,7 +1734,7 @@ svgLeggends.selectAll("mylabelsS")
         .attr("y", function(d,i){ 
                               return 45+ i*(30+5)}) // 100 is where the first dot appears. 25 is the distance between dots
         .attr("width", 30)
-        .attr("height", 30).attr("transform", "translate(" + (widthBAR) + "," + 20 + ")")
+        .attr("height", 30).attr("transform", "translate(" + (container_width*0.4) + "," + 20 + ")")
         .style("fill", function(d,i){ 
           console.log("AAA",d)
              if(d.values[0].type=="A")
@@ -1745,7 +1751,7 @@ svgLeggends.selectAll("mylabelsS")
         .attr("y", function(d,i){ 
                           return 45+ i*(30+5)     }) // 100 is where the first dot appears. 25 is the distance between dots
         .attr("width", 30)
-        .attr("height", 30).attr("transform", "translate(" + (widthBAR+40) + "," + 20 + ")")
+        .attr("height", 30).attr("transform", "translate(" + (container_width*0.4+45) + "," + 20 + ")")
         .style("fill", function(d,i){ 
           if(d.values[0].type=="A")
              return  colorOri[i]
@@ -1762,7 +1768,7 @@ svgLeggends.selectAll("mylabelsS")
                             // 100 is where the first dot appears. 25 is the distance between dots
     .style("fill", "black")
     .text(function(d){ return d["categorie"]})
-    .attr("text-anchor", "left").attr("transform", "translate(" + (widthBAR+70) + "," + 20 + ")")
+    .attr("text-anchor", "left").attr("transform", "translate(" + (container_width*0.4+50) + "," + 20 + ")")
     .style("alignment-baseline", "middle")
             
       c_initial=false

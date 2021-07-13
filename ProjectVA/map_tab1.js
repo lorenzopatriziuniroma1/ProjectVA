@@ -78,7 +78,7 @@ function handleMouseOver(d, i) {  // Add interactivity
       div.transition()		
       .duration(200)		
       .style("opacity", .9);		
-  div	.html(i.Institution + "<br/> Rank =" +i["CurrentRank"]+"<br/> year= " +i.anno)	
+  div	.html(i.Institution + "<br/> Rank =" +i["CurrentRank"]+"<br/>")	
       .style("left", (d.pageX) + "px")		
       .style("top", (d.pageY - 28) + "px");
       }
