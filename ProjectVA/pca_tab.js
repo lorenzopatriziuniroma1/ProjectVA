@@ -16,13 +16,13 @@ var myColorCircle = d3.scaleLinear().domain([0,100])
 function handleMouseOn(d,i){
   div.transition()		
   .duration(200)		
-  .style("opacity", .9);		
+  .style("opacity", .95);		
 div	.html(i.Institution + "<br/> Rank =" +i["CurrentRank"])	
   .style("left", (d.pageX) + "px")		
   .style("top", (d.pageY - 28) + "px");
 
   var c=d3.select(this)
-  c.attr("old",c.style("stroke")).style("stroke", "red").style("stroke-width","4.5px")
+  c.attr("old",c.style("stroke")).style("stroke", "#08306b").style("stroke-width","4.5px")
   c.moveToFront();
 }
 function handleMouseOut2(d,i){

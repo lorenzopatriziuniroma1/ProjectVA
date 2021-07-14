@@ -950,7 +950,7 @@ svgLeggends
 .attr("height","95%")
 .attr("transform","translate("+5+","+"3)")
 //.style("opacity",0.7)
-.attr("fill","#69a9bf")
+.attr("fill",d3.rgb(196,230,255))
 .attr("fill-opacity","0.6")
 .attr("rx", 5)
 .attr("ry", 5)
@@ -988,7 +988,7 @@ var svgS= d3.select("#data2")
 
 
   function zoomed (event) {
-    console.log(event.transform)
+    //console.log(event.transform)
     event.transform.k=scale
     svgS.attr("transform",event.transform)
    }
