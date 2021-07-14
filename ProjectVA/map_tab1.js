@@ -928,4 +928,4 @@ dropdownButton2 // Add a button
     });
 
 
-    svg1.append("text").attr("x","1%").attr("y","98%").text("press ctr-z to higlith the university selected")
+    svg1.append("text").attr("x","1%").attr("y","98%").text("press CTRL-Z to highlight the selected universities")
