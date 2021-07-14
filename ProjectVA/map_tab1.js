@@ -926,3 +926,6 @@ dropdownButton2 // Add a button
         show_selected=!show_selected
       }
     });
+
+
+    svg1.append("text").attr("x","1%").attr("y","98%").text("press ctr-z to higlith the university selected")
