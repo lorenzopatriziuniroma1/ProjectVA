@@ -1657,9 +1657,9 @@ svgLeggends.selectAll("mylabelsS")
            
         slice.selectAll("rect")
             .data(function(d) { return d.values; })
-        .enter().append("rect").attr("id","RECT_"+d.cat)
+            .enter().append("rect").attr("id","RECT_"+d.cat)
             .attr("width", x1.bandwidth())
-            .attr("x", function(d) { return x1(d.rate); })
+   
             .style("fill", function(d,i) { 
               if(d.type=="A"){
                 
@@ -1669,6 +1669,7 @@ svgLeggends.selectAll("mylabelsS")
                 return i==0? supplement_colorNew[D]:supplement_colors[D++]
                 }
             })
+            .attr("x", function(d) { return x1(d.rate); })
             .attr("y", function(d) { return y(0); })
             .attr("height", function(d) { return heightBAR - y(0); })
             .on("mouseover",function(d,h){
@@ -1713,6 +1714,24 @@ svgLeggends.selectAll("mylabelsS")
               
               svgB2.select("#robaTextX").remove()
             })
+            
+            slice
+            .data(supp_data)
+            .append("text")
+            .text(d=>{console.log("ciao");console.log(d.values[0].rate);return d.values[0].rate})
+            .attr("text-anchor","middle")
+            .attr("x", function(d) { return x1.bandwidth()/2+x1(d.values[0].rate); })
+            .attr("y", function(d) { return  heightBAR - y(d.values[0].value); })
+            .attr("fill","white").attr("id","culo")
+
+            slice
+            .data(supp_data)
+            .append("text")
+            .text(d=>{console.log("ciao");console.log(d.values[1].rate);return "Ori";})
+            .attr("text-anchor","middle")
+            .attr("x", function(d) { return x1.bandwidth()/2+x1(d.values[1].rate); })
+            .attr("y", function(d) { return  heightBAR - y(d.values[1].value); })
+            .attr("fill","white").attr("id","culo")
           
         slice.selectAll("rect")
             .transition()
