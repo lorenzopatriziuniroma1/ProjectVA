@@ -21,11 +21,10 @@ var radius= width_data*0.25
 const colors = [ "#e31a1c","#fc4e2a","#fd8d3c","#feb24c", "#fed976"];
 
 const supplement_colors=[
-        "#609732",
-         "#BAE397",
-         "#8ABD5F",
-         "#3E7213",
-         "#224C00" 
+       
+  
+  "#aaaa11","#109618"  , "#dd4477", "#6633cc", "#66aa00"
+       // "#609732", "#BAE397","#8ABD5F","#3E7213", "#224C00" 
       ].reverse();
 
 //calculate the mean per one university
@@ -564,7 +563,7 @@ for(let n=0;n< names.length;n++){
     d3.select(this).attr("stroke", "#4ae54a");
 
 
-  var redTxt=svgT.append("text").attr("transform", "translate(40," + margin.top/2+ ")").attr("id","overline").attr("x", width_data*0.3) 
+  var redTxt=svgT.append("text").attr("transform", "translate(40," + margin.top/2+ ")").attr("id","overline").attr("x", width_data*0.2) 
 .attr("y",y(d_mean[names[n]])+30)
 .text(function(d) {
   return format_etichetta(names[n]) +" - Overall mean: "+parseFloat(d_mean[names[n]]).toFixed(2);  // Value of the text
@@ -574,13 +573,13 @@ for(let n=0;n< names.length;n++){
  return this.getBBox().width;
 }).style("stroke","white")
 
-svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top/2 + ")").attr("id","overSline").attr("x", width_data*0.3) 
+svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top/2 + ")").attr("id","overSline").attr("x", width_data*0.2) 
 .attr("y", y(d_mean[names[n]])+10)
 .attr("width",redTxt.attr("cc")).attr("pointer-events", "none")
 .attr("height", 22.5)
 .attr("fill","white").style("opacity","0.75")
 
-svgT.append("text").attr("transform", "translate(40," + margin.top/2+ ")").attr("id","overline1").attr("x", width_data*0.3) 
+svgT.append("text").attr("transform", "translate(40," + margin.top/2+ ")").attr("id","overline1").attr("x", width_data*0.2) 
 .attr("y",y(d_mean[names[n]])+30)
 .text(function(d) {
   return format_etichetta(names[n]) +" - Overall mean: "+parseFloat(d_mean[names[n]]).toFixed(2);  // Value of the text
@@ -711,7 +710,7 @@ svgT.append("path").attr("transform", "translate(" +40 + "," + margin.top/2 + ")
   d3.select(this).attr("stroke", "#4ae54a");
 
   var m= 0;
-var redTxt=svgT.append("text").attr("transform", "translate(40," + margin.top/2 + ")").attr("id","overline").attr("x", width_data*0.3) 
+var redTxt=svgT.append("text").attr("transform", "translate(40," + margin.top/2 + ")").attr("id","overline").attr("x", width_data*0.2) 
 .attr("y",function(){
   
   YYY.forEach(t=>{
@@ -727,13 +726,13 @@ return  "GENERAL Overall mean: "+parseFloat(m/4).toFixed(2);  // Value of the te
 return this.getBBox().width;
 }).style("stroke","white")
 
-svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top/2 + ")").attr("id","overSline").attr("x", width_data*0.3) 
+svgT.append("rect").attr("transform", "translate(" +40 + "," + margin.top/2 + ")").attr("id","overSline").attr("x", width_data*0.2) 
 .attr("y", y(m/4)+20)
 .attr("width",redTxt.attr("cc"))
 .attr("height", 20)
 .attr("fill","white").style("opacity","0.85")
 var m= 0;
-svgT.append("text").attr("transform", "translate(40," + margin.top/2 + ")").attr("id","overline1").attr("x", width_data*0.3) 
+svgT.append("text").attr("transform", "translate(40," + margin.top/2 + ")").attr("id","overline1").attr("x", width_data*0.2) 
 .attr("y",function(){
   
   YYY.forEach(t=>{
@@ -950,9 +949,9 @@ svgLeggends
 .attr("width","95%")
 .attr("height","95%")
 .attr("transform","translate("+5+","+"3)")
-.style("opacity",0.7)
-.attr("fill","white")
-.attr("fill-opacity","0.4")
+//.style("opacity",0.7)
+.attr("fill","#69a9bf")
+.attr("fill-opacity","0.6")
 .attr("rx", 5)
 .attr("ry", 5)
 
@@ -1156,7 +1155,7 @@ for (var i = 0; i < names.length; i ++){
   .attr("stroke", color)
   .attr("fill", color)
   .attr("stroke-opacity", 1)
-  .attr("opacity", 0.5)
+  .attr("opacity", 0.4)
   
 
   
@@ -1303,6 +1302,10 @@ svgLeggends.selectAll("mylabelsS")
     .text(function(d,i){ return format_etichetta(arr_sorted[i])})
     .attr("text-anchor", "left")
     .style("alignment-baseline", "middle")
+    .attr( "font-weight","bold")
+    .style("stroke","black")
+    .style("stroke-width","0.6px")
+
 
 
 
@@ -1328,7 +1331,7 @@ for (var i = 0; i < newRemove.length; i ++){
   .attr("stroke", color)
   .attr("fill", color)
   .attr("stroke-opacity", 1)
-  .attr("opacity", 0.5)
+  .attr("opacity", 0.4)
   .attr("id", "Path"+newRemove[i])
 
   
@@ -1469,9 +1472,14 @@ svgLeggends.selectAll("mylabelsS")
   .attr("x", width_data/4+20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
   .attr("y", function(d,i){ return 10 + i*(size+5) + (size*0.9)})
     .style("fill", function(d,i){ return supplement_colors[i]})
-    .text(function(d,i){ return format_etichetta(newRemove[i])+" ("+format_number(selected_year_data[newRemove[i]][6])+")"})
+    .text(function(d,i){ 
+      var sryn;
+       format_number(selected_year_data[newRemove[i]][6])=="NaN"?sryn="(year N/A)":sryn="(O.S "+format_number(selected_year_data[newRemove[i]][6])+")";
+      return format_etichetta(newRemove[i])+" "+sryn })
     .style("alignment-baseline", "middle")
-
+    .attr( "font-weight","bold")
+    .style("stroke","black")
+    .style("stroke-width","0.6px")
     
 
 
@@ -1526,7 +1534,7 @@ svgLeggends.selectAll("mylabelsS")
       
       var x0 = d3.scaleBand()
       
-          .range([0, widthBAR-20]).round([.1]).paddingInner([0.60]).paddingOuter([0.3])
+          .range([0, container_width*0.4-20]).round([.1]).paddingInner([0.60]).paddingOuter([0.3])
       
       var x1 = d3.scaleBand();
       
@@ -1541,21 +1549,35 @@ svgLeggends.selectAll("mylabelsS")
           
       
       const colorOri = 
-          ["#f22105",
-          "#ff7eac",
-          "#ffdbff",
-          "#aed1ff",
-          "#00cceb"]
-      const supplement_colorNew=["#8f0678",
+      [ "#f51a1c","#eb4e2a","#fd8d3c","#feb24c", "#fed976"];
+    // const supplement_colorNew= [ "#109618", "#990099", "#0099c6", "#3366cc", "#66aa00"]
+       /*["#8f0678",
         "#af749f",
         "#c6c6c6",
         "#dcd78a",
-        "#e8e83c"]
-      const colorNew = ["#de8f40",
-          "#eebf97",
-          "#f1f1f1",
-          "#bfb7da",
-          "#8d80c2"]
+        "#e8e83c"]*/
+      const supplement_colorNew =["#636363",
+      "#808080",
+      "#9e9e9e",
+      "#bdbdbd",
+      "#dedede"
+    ]
+      const colorNew = ["#0b4463",
+        "#44809e",
+
+        "#75aabc",
+        
+        "#aad4db",
+        
+       
+        "#9ed7df"
+        ]
+      /* ["#81329c",
+      "#b05ca6",
+      "#c380bd",
+      "#d09dd6",
+      "#e8c1ea",
+      ]*/
       
       var svgB2 = d3.select('#data5').append("svg").attr("id","BARsvg2")
           .attr("width", width_data*0.6)
@@ -1700,8 +1722,8 @@ svgLeggends.selectAll("mylabelsS")
             .attr("height", function(d) { return heightBAR - y(d.value); });
       
  
-        svgB2.append("text").attr("transform", "translate(" + (widthBAR+95) + "," + 48 + ")").text("NEW")
-        svgB2.append("text").attr("transform", "translate(" + (widthBAR+140) + "," + 48 + ")").text("ORI")
+        svgB2.append("text").attr("transform", "translate(" + (container_width*0.4+95) + "," + 48 + ")").text("NEW")
+        svgB2.append("text").attr("transform", "translate(" + (container_width*0.4+140) + "," + 48 + ")").text("ORI")
         svgB2.selectAll("legendSlidebar")
         .data(supp_data)
         .enter()
@@ -1712,7 +1734,7 @@ svgLeggends.selectAll("mylabelsS")
         .attr("y", function(d,i){ 
                               return 45+ i*(30+5)}) // 100 is where the first dot appears. 25 is the distance between dots
         .attr("width", 30)
-        .attr("height", 30).attr("transform", "translate(" + (widthBAR) + "," + 20 + ")")
+        .attr("height", 30).attr("transform", "translate(" + (container_width*0.4) + "," + 20 + ")")
         .style("fill", function(d,i){ 
           console.log("AAA",d)
              if(d.values[0].type=="A")
@@ -1729,7 +1751,7 @@ svgLeggends.selectAll("mylabelsS")
         .attr("y", function(d,i){ 
                           return 45+ i*(30+5)     }) // 100 is where the first dot appears. 25 is the distance between dots
         .attr("width", 30)
-        .attr("height", 30).attr("transform", "translate(" + (widthBAR+40) + "," + 20 + ")")
+        .attr("height", 30).attr("transform", "translate(" + (container_width*0.4+45) + "," + 20 + ")")
         .style("fill", function(d,i){ 
           if(d.values[0].type=="A")
              return  colorOri[i]
@@ -1746,7 +1768,7 @@ svgLeggends.selectAll("mylabelsS")
                             // 100 is where the first dot appears. 25 is the distance between dots
     .style("fill", "black")
     .text(function(d){ return d["categorie"]})
-    .attr("text-anchor", "left").attr("transform", "translate(" + (widthBAR+70) + "," + 20 + ")")
+    .attr("text-anchor", "left").attr("transform", "translate(" + (container_width*0.4+50) + "," + 20 + ")")
     .style("alignment-baseline", "middle")
             
       c_initial=false

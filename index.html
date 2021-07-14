@@ -47,7 +47,7 @@
         position: absolute;
 
         text-align: center;
-        width: 160px;
+        width: 200px;
         height: 60px;
         padding: 2px;
         font: 12px sans-serif;
@@ -70,6 +70,17 @@
         stroke: gray;
         stroke-width: 1px;
       }
+
+      #zoomin{
+        position: absolute;
+  left:80%;
+ 
+      } 
+      #zoomout{
+        position: absolute;
+  left:82%;
+  
+      } 
     </style>
     <script src="util/d3.min.js"></script>
 
@@ -161,7 +172,7 @@ var stroke_color="black"
               <div class="row align-items-center">
                 <div class="col">
                   <div class="row align-items-center">
-                    <p class="d-inline">University Overall:</p><div id="value-range" style="width: 5%;"></div>
+                    <p class="d-inline text-primary">University Overall:</p><div id="value-range" style="width: 5%;"></div>
                     <div class="d-inline" id="slider-range" style="width: 40%;"></div>
                   </div>
                 </div>
@@ -224,8 +235,8 @@ var stroke_color="black"
           <br/>
           <div class="row justify-content-center">
 
-            <div class="col text-center" id="pca_year">
-
+            <div class="col text-center" id="pca_year" style="margin-bottom: 10px;">
+              <p class="text-center  text-primary" >Year</p>
             </div>
           </div>
           <div class="row">

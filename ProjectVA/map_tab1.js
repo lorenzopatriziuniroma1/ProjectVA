@@ -1,7 +1,7 @@
 var sliderRange;var scale1on85=false;var rand1,rand2;var old2;
 var width =container_width
 var height = container_heigth*0.4;
-var bounds;
+var bounds; var magi = 0; var lineaMaginot;
 var margin = {top: 100, right: 30, bottom: 80, left: 60}
 d3.select("#youarSelection2").style("display",function(){return "none"});
 function map_singleX(attr){
@@ -78,7 +78,7 @@ function handleMouseOver(d, i) {  // Add interactivity
       div.transition()		
       .duration(200)		
       .style("opacity", .9);		
-  div	.html(i.Institution + "<br/> Rank =" +i["CurrentRank"]+"<br/> year= " +i.anno)	
+  div	.html(i.Institution + "<br/> Rank =" +i["CurrentRank"]+"<br/>")	
       .style("left", (d.pageX) + "px")		
       .style("top", (d.pageY - 28) + "px");
       }
@@ -381,6 +381,7 @@ d3.select('#value-range').text(
 
 function createBarGraph(year_datax){
   document.getElementById("data3").innerHTML=""
+  
   //console.log(year_data)
   function map_usage(year_datay){
     //var supp=[{"categorie":"Size","values":[0,0,0,0,0]},{"categorie":"Focus","values":[0,0,0,0,0]},{"categorie":"Research","values":[0,0,0,0,0]},{"categorie":"Age","values":[0,0,0,0,0]},{"categorie":"Status","values":[0,0,0,0,0]}];
@@ -495,6 +496,7 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
     .attr("height", heightBAR + marginBAR.top + marginBAR.bottom)
   .append("g")
     .attr("transform", "translate(" + marginBAR.left + "," + 20 + ") scale("+1+")");
+  
 
   var Call=map_usage(year_datax);
   var d_year_numeric=Call[1];var d_year = Call[0];
@@ -504,7 +506,7 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
 
   x0.domain(categoriesNames);
   x1.domain(rateNames).range([0, x0.bandwidth()]);
-  y.domain([0, Object.keys(d_year).length+25]);
+  y.domain([0, 1060]);
 
   svgB.append("g")
       .attr("class", "x axis")
@@ -513,7 +515,7 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
 
   svgB.append("g")
       .attr("class", "y axis")
-      .style('opacity','0')
+      .style('opacity','1')
       .call(yAxis)
   .append("text")
       .attr("transform", "rotate(-90)")
@@ -523,19 +525,38 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
       .style('font-weight','bold')
       .text("Value");
 
-      svgB.append('line')
-      .style("stroke", "#605D63")
-      .style("stroke-dasharray", ("10, 5"))
-      
-      .attr("x1", 0)
-      .attr("y1", y(Object.keys(d_year).length))
-      .attr("x2",  widthBAR-10 )
-      .attr("y2", y(Object.keys(d_year).length));  
-      
-      svgB.append('text').style("stroke","black")
-      .attr("transform", "translate("+widthBAR/2+","+(y(Object.keys(d_year).length)-15)+")").text("# Universities in ranking = "+Object.keys(d_year).length)
+      function addMaginot(y_coord){
+         svgB.append('line').attr("id","lineaMaginot")
+         .style("stroke", "#605D63")
+         .style("stroke-dasharray", ("10, 5"))
+         
+         .attr("x1", 0)
+         .attr("y1", y_coord)
+         .attr("x2",  widthBAR-10 )
+         .attr("y2", y_coord);  
+         
+         
+       
+         svgB.append('text').style("stroke","black").attr("id","scritta_maginot")
+         .attr("transform", "translate("+((widthBAR/2).toFixed(1))+","+(y_coord-15)+")").text("# Universities in ranking = "+Object.keys(d_year).length)
+         return y(Object.keys(d_year).length)
+       }
 
-  svgB.select('.y').transition().duration(500).delay(1300).style('opacity','1');
+      if(magi!=0){ //old one is back
+        addMaginot(magi)
+        svgB.select('#lineaMaginot').transition().duration(500).delay(600).attr("y1", y(Object.keys(d_year).length)).attr("y2", y(Object.keys(d_year).length));
+        svgB.select('#scritta_maginot').transition().duration(500).delay(600).attr("transform", "translate("+((widthBAR/2).toFixed(1))+","+(y(Object.keys(d_year).length)-15)+")")
+        
+        magi = y(Object.keys(d_year).length);
+      }
+      
+      else{
+        magi = addMaginot(y(Object.keys(d_year).length))
+   
+      }
+
+  //svgB.select('.y').transition().duration(0).delay(0)
+  
   var supp_data=generate_J(d_year,d_year_numeric);
   var slice = svgB.selectAll(".slice")
       .data(supp_data)

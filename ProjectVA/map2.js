@@ -72,7 +72,7 @@ function compareUniversity(a, b) {
 
 function show(d, i) {
 
-  tooltip2.html(" Country =" + i.Country)
+  tooltip2.html("Country =" + i.Country)
     .style("left", (d.pageX) + "px")
     .style("top", (d.pageY - 28) + "px")
     .transition()
@@ -114,6 +114,11 @@ d3.json("GeoMap/custom.geo.json").then(function (uState) {
         .attr("old", function (d) {
           return this.style.fill
         
+        })
+        .attr("number", function(d){
+          console.log(color.get(d.properties.name))
+          if (color.get(d.properties.name) == undefined) return "0cgnxc";
+          return color.get(d.properties.name) ;
         })
         .on("mouseover", handleMouseOver3)
         .on("mouseout", handleMouseOut3)
@@ -204,7 +209,7 @@ svg3.call(zoom);
 
 
 function handleMouseOver3(d, i) {  // Add interactivity
-  tooltip2.html(" Country =" + i.properties.name)
+  tooltip2.html(" Country =" + i.properties.name+"<br/> Number of University = "+this.getAttribute("number"))
     .style("left", (d.pageX) + "px")
     .style("top", (d.pageY - 28) + "px")
     .transition()
@@ -220,7 +225,7 @@ function handleMouseOut3(d, i) {  // Add interactivity
 }
 
 function handleMouseMove(d, i) {
-  tooltip2.html(" Country =" + i.properties.name)
+  tooltip2
     .style("left", (d.pageX) + "px")
     .style("top", (d.pageY - 50) + "px")
 }
@@ -324,6 +329,7 @@ function updateChart2() {
       var lex=lines.exit();
       lex.transition().duration(1000).style("opacity",0).remove()
 
+      console.log(color)
       var lin=lines.enter()
       lin.append("path")
       .attr("class", "myPathCountry")
@@ -335,7 +341,12 @@ function updateChart2() {
         return country_color[d.Country]
       })
       .style("stroke-width", "3")
-      .style("opacity", 1)
+      .style("opacity", 1)      
+      .attr("number", function(d){
+        if (color.get(d.name) == undefined) return 0;
+        return color.get(d.name) ;
+      })
+
 
 
 
