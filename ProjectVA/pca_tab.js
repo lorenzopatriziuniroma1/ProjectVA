@@ -259,7 +259,7 @@ var select = d3.select('#pca_year')
 
     .attr('class','justify-content-center form-select text-center btn-outline-primary')
     .attr('id',"pca_select")
-    .on('change',onchange);
+    .on('change',onchange2);
 
 var options = select
     .selectAll('option')
@@ -270,7 +270,7 @@ var options = select
       .style("color","#0d6efd")
           .text(function (d) { return d; });
 
-function onchange() {
+function onchange2() {
     selectValue = d3.select('#pca_select').property('value')
 
 

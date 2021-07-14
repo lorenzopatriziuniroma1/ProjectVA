@@ -128,7 +128,6 @@ function handleClick(d, i) { // Add interactivity
       d3.select("#selectmapyea2").style("display",function(){return "none"});
       d3.select("#youarSelection2").style("display",function(){return "block"});
     }
-    console.log(selected)
 }
 const path = d3.geoPath().projection(projection);
 
@@ -263,7 +262,6 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
 .translateExtent([[-width+width/2, -height+height/2], [width+width/2, height+height/2]])
 .on('zoom', function(event) {
 
-console.log(event.transform)
    g.attr("transform",event.transform);
 
 
@@ -382,7 +380,6 @@ d3.select('#value-range').text(
 
 
 function createBarGraph(year_datax){
-  console.log("Y",year_datax)
   document.getElementById("data3").innerHTML=""
   //console.log(year_data)
   function map_usage(year_datay){
@@ -540,7 +537,6 @@ var svgB = d3.select('#data3').append("svg").attr("id","BARsvg")
 
   svgB.select('.y').transition().duration(500).delay(1300).style('opacity','1');
   var supp_data=generate_J(d_year,d_year_numeric);
-  console.log(supp_data)
   var slice = svgB.selectAll(".slice")
       .data(supp_data)
       .enter().append("g")
@@ -892,3 +888,20 @@ dropdownButton2 // Add a button
 
   
   })
+
+
+
+  
+  var show_selected= true;
+
+  $(document).keydown(function(e){
+    if (e.keyCode==90 && e.ctrlKey){
+        var circle=svg1.selectAll(".University")
+        if(show_selected){
+        circle.filter((d,i)=>{ return RGBToHex(circle._groups[0][i].style.fill)!=palette_divergent_map[0];}).style("opacity",0)
+        }else{
+          circle.style("opacity",1)
+        }
+        show_selected=!show_selected
+      }
+    });
