@@ -919,9 +919,9 @@ dropdownButton2 // Add a button
     if (e.keyCode==90 && e.ctrlKey){
         var circle=svg1.selectAll(".University")
         if(show_selected){
-        circle.filter((d,i)=>{ return RGBToHex(circle._groups[0][i].style.fill)!=palette_divergent_map[0];}).style("opacity",0)
+        circle.filter((d,i)=>{ return RGBToHex(circle._groups[0][i].style.fill)!=palette_divergent_map[0];}).transition().duration(1000).style("opacity",0)
         }else{
-          circle.style("opacity",1)
+          circle.transition().duration(1000).style("opacity",1)
         }
         show_selected=!show_selected
       }
