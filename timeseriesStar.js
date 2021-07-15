@@ -1165,7 +1165,7 @@ for (var i = 0; i < names.length; i ++){
   let cy=[];
   arr.pop();
   
-  svgS.append("g").selectAll("circle").data(arr).enter()
+  svgS.append("g").attr("class","circolinos").selectAll("circle").data(arr).enter()
   
   .append("circle").attr("class","circleInStar")
   .attr("id","Circles"+names[i])
@@ -1189,7 +1189,7 @@ for (var i = 0; i < names.length; i ++){
       return cy[i];
   })
   
-.attr("r","10").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
+.attr("r","7.5").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
 .attr("fill",colors[name_index(dN)])
 .on("mouseover",function(d,i){
   
@@ -1229,7 +1229,7 @@ svgS.insert("rect","#overS").attr("transform", "translate(" + margin2.left + ","
 .on("mouseout",function(d,i){
   
   d3.select(this).attr("fill", colors[name_index(dN)])
-  .attr("r", ""+10 );
+  .attr("r", ""+7.5 );
   svgS.select("#overS").remove()
   svgS.select("#overSR").remove()
 })
@@ -1252,24 +1252,30 @@ svgLeggends.selectAll("mydotsS")
   .append("rect")
   .attr("id",function(d,i){return "Lab"+arr_sorted[i]})
   .attr("class","LegendDotS")
-  
-    .attr("x", 10)
+
+    .attr("x", 10).style("stroke","black")
+    .style("stroke-width",function(d,i){ 
+      var b = clicked_label.includes("Lab"+arr_sorted[i])
+      return b==true?"2px":"0.5px"
+    })
     .attr("y", function(d,i){  return 10 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
     .attr("width", size).attr("transform", "translate(" + (0+10) + "," + 0 + ")")
     .attr("height", size)
-    .attr("fill", function(d,i){ 
+    .style("fill", function(d,i){ 
       var b = clicked_label.includes("Lab"+arr_sorted[i])
-      return b==true?"#F8D210":colors[i]
+      return b==true?"#FFFFFF":colors[i]
     }).on("click",function(d,i){
       if((names.length==1 && newRemove.length==0) || (names.length==0 && newRemove.length==1 ) )return;
       //higlight at most 2 graphs
       if(clicked_label.includes(d3.select(this).attr("id"))){
         var insx = clicked_label.indexOf(d3.select(this).attr("id"))
+        
         clicked_label.splice(insx,1);
         if(clicked_label.length==0){
           return starPlot(); //reload as before
         }
         else{
+          //d3.select(this).style("stroke","black").style("stroke-width","1.5px");
           return showOnlyClicked(names.concat(newRemove));
         }
       }
@@ -1277,13 +1283,14 @@ svgLeggends.selectAll("mydotsS")
         if(clicked_label.length<2){
           
           clicked_label.push(d3.select(this).attr("id"));
-          
+         
           return showOnlyClicked(names.concat(newRemove));
   
         }
         else{
           tmp = [clicked_label[1],d3.select(this).attr("id")];
           clicked_label=tmp;
+        
           return showOnlyClicked(names.concat(newRemove));
         }
       }
@@ -1341,7 +1348,7 @@ for (var i = 0; i < newRemove.length; i ++){
   let cy=[];
   arr.pop();
   
-  svgS.append("g").selectAll("circle").data(arr).enter()
+  svgS.append("g").attr("class","circolinos").selectAll("circle").data(arr).enter()
   
   .append("circle").attr("class","circleInStar")
   .attr("id","Circles"+newRemove[i])
@@ -1365,7 +1372,7 @@ for (var i = 0; i < newRemove.length; i ++){
       return cy[i];
   })
   
-.attr("r","10").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
+.attr("r","7.5").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
 .attr("fill",supplement_colors[P])
 .on("mouseover",function(d,i){
   
@@ -1403,7 +1410,7 @@ var rectlabel=svgS.insert("rect","#overS").attr("transform", "translate(" + marg
 .on("mouseout",function(d,i){
   
   d3.select(this).attr("fill", supplement_colors[P])
-  .attr("r", ""+10 );
+  .attr("r", ""+7.5 );
   svgS.select("#overS").remove()
   svgS.select("#overSR").remove()
 });
@@ -1420,7 +1427,11 @@ starting_Legend=arr_sorted.length;
 svgLeggends.selectAll("mydotsS")
   .data(newRemove)
   .enter()
-  .append("rect")
+  .append("rect").style("stroke","black")
+  .style("stroke-width",function(d,i){ 
+    var b = clicked_label.includes("Lab"+newRemove[i])
+    return b==true?"2px":"0.5px"
+  })
   .attr("class","legendDotS")
   .attr("id",function(d,i){return "Lab"+newRemove[i]})
 
@@ -1432,7 +1443,7 @@ svgLeggends.selectAll("mydotsS")
     
     .style("fill", function(d,i){ 
       var b = clicked_label.includes("Lab"+newRemove[i])
-      return b==true?"#F8D210":supplement_colors[i]
+      return b==true?"#FFFFFF":supplement_colors[i]
     }).on("click",function(d,i){
       if((names.length==1 && newRemove.length==0) || (names.length==0 && newRemove.length==1 ) )return;
       //higlight at most 2 graphs
@@ -1462,6 +1473,7 @@ svgLeggends.selectAll("mydotsS")
       
     })
     
+
 // Add one dot in the legend for each name.
 
 svgLeggends.selectAll("mylabelsS")
@@ -1474,14 +1486,14 @@ svgLeggends.selectAll("mylabelsS")
     .style("fill", function(d,i){ return supplement_colors[i]})
     .text(function(d,i){ 
       var sryn;
-       format_number(selected_year_data[newRemove[i]][6])=="NaN"?sryn="(year N/A)":sryn="(O.S "+format_number(selected_year_data[newRemove[i]][6])+")";
+       format_number(selected_year_data[newRemove[i]][6])=="NaN"?sryn="(year O.S. N/A)":sryn="(O.S "+format_number(selected_year_data[newRemove[i]][6])+")";
       return format_etichetta(newRemove[i])+" "+sryn })
     .style("alignment-baseline", "middle")
     .attr( "font-weight","bold")
     .style("stroke","black")
     .style("stroke-width","0.6px")
     
-
+    
 
     //console.log(names,newRemove, selected_year_data);
     function bargraph(overalls){
@@ -1966,6 +1978,9 @@ var res=0;
  else{
    createAnalytic(false);
  }
+
+ svgS.selectAll(".circleInStar").style("stroke","black").style("stroke-width","1px");
+ svgS.selectAll(".circolinos").raise(); 
 }
 
 
