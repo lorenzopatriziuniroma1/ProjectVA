@@ -10,7 +10,7 @@ function colores_range(n,start,end) {
 
 
 var myColorCircle = d3.scaleLinear().domain([0,100])
-  .range(sequential_color_divergent_from_blue)
+  .range(sequential_color_divergent_from_blue2)
 
 
 function handleMouseOn(d,i){
@@ -145,11 +145,10 @@ function(data) {
     if (pca_selected.length==0){
       myCircle.classed("selected2",true)
       svg2.selectAll(".myPath").on("mouseover",handleMouseOn).transition().duration(2000).style("opacity", 0.5).style("stroke",function(d){return  colores_range(d.OverallScore,0,100) });
-      svg_map_pca.selectAll("circle").attr("r",5).transition().duration(2000).style("opacity", 1).style("stroke", "none")
+      svg_map_pca.selectAll("circle").attr("r",5).transition().duration(2000).style("opacity", 1).style("stroke", "black").style("fill",  function(d){return d3.select(this).attr("co")})
     }else{
       // svg2.selectAll(".myPath").transition().duration(2000).style("opacity", 0.05).style("stroke", "#69b3a2")
-   svg_map_pca.selectAll("circle").transition().duration(2000).style("opacity",0.5).style("stroke", "none")
-      
+   svg_map_pca.selectAll("circle").transition().duration(2000).style("opacity",0.5).style("stroke", "none").style("fill",  function(d){return d3.select(this).attr("co")})
 
    svg2.selectAll(".myPath").on("mouseover",(d,n)=>{return })
   .transition().duration(2000)
@@ -160,6 +159,7 @@ function(data) {
         return pca_selected.some(function(el) { 
            return el.Institution.replace(/[^a-zA-Z]/g, "") == d.Institution.replace(/[^a-zA-Z]/g, "") })})
            .on("mouseover",handleMouseOn)
+           .moveToFront()
       .transition().duration(2000)
          .style("opacity", 1)
          .style("stroke", 
@@ -169,6 +169,7 @@ function(data) {
               }
           )
           .style("stroke-width","1.5px")
+     
          ;
     
           svg_map_pca
@@ -181,12 +182,16 @@ function(data) {
               .duration(2000)
               .attr("r",9)
               .style("opacity", 1)
-              .style("stroke","black");
+              .style("stroke","black")
+              .style("fill",  palette_divergent_map[0]);
     }
   }
 
   // A function that return TRUE or FALSE according if a dot is in the selection or not
   function isBrushed(brush_coords, cx, cy) {
+      if(brush_coords==null){
+        return false;
+      }
        var x0 = brush_coords[0][0],
            x1 = brush_coords[1][0],
            y0 = brush_coords[0][1],
@@ -290,7 +295,7 @@ var y = d3.scaleLinear()
 
     d3.csv("ProjectVA/pca_csv/pca_year_v2_"+selectValue+".csv").then (function(data) {
 
-      myColorCircle = d3.scaleLinear().domain([0,d3.max(data, function(d) { return d.OverallScore; })-20])
+myColorCircle = d3.scaleLinear().domain([0,100])
       .range(sequential_color_divergent_from_blue2)
     
       var circles=svg.selectAll("circle").data(data)

@@ -180,7 +180,6 @@ function format_etichetta(s){
     return x;
   }
   else{
-    console.log(c,x);
 
      return x.length>c.length? c:x
   }
@@ -559,7 +558,7 @@ for(let n=0;n< names.length;n++){
   .attr("stroke", colors[position_wrt_selected])
   .attr("stroke-width", 5).attr("class","line").attr("d",line)
   .on("mouseover",function(d,h){
-    console.log(names[n],d_mean[names[n]]);
+
     d3.select(this).attr("stroke", "#4ae54a");
 
 
@@ -632,7 +631,6 @@ svgT.append("text").attr("transform", "translate(40," + margin.top/2+ ")").attr(
   var ret=svgT.append("text").attr("transform", "translate(" + 0 + "," + margin.top/2 + ")").attr("id","overC").attr("x",function(d){return x(xCoords[Index])+12}).attr("y",function(d){return y(i)+25})
   .attr("cc",
   function(){
-    console.log(this);
     return this.getBBox().width
   })
  .text(function(d) {
@@ -694,7 +692,7 @@ if(names.length>1){
     YYY[yy]/=names.length;
     dataline.push( { date:xCoords[yy],rating:YYY[yy]});
   }
-  console.log("DATAd",data_all_time,dataline);
+
   var line = d3.line()
   .x(function(d) { return x(d.date); })
   .y(function(d) { return y(d.rating); })
@@ -792,7 +790,7 @@ else if (d3.select(this).attr("cx")==x(new Date(2020, 1, 1))){
 var ret=svgT.append("text").attr("transform", "translate(" + 0 + "," + margin.top/2 + ")").attr("id","overC").attr("x",function(d){return x(xCoords[Index])+12}).attr("y",function(d){return y(i)+25})
 .attr("cc",
 function(){
-  console.log(this);
+
   return this.getBBox().width
 })
 .text(function(d) {
@@ -941,7 +939,7 @@ d3.select("#yearSel").remove();
 
 
 d3.select("#yourSelection").style("visibility", "visible")
-var svgLeggends=d3.select("#legends").append("svg").attr("width",width_data/2).attr("id","littlelegend").attr("transform","translate("+(width_data/2-width_data/4)+","+"-15) scale(0.8)")
+var svgLeggends=d3.select("#legends").append("svg").attr("width",width_data*0.6).attr("id","littlelegend").attr("transform","translate("+(width_data*0.5-width_data*0.3)+","+"-15) scale(0.8)")
 svgLeggends
 .append("rect")
 .style("stroke","black")
@@ -1253,7 +1251,7 @@ svgLeggends.selectAll("mydotsS")
   .attr("id",function(d,i){return "Lab"+arr_sorted[i]})
   .attr("class","LegendDotS")
 
-    .attr("x", 10).style("stroke","black")
+    .attr("x", 60).style("stroke","black")
     .style("stroke-width",function(d,i){ 
       var b = clicked_label.includes("Lab"+arr_sorted[i])
       return b==true?"2px":"0.5px"
@@ -1303,7 +1301,7 @@ svgLeggends.selectAll("mylabelsS")
   .data(arr_sorted)
   .enter()
   .append("text").attr("class","LegendLabelS")
-    .attr("x", 20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
+    .attr("x", 60 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
     .attr("y", function(d,i){ return 10 + i*(size+5) + (size*0.9)}) // 100 is where the first dot appears. 25 is the distance between dots
     .style("fill", function(d,i){ return colors[i]})
     .text(function(d,i){ return format_etichetta(arr_sorted[i])})
@@ -1390,12 +1388,11 @@ for (var i = 0; i < newRemove.length; i ++){
   return format_etichetta(dN) +" - "+format_number(selected_year_data[dN][index])+"";  // Value of the text
  })   
 .attr("cc",function() {
-  console.log(this)
+
 
  return this.getBBox().width;
 })
-   
-console.log("Green= "+redTxt.attr("cc"))
+
 
 var rectlabel=svgS.insert("rect","#overS").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("id","overSR").attr("x", cx[index]-25) 
 .attr("y", cy[index]-30)
@@ -1435,7 +1432,7 @@ svgLeggends.selectAll("mydotsS")
   .attr("class","legendDotS")
   .attr("id",function(d,i){return "Lab"+newRemove[i]})
 
-  .attr("x", width_data/4+10)
+  .attr("x", width_data*0.3+10)
   .attr("y", function(d,i){  
     return 10+ i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
   .attr("width", size).attr("transform", "translate(" + (0+10) + "," + 0 + ")")
@@ -1481,12 +1478,12 @@ svgLeggends.selectAll("mylabelsS")
   .enter()
   .append("text").attr("class","legendLabelS")
 
-  .attr("x", width_data/4+20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
+  .attr("x", width_data*0.3+20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
   .attr("y", function(d,i){ return 10 + i*(size+5) + (size*0.9)})
     .style("fill", function(d,i){ return supplement_colors[i]})
     .text(function(d,i){ 
       var sryn;
-       format_number(selected_year_data[newRemove[i]][6])=="NaN"?sryn="(year O.S. N/A)":sryn="(O.S "+format_number(selected_year_data[newRemove[i]][6])+")";
+       format_number(selected_year_data[newRemove[i]][6])=="NaN"?sryn="(O.S. N/A)":sryn="(O.S "+format_number(selected_year_data[newRemove[i]][6])+")";
       return format_etichetta(newRemove[i])+" "+sryn })
     .style("alignment-baseline", "middle")
     .attr( "font-weight","bold")
@@ -1592,13 +1589,13 @@ svgLeggends.selectAll("mylabelsS")
       ]*/
       
       var svgB2 = d3.select('#data5').append("svg").attr("id","BARsvg2")
-          .attr("width", width_data*0.6)
+          .attr("width", "80%")
           .attr("height", heightBAR+100 + marginBAR.top + marginBAR.bottom)
         .append("g")
           .attr("transform", "translate(" + marginBAR.left + "," + (marginBAR.top+100) + ")");
       
         var CallS=map_usage_unidata(overalls);
-       console.log(CallS)
+
       
         var categoriesNames =[];
         unis.forEach(u=>{
@@ -1607,7 +1604,6 @@ svgLeggends.selectAll("mylabelsS")
         var new2Remove=[];
         var deleteIncomplete=[];
         newRemove.forEach(u=>{
-          console.log(selected_year_data[u],overalls)
           if(selected_year_data[u][6]=="N/A"|| check_55(selected_year_data[u])){
             deleteIncomplete.push(format_etichetta(u))
             
@@ -1650,12 +1646,22 @@ svgLeggends.selectAll("mylabelsS")
           }
           if(co){
             co=false;
-            // deleteIncomplete[dely] has no overall or not enough parameters.
+
+
+            var sorry_sorry ='';
+            sorry_sorry=CallS[delx].categorie +" has not enough values to compute new overall.";
+
+            document.getElementById("toast_id").innerHTML=sorry_sorry
+
+            var toast= document.getElementById("liveToast").cloneNode(true);
+
+          toast.setAttribute('id',sorry_sorry.replace(/[^a-zA-Z]/g, ""));
+          document.getElementById("toastlist").appendChild(toast); 
+            $('#'+sorry_sorry.replace(/[^a-zA-Z]/g, "")).toast('show');
             continue;
           }
           supp_data.push(CallS[delx])
         }
-        console.log("S",supp_data)
         var this_rect="";
         var slice = svgB2.selectAll(".slice")
             .data(supp_data)
@@ -1730,21 +1736,28 @@ svgLeggends.selectAll("mylabelsS")
             slice
             .data(supp_data)
             .append("text")
-            .text(d=>{console.log("ciao");console.log(d.values[0].rate);return d.values[0].rate})
+            .text(d=>{return "New"})
             .attr("text-anchor","middle")
-            .attr("x", function(d) { return x1.bandwidth()/2+x1(d.values[0].rate); })
-            .attr("y", function(d) { return  heightBAR - y(d.values[0].value); })
-            .attr("fill","white").attr("id","culo")
+            .attr("x", function(d) { return x1.bandwidth()/2+x1(d.values[0].rate)+3; })
+            .attr("y", function(d) { return  heightBAR - 50 })
+            .attr("fill","white").attr("id","culo")    
+            .attr("transform",function(d){return "rotate(-90,"+this.getAttribute("x")+","+(heightBAR - 50)+")"})
+            .style("stroke","black")
+            .style("stroke-width","0.3px")
+
 
             slice
             .data(supp_data)
             .append("text")
-            .text(d=>{console.log("ciao");console.log(d.values[1].rate);return "Ori";})
+            .text(d=>{return "Ori";})
             .attr("text-anchor","middle")
-            .attr("x", function(d) { return x1.bandwidth()/2+x1(d.values[1].rate); })
-            .attr("y", function(d) { return  heightBAR - y(d.values[1].value); })
+            .attr("x", function(d) { return x1.bandwidth()/2+x1(d.values[1].rate)+3; })
+            .attr("y", function(d) { return    heightBAR - 50 })
             .attr("fill","white").attr("id","culo")
-          
+            .attr("transform",function(d){return "rotate(-90,"+this.getAttribute("x")+","+(heightBAR - 50)+")"})
+            .style("stroke","black")
+            .style("stroke-width","0.3px")
+
         slice.selectAll("rect")
             .transition()
             .delay(function (d) {return Math.random()*1000;})
@@ -1752,10 +1765,13 @@ svgLeggends.selectAll("mylabelsS")
             .attr("y", function(d) { return y(d.value); })
             .attr("height", function(d) { return heightBAR - y(d.value); });
       
- 
-        svgB2.append("text").attr("transform", "translate(" + (container_width*0.4+95) + "," + 48 + ")").text("NEW")
-        svgB2.append("text").attr("transform", "translate(" + (container_width*0.4+140) + "," + 48 + ")").text("ORI")
-        svgB2.selectAll("legendSlidebar")
+
+
+            var gg= svgB2
+        
+        gg.append("text").attr("transform", "translate(" + (container_width*0.4+95) + "," + 48 + ")").text("NEW")
+        gg.append("text").attr("transform", "translate(" + (container_width*0.4+140) + "," + 48 + ")").text("ORI")
+        gg.selectAll("legendSlidebar")
         .data(supp_data)
         .enter()
         .append("rect")
@@ -1767,12 +1783,11 @@ svgLeggends.selectAll("mylabelsS")
         .attr("width", 30)
         .attr("height", 30).attr("transform", "translate(" + (container_width*0.4) + "," + 20 + ")")
         .style("fill", function(d,i){ 
-          console.log("AAA",d)
              if(d.values[0].type=="A")
                 return  colorNew[i]
               else return  supplement_colorNew[i-unis.length]
     })
-    svgB2.selectAll("legendSlidebar2")
+    gg.selectAll("legendSlidebar2")
         .data(supp_data)
         .enter()
         .append("rect")
@@ -1790,7 +1805,7 @@ svgLeggends.selectAll("mylabelsS")
     })
 
     threhlen=3;
-    svgB2.selectAll("labelSLideBar2")
+    gg.selectAll("labelSLideBar2")
   .data(supp_data)
   .enter()
   .append("text").attr("class","legendLabelS")
@@ -1853,7 +1868,7 @@ var res=0;
           .sliderBottom()
           .min(d3.min(data))
           .max(d3.max(data))
-          .width(400)
+          .width(container_width*0.3)
           .tickFormat(d3.format('d'))
           .ticks(5)
           .step(5)

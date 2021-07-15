@@ -116,7 +116,6 @@ d3.json("GeoMap/custom.geo.json").then(function (uState) {
         
         })
         .attr("number", function(d){
-          console.log(color.get(d.properties.name))
           if (color.get(d.properties.name) == undefined) return "0cgnxc";
           return color.get(d.properties.name) ;
         })
@@ -321,7 +320,6 @@ function updateChart2() {
     }
 
  
-    console.log(c.values())
      lines = g_path.selectAll(".myPathCountry")
       .data(c.values())
       //.filter(function (d) { console.log(d);return country_selected.indexOf(d.Country) > -1; });
@@ -329,7 +327,6 @@ function updateChart2() {
       var lex=lines.exit();
       lex.transition().duration(1000).style("opacity",0).remove()
 
-      console.log(color)
       var lin=lines.enter()
       lin.append("path")
       .attr("class", "myPathCountry")

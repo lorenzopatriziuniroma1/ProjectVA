@@ -919,7 +919,14 @@ dropdownButton2 // Add a button
     if (e.keyCode==90 && e.ctrlKey){
         var circle=svg1.selectAll(".University")
         if(show_selected){
-        circle.filter((d,i)=>{ return RGBToHex(circle._groups[0][i].style.fill)!=palette_divergent_map[0];}).transition().duration(1000).style("opacity",0).style("display",function(){return "none"})
+        circle.filter((d,i)=>{ return RGBToHex(circle._groups[0][i].style.fill)!=palette_divergent_map[0];}).transition().duration(1000).style("opacity",0)
+        .on("end",(d,i)=> {
+
+          if( RGBToHex(circle._groups[0][i].style.fill)!=palette_divergent_map[0]){
+            circle._groups[0][i].style.display="none"
+          }
+        })
+//.style("display",function(){return "none"})
         }else{
           circle.transition().duration(1000).style("opacity",1).style("display",function(){return "block"})
         }

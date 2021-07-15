@@ -30,7 +30,7 @@ function create_legend(svg){
     .attr("width", size)
     .attr("height", size)
     .style("fill", palette_sequential_map[0])
-    legend.append("text").attr("x",0+20).attr("y", 10).text("#Universities >"+parseInt(2*50/3)).style("font-size", "15px").attr("alignment-baseline","middle")
+    legend.append("text").attr("x",0+20).attr("y", 10).text(parseInt(2*50/3)+"<#Universities").style("font-size", "15px").attr("alignment-baseline","middle")
  
     legend.append("rect")
     .attr("x",0).attr("y",10+20-10)    
@@ -44,7 +44,7 @@ function create_legend(svg){
     .attr("width", size)
     .attr("height", size)
     .style("fill", palette_sequential_map[2])
-    legend.append("text").attr("x", 0+20).attr("y", 10+40).text(parseInt(50/3)+"> #Universities").style("font-size", "15px").attr("alignment-baseline","middle")
+    legend.append("text").attr("x", 0+20).attr("y", 10+40).text(" #Universities<"+parseInt(50/3)).style("font-size", "15px").attr("alignment-baseline","middle")
    
     legend.append("rect")
     .attr("x",0).attr("y",10-10+60)    
