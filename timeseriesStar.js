@@ -1588,10 +1588,10 @@ svgLeggends.selectAll("mylabelsS")
       ]*/
       
       var svgB2 = d3.select('#data5').append("svg").attr("id","BARsvg2")
-          .attr("width", "80%")
-          .attr("height", heightBAR+100 + marginBAR.top + marginBAR.bottom)
+          .attr("width", "100%")
+          .attr("height", heightBAR*0.75+20 )
         .append("g")
-          .attr("transform", "translate(" + marginBAR.left + "," + (marginBAR.top+120) + ") scale(0.75)");
+          .attr("transform", "translate(" +15 + "," + (10) + ") scale(0.75)");
       
         var CallS=map_usage_unidata(overalls);
 
@@ -1890,19 +1890,19 @@ var res=0;
         if(i==0){
         gSimple= d3
         .select('#data4')
-        .append('svg').attr('transform', 'translate(0,'+30+')').attr("id","SVGSLID")
+        .append('svg').attr('transform', 'translate(0,'+0+')').attr("id","SVGSLID")
         
-        .attr('width', width_data*0.38)
-        .attr('height',100*6+50)
+        .attr('width', width_data*0.32)
+        .attr('height',(100*6+50)*0.5)
 
         .append('g').attr("id","slider_"+i)
-        .attr('transform', 'translate(40,'+30+')')
+        .attr('transform', 'translate(40,'+20+') scale(0.8)')
         }
         else{
           gSimple= d3
           .select('#SVGSLID')
           .append('g').attr("id","slider_"+i)
-          .attr('transform', 'translate(40,'+105*i+')')
+          .attr('transform', 'translate(40,'+105*0.55*i+') scale(0.8)')
         }
         
   

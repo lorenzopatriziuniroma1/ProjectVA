@@ -228,9 +228,12 @@ var stroke_color="black"
 
                 <div class="col" id="selectmapyea">
               </div>
-              <span id="mybuttonnav" style="font-size:30px;cursor:pointer ;visibility: hidden" onclick="openNav()">&#9776; Compute New Ovverall Score</span>
+              <br>
             </div>
-
+            <div class="row align-items-center sticky-top bg-body">
+              <button type="button" id="mybuttonnav" style="cursor:pointer ;visibility: hidden; width:20%;" onclick="openNav()" class="btn btn-primary btn-sm  btn-block" >&#9776; Compute New Ovverall Score</button>
+              
+            </div>
             <div class="row" style="margin-top: 1px">
             
               <div class="col" id="data3">
@@ -242,15 +245,16 @@ var stroke_color="black"
               <p class="text-center fw-bolder text-primary" id="title_timestarplot" style="visibility: hidden">Timeseries and Starplot</p>
               <div id="mySidenav" class="sidenav2 " style="width: 0px; display:none">
                 <div class="row justify-content-center">
-                  <p class="text-center fw-bolder text-primary" id="title_tool_overall">Weight analisys to compute overall score</p>
-                  <div class="col " id="data4">
+
+                  <div class="col-sm-auto" id="data4">
                   </div>
-                  <div class="col" id="data5">
+                  <div class="col-sm-auto" id="link">
+                  </div>
+                  <div class="col"  id="data5">
                   </div>
                   </div>
             
-                  <div class="col" id="link">
-                  </div>
+
               </div>
 
               <div class="col overflow-hidden" id="data1" style="height: 30%;  ">
@@ -373,6 +377,8 @@ function openNav() {
     document.getElementById("timeseries").setAttribute("width","100%")
      document.getElementById("data1").style.display="block"; 
      document.getElementById("data2").style.display="block"; 
+     document.getElementById("title_timestarplot").innerHTML="Timeseries and Starplot"
+
     return
   }
  // document.getElementById("mySidenav").style.display = "block"
@@ -386,6 +392,7 @@ function openNav() {
  setTimeout(function(){     document.getElementById("mySidenav").style.width = "45%"; }, 100);
 
  setTimeout(function(){     document.getElementById("data1").style.display = "none"; }, 100);
+ document.getElementById("title_timestarplot").innerHTML="Weight analisys to compute overall score"
 }
 
 </script>
