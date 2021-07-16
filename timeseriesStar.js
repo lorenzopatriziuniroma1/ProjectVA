@@ -939,7 +939,7 @@ d3.select("#yearSel").remove();
 
 
 d3.select("#yourSelection").style("visibility", "visible")
-var svgLeggends=d3.select("#legends").append("svg").attr("width",width_data*0.4).attr("id","littlelegend").attr("transform","translate("+0+","+"-15) scale(0.8)") //width_data*0.5-width_data*0.3
+var svgLeggends=d3.select("#legends").append("svg").attr("width",width_data*0.4).attr("id","littlelegend").attr("transform","translate("+90+","+"-15) scale(0.8)") //width_data*0.5-width_data*0.3
 svgLeggends
 .append("rect")
 .style("stroke","black")
@@ -1431,7 +1431,7 @@ svgLeggends.selectAll("mydotsS")
   .attr("class","legendDotS")
   .attr("id",function(d,i){return "Lab"+newRemove[i]})
 
-  .attr("x", width_data*0.20+10)
+  .attr("x", width_data*0.18+10)
   .attr("y", function(d,i){  
     return 10+ i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
   .attr("width", size).attr("transform", "translate(" + (0+10) + "," + 0 + ")")
@@ -1477,7 +1477,7 @@ svgLeggends.selectAll("mylabelsS")
   .enter()
   .append("text").attr("class","legendLabelS")
 
-  .attr("x", width_data*0.2+20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
+  .attr("x", width_data*0.18+20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
   .attr("y", function(d,i){ return 10 + i*(size+5) + (size*0.9)})
     .style("fill", function(d,i){ return supplement_colors[i]})
     .text(function(d,i){ 
@@ -1591,7 +1591,7 @@ svgLeggends.selectAll("mylabelsS")
           .attr("width", "80%")
           .attr("height", heightBAR+100 + marginBAR.top + marginBAR.bottom)
         .append("g")
-          .attr("transform", "translate(" + marginBAR.left + "," + (marginBAR.top+120) + ") scale(0.75)");
+          .attr("transform", "translate(" + (marginBAR.left-0) + "," + (marginBAR.top) + ") scale(0.75)");
       
         var CallS=map_usage_unidata(overalls);
 
@@ -1660,6 +1660,9 @@ svgLeggends.selectAll("mylabelsS")
             continue;
           }
           supp_data.push(CallS[delx])
+        }
+        if(supp_data.length==0){
+          no_one=true;
         }
         var this_rect="";
         var slice = svgB2.selectAll(".slice")
@@ -1765,7 +1768,7 @@ svgLeggends.selectAll("mylabelsS")
             .attr("height", function(d) { return heightBAR - y(d.value); });
       
 
-
+/*
             var gg= svgB2
         
         gg.append("text").attr("transform", "translate(" + (container_width*0.4+95) + "," + 48 + ")").text("NEW")
@@ -1815,7 +1818,7 @@ svgLeggends.selectAll("mylabelsS")
     .text(function(d){ return d["categorie"]})
     .attr("text-anchor", "left").attr("transform", "translate(" + (container_width*0.4+50) + "," + 20 + ")")
     .style("alignment-baseline", "middle")
-            
+            */
       c_initial=false
     }
 
@@ -1867,7 +1870,7 @@ var res=0;
           .sliderBottom()
           .min(d3.min(data))
           .max(d3.max(data))
-          .width(container_width*0.3)
+          .width(container_width*0.2)
           .tickFormat(d3.format('d'))
           .ticks(5)
           .step(5)
@@ -1892,17 +1895,17 @@ var res=0;
         .select('#data4')
         .append('svg').attr('transform', 'translate(0,'+30+')').attr("id","SVGSLID")
         
-        .attr('width', width_data*0.38)
-        .attr('height',100*6+50)
+        .attr('width', width_data*0.24)
+        .attr('height',(100*6))
 
         .append('g').attr("id","slider_"+i)
-        .attr('transform', 'translate(40,'+30+')')
+        .attr('transform', 'translate(50,'+35+')')
         }
         else{
           gSimple= d3
           .select('#SVGSLID')
           .append('g').attr("id","slider_"+i)
-          .attr('transform', 'translate(40,'+105*i+')')
+          .attr('transform', 'translate(50,'+(25+90*i)+')')
         }
         
   
@@ -1937,6 +1940,7 @@ var res=0;
       }
       setTimeout(function(){     document.getElementById("mySidenav").style.width = "100%"; }, 100);
       document.getElementById("data2").style.display="none";
+      document.getElementById("title_timestarplot").innerHTML=""
 
       if(sum!=100){
         //error
@@ -1990,9 +1994,11 @@ var res=0;
  if(c_initial){
    
   createAnalytic(true) 
+  d3.select("#SVGSLID").attr("transform","translate(-90,-90) scale(0.75)")
  }
  else{
    createAnalytic(false);
+   d3.select("#SVGSLID").attr("transform","translate(-90,-90) scale(0.75)")
  }
 
  svgS.selectAll(".circleInStar").style("stroke","black").style("stroke-width","1px");

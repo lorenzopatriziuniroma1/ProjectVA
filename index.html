@@ -147,7 +147,8 @@
 
 
       <script>
-        var selected = [];
+        var selected = []; 
+        var no_one=false;
         var palette_sequential_map =['#08306b','#2171b5','#6baed6','gray']//['#bdd7e7','#bdd7e7','#6baed6','#2171b5'].reverse()//["#312ab8","#6e56ca","#9c83dc","#c5b2ee"]//["#066db8","#4c87cd","#74a1e2","#99bdf8"]//["#edf8b1", "#7fcdbb", "#2c7fb8"];
         var palette_divergent_map = ["#00ff51", "#4daf4a", "#7fc97f"];//select
         var sequential_color_divergent_from_blue=['#fee090','#fc8d59','#d73027']
@@ -220,7 +221,7 @@ var stroke_color="black"
 
               <div class="row align-items-center sticky-top bg-body">
                 <div class="col">
-                  <div class="row align-items-center">
+                  <div class="row align-items-center" id="slider_Overall">
                     <div id="value-range" style="width: 25%;">  <p class="d-inline text-primary">University Overall:</p></div>
                     <div class="d-inline" id="slider-range" style="width: 40%;"></div>
                   </div>
@@ -243,14 +244,15 @@ var stroke_color="black"
               <div id="mySidenav" class="sidenav2 " style="width: 0px; display:none">
                 <div class="row justify-content-center">
                   <p class="text-center fw-bolder text-primary" id="title_tool_overall">Weight analisys to compute overall score</p>
-                  <div class="col " id="data4">
+                  <div class="col" id="data4" >
                   </div>
-                  <div class="col" id="data5">
+                  <div class="col" id="link">
+                  </div>
+                  <div class="col-7" id="data5">
                   </div>
                   </div>
             
-                  <div class="col" id="link">
-                  </div>
+                  
               </div>
 
               <div class="col overflow-hidden" id="data1" style="height: 30%;  ">
@@ -366,13 +368,18 @@ function openNav() {
   if( document.getElementById("mySidenav").style.width !="0px" && ex){
     
 
-
+    
     document.getElementById("mySidenav").style.width = "0px"
     setTimeout(function(){   document.getElementById("mySidenav").style.display="none"; }, 500);
+    document.getElementById("title_timestarplot").innerHTML="Timeseries and Starplot"
     //document.getElementById("mySidenav").style.display = "none"
-    document.getElementById("timeseries").setAttribute("width","100%")
+    if(!no_one){
+       document.getElementById("timeseries").setAttribute("width","100%")
+       
+    }
      document.getElementById("data1").style.display="block"; 
      document.getElementById("data2").style.display="block"; 
+     no_one=false;
     return
   }
  // document.getElementById("mySidenav").style.display = "block"
@@ -381,7 +388,7 @@ function openNav() {
  setTimeout(function(){     document.getElementById("timeseries").setAttribute("width","0") }, 200);
 
 
-
+  document.getElementById("title_timestarplot").innerHTML="Starplot"
  document.getElementById("mySidenav").style.height =  container_heigth*0.4+"px";
  setTimeout(function(){     document.getElementById("mySidenav").style.width = "45%"; }, 100);
 
