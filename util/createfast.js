@@ -1,11 +1,17 @@
-function create_legend(svg){
-
-
+function create_legend(svg ,w,h){
+console.log(w)
+if(w == undefined){
+  w=container_width
+}
+if(h == undefined){
+h=height
+}
 
     var legend = svg  .append('svg')
     .attr("width",200)
     .attr("height",90)  
-    .attr("transform", "translate(" + (width-width*0.2)  + "," + (height-height*0.4 ) + ")")
+    .attr("id","leggendinapiccolina")
+    .attr("transform", "translate(" + w*0.8 + "," +20 + ")")
    ;
  
    legend.append("rect")

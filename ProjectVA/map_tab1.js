@@ -1,6 +1,8 @@
 var sliderRange;var scale1on85=false;var rand1,rand2;var old2;
-var width =container_width
-var height = container_heigth*0.4;
+var width =container_width*0.99
+var height = container_heigth *0.3;
+var width_alla =container_width*0.99
+var height = container_heigth *0.3;
 var bounds; var magi = 0; var lineaMaginot;
 var margin = {top: 100, right: 30, bottom: 80, left: 60}
 d3.select("#youarSelection2").style("display",function(){return "none"});
@@ -43,7 +45,7 @@ var symbolGenerator = d3.symbol()
 var pathData = symbolGenerator();
 var svg1 = d3.selectAll("#map")
   .append("svg")
-    .attr("width", width) 
+    .attr("width", width/2) 
     .attr("height", height )
     .style("background",background)
     .style("margin-bottom","10px")
@@ -56,7 +58,7 @@ var color_circle = d3.scaleOrdinal()
 
 
 const projection = d3.geoMercator()
-    .translate([width / 2, height / 2+50]) // translate to center of screen
+    .translate([width / 4, height / 2+50]) // translate to center of screen
     .scale([200]); // scale things down so see entire US
  
 var div = d3.select("body").append("div")	
@@ -336,7 +338,7 @@ function changeMinMax(min,max){
   g.selectAll(".University").attr("visibility",function(d){  return (d["OverallScore"]<=max && d["OverallScore"]>=min) ?  "visibility" :  "hidden"; });
 }
 
-create_legend(svg1)
+create_legend(svg1,width_alla/2,undefined)
 
   // Range
  
@@ -356,7 +358,7 @@ create_legend(svg1)
       .size(200)()
   )
   .on('onchange', val => {
-    d3.select('#value-range').text(val.join('-'));
+    d3.select('#value-range').text("University Overall: "+ val.join('-'));
  
 changeMinMax(val[0],val[1]);
 
@@ -372,7 +374,7 @@ changeMinMax(val[0],val[1]);
 
 gRange.call(sliderRange);
 
-d3.select('#value-range').text(
+d3.select('#value-range').text("University Overall: "+
   sliderRange
     .value()
     .join('-')
@@ -463,7 +465,7 @@ function createBarGraph(year_datax){
 
   var marginBAR = {top: 20, right: 20, bottom: height*0.3, left: 40},
     widthBAR = width*0.7 - marginBAR.left - marginBAR.right,
-    heightBAR = height*1.3 - marginBAR.top - marginBAR.bottom;
+    heightBAR = container_heigth*0.5 - marginBAR.top - marginBAR.bottom;
 
 var x0 = d3.scaleBand()
 

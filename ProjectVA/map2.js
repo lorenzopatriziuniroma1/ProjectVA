@@ -1,7 +1,7 @@
 
 var svg3 = d3.select(".row");
 var width3 = container_width;
-var height3 = container_heigth * 0.4;
+var height3 = container_heigth * 0.3;
 
 var country_selected = [];
 var dimension

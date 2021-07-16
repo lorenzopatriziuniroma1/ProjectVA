@@ -40,7 +40,7 @@ var bru;
 //set the dimensions and margins of the graph
 var margin = {top: 10, right: 0, bottom: 120, left: 60},
     width2 =container_width*0.4,
-    height2 = container_heigth *0.35 ;
+    height2 = container_heigth *0.3 ;
 
 // append the svg object to the body of the page
 var svg = d3.select("#pca_scatter")
@@ -53,7 +53,7 @@ var svg = d3.select("#pca_scatter")
           "translate(" + 30 + "," + margin.top + ")");
   var svg2 = d3.select("#pca_scatter")
           .append("svg")
-            .attr("width", width2*1.27 + margin.left + margin.right)
+            .attr("width", width2*1.27 + margin.left + margin.right+50)
             .attr("height", height2*1.2 + margin.top + margin.bottom+25)
           .append("g")
             .attr("transform",
@@ -145,10 +145,11 @@ function(data) {
     if (pca_selected.length==0){
       myCircle.classed("selected2",true)
       svg2.selectAll(".myPath").on("mouseover",handleMouseOn).transition().duration(2000).style("opacity", 0.5).style("stroke",function(d){return  colores_range(d.OverallScore,0,100) });
-      svg_map_pca.selectAll("circle").attr("r",5).transition().duration(2000).style("opacity", 1).style("stroke", "black").style("fill",  function(d){return d3.select(this).attr("co")})
+      svg_map_pca.selectAll("circle").attr("r",5).transition().duration(2000).style("opacity", 1).style("stroke", "black")              
+      .style("stroke-width","1px")//.style("fill",  function(d){return d3.select(this).attr("co")})
     }else{
       // svg2.selectAll(".myPath").transition().duration(2000).style("opacity", 0.05).style("stroke", "#69b3a2")
-   svg_map_pca.selectAll("circle").transition().duration(2000).style("opacity",0.5).style("stroke", "none").style("fill",  function(d){return d3.select(this).attr("co")})
+   svg_map_pca.selectAll("circle").transition().duration(2000).style("opacity",0.5).style("stroke", "none")//.style("fill",  function(d){return d3.select(this).attr("co")})
 
    svg2.selectAll(".myPath").on("mouseover",(d,n)=>{return })
   .transition().duration(2000)
@@ -182,8 +183,9 @@ function(data) {
               .duration(2000)
               .attr("r",9)
               .style("opacity", 1)
-              .style("stroke","black")
-              .style("fill",  palette_divergent_map[0]);
+              .style("stroke", "black")
+              .style("stroke-width","2px")
+           
     }
   }
 
@@ -424,14 +426,14 @@ var width2_map=container_width;
 var svg_map_pca = d3.select("#map3")
   .append("svg")
     .attr("width", width2_map)
-    .attr("height", container_heigth*0.4)
+    .attr("height", height2)
     .style("background",background)
 
     var g_map_pca = svg_map_pca.append("g");
 
 
     const projection_map_pca = d3.geoMercator()
-    .translate([width2_map / 2, container_heigth*0.4 / 2+50]) // translate to center of screen
+    .translate([width2_map / 2, height2/ 2+50]) // translate to center of screen
     .scale([200]); // scale things down so see entire US
  
 

@@ -12,6 +12,19 @@
     <style>
 
 
+      .sidenav2 {
+        height: 2%;
+        width: 0px;
+
+        z-index: 1;
+        top: 0;
+        left: 0;
+        overflow-x: hidden;
+        transition: 0.5s;
+
+      }
+
+
       kbd {
         background-color: #eee;
         border-radius: 3px;
@@ -73,7 +86,18 @@
 
 
       }
-
+      .slide {
+        visibility:hidden;
+        border: 1px solid black;
+        height: "50%";
+        width:"50%";
+        overflow:visible;
+        transition: all 500ms ease;
+        -moz-transition: all 500ms ease;
+        -ms-transition: all 500ms ease;
+        -o-transition: all 500ms ease;
+        -webkit-transition:all 500ms ease;
+    }
       .selected {
         opacity: 1 !important;
         stroke: black;
@@ -119,7 +143,7 @@
 
 
 
-    <div class="container-fluid shadow-lg  p-4 mb-5   rounded" style="width: 80%; height:101%; margin-top: 10px; ">
+    <div class="container-fluid shadow-lg  p-4 mb-5   rounded" style="width: 100%; height:101%; margin-top: 10px; ">
 
 
       <script>
@@ -183,58 +207,79 @@ var stroke_color="black"
               <div class="row justify-content-center">
                 <div class="col" id="map">
                 </div>
+
+
+                <div class="col " id="legends">
+                  <p class="text-center fw-bolder text-primary" style="visibility:hidden" id="yourSelection">Your selection</p>
+                </div>
+
+
               </div>
+
+
+
               <div class="row align-items-center sticky-top bg-body">
                 <div class="col">
                   <div class="row align-items-center">
-                    <p class="d-inline text-primary">University Overall:</p><div id="value-range" style="width: 5%;"></div>
+                    <div id="value-range" style="width: 25%;">  <p class="d-inline text-primary">University Overall:</p></div>
                     <div class="d-inline" id="slider-range" style="width: 40%;"></div>
                   </div>
                 </div>
 
                 <div class="col" id="selectmapyea">
               </div>
+              <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Compute New Ovverall Score</span>
             </div>
 
-            <div class="row justify-content-center" style="margin-top: 30px">
+            <div class="row" style="margin-top: 1px">
             
               <div class="col" id="data3">
               </div>
+
             </div>
 
+            <div class="row justify-content-center">
+              <p class="text-center fw-bolder text-primary" id="title_timestarplot" style="visibility: hidden">Timeseries and Starplot</p>
+              <div id="mySidenav" class="sidenav2 " style="width: 0px; display:none">
+                <div class="row justify-content-center">
+                  <p class="text-center fw-bolder text-primary" id="title_tool_overall">Weight analisys to compute overall score</p>
+                  <div class="col " id="data4">
+                  </div>
+                  <div class="col" id="data5">
+                  </div>
+                  </div>
             
+                  <div class="col" id="link">
+                  </div>
+              </div>
+
+              <div class="col overflow-hidden" id="data1" style="height: 30%;  ">
+
+              </div>
+
+
+              <div class="col" id="data2" style="height: 30%;">
+              </div> 
+            </div>
             <div class="row justify-content-center"  id="youarSelection2" style="height: 10%;">
-            
-              <div class="col" id="legends">
-                <p class="text-center fw-bolder text-primary" style="visibility:hidden" id="yourSelection">Your selection</p>
-              </div>
-              </div>
+   
+ 
 
-            <div class="row justify-content-center">
-              <p class="text-center fw-bolder text-primary" id="title_timestarplot" style="visibility: hidden ; ">Timeseries and Starplot</p>
-              <div class="col" id="data1">
-              </div>
-
-              <div class="col" id="data2">
-              </div>
-            </div>
-
-            <div class="row justify-content-center">
-              <p class="text-center fw-bolder text-primary" id="title_tool_overall" style="visibility: hidden ; margin-top: 20px; ">Weight analisys to compute overall score</p>
-              <div class="col" id="data4">
-              </div>
-              <div class="col" id="data5">
-              </div>
               </div>
 
 
+
+
+
+
+                <!-- <input type="button" onclick="slider();" value="Click" >
+                <div id="slide" class="slide">
+              </div>  -->
 
             </div>
 
             <div class="row justify-content-center">
-            
-              <div class="col" id="link">
-              </div>
+
             </div>
 
 
@@ -300,7 +345,50 @@ var stroke_color="black"
 
       <script src="ProjectVA\map2.js"></script>
 
+<script>
+  
+  function slider() {
+    var obj = document.getElementById('slide'); //
+    console.log(obj)
+    obj.style.visibility = (obj.style.visibility == 'visible') ? 'hidden' : 'visible';
+    obj.style.height = (obj.style.height == '0px' || obj.style.height == '') ? '150px' : '0px';
+}
 
+$(".container-fluid").click(function() {
+
+});
+
+function openNav() {
+
+  document.getElementById("mySidenav").style.display="block"
+  var ex= document.getElementById("mySidenav").style.width ? true : false
+  console.log( ex)
+  if( document.getElementById("mySidenav").style.width !="0px" && ex){
+    
+
+
+    document.getElementById("mySidenav").style.width = "0px"
+    setTimeout(function(){   document.getElementById("mySidenav").style.display="none"; }, 500);
+    //document.getElementById("mySidenav").style.display = "none"
+    document.getElementById("timeseries").setAttribute("width","100%")
+     document.getElementById("data1").style.display="block"; 
+     document.getElementById("data2").style.display="block"; 
+    return
+  }
+ // document.getElementById("mySidenav").style.display = "block"
+ console.log(container_heigth*0.9)
+
+ setTimeout(function(){     document.getElementById("timeseries").setAttribute("width","0") }, 200);
+
+
+
+ document.getElementById("mySidenav").style.height =  container_heigth*0.4+"px";
+ setTimeout(function(){     document.getElementById("mySidenav").style.width = "45%"; }, 100);
+
+ setTimeout(function(){     document.getElementById("data1").style.display = "none"; }, 100);
+}
+
+</script>
 
 
       <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11" id="toastlist">
@@ -318,6 +406,8 @@ var stroke_color="black"
       </div>
 
 
+
+      
 
   </body>
 

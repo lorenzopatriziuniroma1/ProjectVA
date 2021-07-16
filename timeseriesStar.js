@@ -10,12 +10,12 @@ var c_initial;
 const arr_scores=["Academic","Employer","FacultyStudent","CitationsPerFaculty","InternationalFaculty","InternationalStudent"]
 const initial_per =[40,10,20,20,5,5];
 var width_data=container_width;
-var height_data= container_heigth;
+var height_data= container_heigth*0.7;
 var textScoreTotal;
 var gSimple;
 var margin2 = {top: 0, right:0, bottom:0, left:0}
 
-var radius= width_data*0.25
+var radius= width_data*0.18
 //colors of timeseries and Starplot in decreasing order using divergent palette - max 5 universities at once!
 
 const colors = [ "#e31a1c","#fc4e2a","#fd8d3c","#feb24c", "#fed976"];
@@ -351,7 +351,7 @@ async function display_data(selected_on_map){
   delayO1=500;var delayO2=1300
     
     //document.getElementById("show_data").remove();
-    d3.select("#BARsvg").style("visibility","hidden").attr("height", 0)
+    d3.select("#BARsvg").style("display","none")
     what_miss={};
     if(selected_on_map.length===0){
       document.getElementById("data1").innerHTML="";
@@ -361,7 +361,7 @@ async function display_data(selected_on_map){
 
       //document.getElementById("data3").innerHTML="";
       d3.select('#yearSel').remove()
-      d3.select("#BARsvg").style("visibility","visible").attr("height", 550)
+      d3.select("#BARsvg").style("display","block")
     return;
     }
     var names = [];var original_selection_names=[];
@@ -478,7 +478,7 @@ if(names.length===0){
     .append("svg")
     .attr("id","timeseries")
     .attr("width",width_data*0.45)
-    .attr("height",height_data*0.6).attr("transform", "translate(" + 0 + "," +( height_data*0.05) + ")");
+    .attr("height",height_data*0.6).attr("transform", "translate(" + 0 + "," +( height_data*0.03) + ")");
 
     d3.select("#title_timestarplot").style("visibility","visible");
     d3.select("#title_tool_overall").style("visibility","visible");
@@ -939,7 +939,7 @@ d3.select("#yearSel").remove();
 
 
 d3.select("#yourSelection").style("visibility", "visible")
-var svgLeggends=d3.select("#legends").append("svg").attr("width",width_data*0.6).attr("id","littlelegend").attr("transform","translate("+(width_data*0.5-width_data*0.3)+","+"-15) scale(0.8)")
+var svgLeggends=d3.select("#legends").append("svg").attr("width",width_data*0.4).attr("id","littlelegend").attr("transform","translate("+0+","+"-15) scale(0.8)") //width_data*0.5-width_data*0.3
 svgLeggends
 .append("rect")
 .style("stroke","black")
@@ -963,11 +963,10 @@ var svgS= d3.select("#data2")
 .attr("width",width_data*0.5)
 .attr("height",height_data*0.7)  
 .call(coom_svgs)    .on("wheel.zoom", null)                                              //  <------------------  --------        ----------------TODO Regola zoom
-  .append("g").attr("transform", "translate("+(width_data*0.2-margin.left)+","+(height_data*0.2-margin.top*2)+") scale(1)")
+  .append("g").attr("transform", "translate("+(width_data*0.2-margin.left)+","+(height_data*0.2-margin.top*2)+") scale(0.6)")
 ;
 
 
-  coom_svgs.scaleTo(svgS.transition().duration(750),.6)
   var scale=0.6;
 
 
@@ -1432,7 +1431,7 @@ svgLeggends.selectAll("mydotsS")
   .attr("class","legendDotS")
   .attr("id",function(d,i){return "Lab"+newRemove[i]})
 
-  .attr("x", width_data*0.3+10)
+  .attr("x", width_data*0.20+10)
   .attr("y", function(d,i){  
     return 10+ i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
   .attr("width", size).attr("transform", "translate(" + (0+10) + "," + 0 + ")")
@@ -1478,7 +1477,7 @@ svgLeggends.selectAll("mylabelsS")
   .enter()
   .append("text").attr("class","legendLabelS")
 
-  .attr("x", width_data*0.3+20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
+  .attr("x", width_data*0.2+20 + size*1.65).attr("transform", "translate(" + (0+0) + "," + 0 + ")")
   .attr("y", function(d,i){ return 10 + i*(size+5) + (size*0.9)})
     .style("fill", function(d,i){ return supplement_colors[i]})
     .text(function(d,i){ 
@@ -1592,7 +1591,7 @@ svgLeggends.selectAll("mylabelsS")
           .attr("width", "80%")
           .attr("height", heightBAR+100 + marginBAR.top + marginBAR.bottom)
         .append("g")
-          .attr("transform", "translate(" + marginBAR.left + "," + (marginBAR.top+100) + ")");
+          .attr("transform", "translate(" + marginBAR.left + "," + (marginBAR.top+120) + ") scale(0.75)");
       
         var CallS=map_usage_unidata(overalls);
 
@@ -1936,7 +1935,9 @@ var res=0;
       for(e in sliders_val){
         sum+=Math.round(sliders_val[e]);
       }
-      
+      setTimeout(function(){     document.getElementById("mySidenav").style.width = "100%"; }, 100);
+      document.getElementById("data2").style.display="none";
+
       if(sum!=100){
         //error
         var missing_="Percentage must sum to 100!";
