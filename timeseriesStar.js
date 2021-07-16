@@ -963,7 +963,7 @@ var svgS= d3.select("#data2")
 .attr("width",width_data*0.5)
 .attr("height",height_data*0.7)  
 .call(coom_svgs)    .on("wheel.zoom", null)                                              //  <------------------  --------        ----------------TODO Regola zoom
-  .append("g").attr("transform", "translate("+(width_data*0.2-margin.left)+","+(height_data*0.2-margin.top*2)+") scale(0.6)")
+  .append("g").attr("transform", "translate("+(width_data*0.2-margin.left)+","+(height_data*0.2-margin.top*1.5)+") scale(0.6)")
 ;
 
 
@@ -1094,12 +1094,13 @@ for (var i = 0; i < features.length-1; i++) {
 
   }
   
-  svgS.append("text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
+  svgS.append("text").attr("transform", "translate(" + margin2.left + "," + margin2.top + ")").attr("class","text_importante")
   .attr("x", label_coordinate.x) 
   .attr("y", label_coordinate.y)
+  .attr("font-weight", 700)
   .text(ft_name);
 }
-
+d3.selectAll(".text_importante").raise();
 
 let selected_year_data=d_2020;
 let starting_Legend;
@@ -1591,7 +1592,7 @@ svgLeggends.selectAll("mylabelsS")
           .attr("width", "80%")
           .attr("height", heightBAR+100 + marginBAR.top + marginBAR.bottom)
         .append("g")
-          .attr("transform", "translate(" + (marginBAR.left-0) + "," + (marginBAR.top) + ") scale(0.75)");
+          .attr("transform", "translate(" + (marginBAR.left-0) + "," + (marginBAR.top) + ") scale(0.9)");
       
         var CallS=map_usage_unidata(overalls);
 
@@ -1621,6 +1622,7 @@ svgLeggends.selectAll("mylabelsS")
         svgB2.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + heightBAR + ")")
+            .attr('font-weight',900)
             .call(xAxis);
       
         svgB2.append("g")
@@ -1806,7 +1808,7 @@ svgLeggends.selectAll("mylabelsS")
           else return supplement_colors[i-unis.length]
     })
 
-    threhlen=3;
+    
     gg.selectAll("labelSLideBar2")
   .data(supp_data)
   .enter()
@@ -1819,6 +1821,7 @@ svgLeggends.selectAll("mylabelsS")
     .attr("text-anchor", "left").attr("transform", "translate(" + (container_width*0.4+50) + "," + 20 + ")")
     .style("alignment-baseline", "middle")
             */
+    threhlen=3;
       c_initial=false
     }
 
@@ -1994,11 +1997,11 @@ var res=0;
  if(c_initial){
    
   createAnalytic(true) 
-  d3.select("#SVGSLID").attr("transform","translate(-90,-90) scale(0.75)")
+  d3.select("#SVGSLID").attr("transform","translate(-50,-90) scale(0.8)")
  }
  else{
    createAnalytic(false);
-   d3.select("#SVGSLID").attr("transform","translate(-90,-90) scale(0.75)")
+   d3.select("#SVGSLID").attr("transform","translate(-50,-90) scale(0.8)")
  }
 
  svgS.selectAll(".circleInStar").style("stroke","black").style("stroke-width","1px");

@@ -45,7 +45,7 @@ var symbolGenerator = d3.symbol()
 var pathData = symbolGenerator();
 var svg1 = d3.selectAll("#map")
   .append("svg")
-    .attr("width", width/2) 
+    .attr("width", width/1.85) 
     .attr("height", height )
     .style("background",background)
     .style("margin-bottom","10px")
