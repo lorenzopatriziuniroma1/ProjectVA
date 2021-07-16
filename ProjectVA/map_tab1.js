@@ -125,10 +125,12 @@ function handleClick(d, i) { // Add interactivity
       d3.select("#title_timestarplot").style("visibility","hidden");
       d3.select("#title_tool_overall").style("visibility","hidden");
       d3.select("#youarSelection2").style("display",function(){return "none"});
+      document.getElementById("mybuttonnav").style.visibility="hidden"
     }
     else{
       d3.select("#selectmapyea2").style("display",function(){return "none"});
       d3.select("#youarSelection2").style("display",function(){return "block"});
+      document.getElementById("mybuttonnav").style.visibility="visible"
     }
 }
 const path = d3.geoPath().projection(projection);
