@@ -61,6 +61,60 @@ h=height
        }
 
 
+
+       function create_legen_pca(svg ,w,h){
+
+        if(w == undefined){
+          w=container_width
+        }
+        if(h == undefined){
+        h=container_heigth
+        }
+        
+            var legend = svg  .append('svg')
+            .attr("width",200)
+            .attr("height",75)  
+            .attr("id","leggendinapiccolina2")
+            .attr("transform", "translate(" + w*0.275 + "," +(0) + ")");
+         
+           legend.append("rect")
+           .attr("x",5)
+           .attr("y",5)
+             .attr("width", "90%")
+             .attr("height", "90%")
+             .attr("fill", "white")
+             .style("stroke","black")
+             .style("stroke-width","3px")
+             .style( "stroke-linecap","round")
+             .style("opacity","0.8")
+             .attr("rx", 5)
+             .attr("ry", 5);
+           
+           legend=legend.append("g")
+           .attr("transform", "translate(" + 10 + "," + 10+ ")")
+           size=13;
+            // Handmade legend
+            legend.append("circle")
+            .attr("cx",0+5).attr("cy",+5)    
+            .attr("r",5)
+            .style("fill", sequential_color_divergent_from_blue[0])
+            legend.append("text").attr("x",0+20).attr("y", 10).text(parseInt(2*1024/3)+"< Overall rank").style("font-size", "15px").attr("alignment-baseline","middle")
+         
+            legend.append("circle")
+            .attr("cx",0+5).attr("cy",10+20-10+5)    
+            .attr("r",5)
+            .style("fill", sequential_color_divergent_from_blue[1])
+            legend.append("text").attr("x", 0+20).attr("y", 10+20).text(+parseInt(1024/3) +"< Overal Score <"+parseInt(2*1024/3)).style("font-size", "15px").attr("alignment-baseline","middle")
+            
+            legend.append("circle")
+            .attr("cx",0+5).attr("cy",10-10+40+5)    
+            .attr("r",5)
+            .style("fill", sequential_color_divergent_from_blue[2])
+            legend.append("text").attr("x", 0+20).attr("y", 10+40).text(" Overal Score<"+parseInt(1024/3)).style("font-size", "15px").attr("alignment-baseline","middle")
+          
+               }
+        
+        
 function createHorizontalLegend(ghgh,kk,classDefined){
 
   ghgh.append("g")
@@ -71,13 +125,16 @@ function createHorizontalLegend(ghgh,kk,classDefined){
 var legendLinear = d3.legendColor()
   .shapeWidth(50)
   .orient('horizontal')
+  .title("Overall Score")
+  .titleWidth(100)
+
   .scale(kk);
 
   ghgh.select("#"+classDefined).append("rect")
   .attr("x",-5)
-  .attr("y",-5)
+  .attr("y",-17)
     .attr("width", 270+"px")
-    .attr("height",  45+"px")
+    .attr("height",  75+"px")
     .attr("fill", "white")
     .style("stroke","black")
     .style("stroke-width","3px")

@@ -47,10 +47,12 @@ var svg = d3.select("#pca_scatter")
   .append("svg")
     .attr("width",  width2*0.9 + margin.left + margin.right )
     .attr("height", height2 + margin.top + margin.bottom )
+    .attr("id","svggg")
   .append("g")
   .style("background","whitesmoke")
     .attr("transform",
           "translate(" + 30 + "," + margin.top + ")");
+          create_legen_pca( d3.select("#svggg"))
   var svg2 = d3.select("#pca_scatter")
           .append("svg")
             .attr("width", width2*1.27 + margin.left + margin.right+50)
@@ -549,9 +551,9 @@ svg_map_pca.append("g")
 
 svg_map_pca.select("#"+"ciao").append("rect")
 .attr("x",-5)
-.attr("y",-5)
+.attr("y",-17)
   .attr("width", 270+"px")
-  .attr("height",  45+"px")
+  .attr("height",  75+"px")
   .attr("fill", "white")
   .style("stroke","black")
   .style("stroke-width","3px")
@@ -560,10 +562,11 @@ svg_map_pca.select("#"+"ciao").append("rect")
   .attr("rx", 5)
   .attr("ry", 5)
   .attr("id","culocane");
-  
+
 var legendLinear2 = d3.legendColor()
 .shapeWidth(50)
 .orient('horizontal')
+.title("Overall Score")
 .scale(myColorCircle);
 
 svg_map_pca.select("#ciao").call(legendLinear2);
@@ -572,8 +575,9 @@ var c=d3.select("#ciao").selectAll(".cell").attr("transform", function(d,i){
   return "translate("+(i*50+i*2)+",0)"
 })
 
-
+d3.select("#ciao").select(".legendCells").attr("transform","translate(0,15)")
 
 
 d3.select("#ciao").selectAll("text").attr("transform","translate(25,33)")
 
+d3.select("#ciao").select(".legendTitle").attr("transform","translate(0,0)")
