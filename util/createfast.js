@@ -72,7 +72,7 @@ h=height
         }
         
             var legend = svg  .append('svg')
-            .attr("width",200)
+            .attr("width",210)
             .attr("height",75)  
             .attr("id","leggendinapiccolina2")
             .attr("transform", "translate(" + w*0.275 + "," +(0) + ")");
@@ -98,19 +98,19 @@ h=height
             .attr("cx",0+5).attr("cy",+5)    
             .attr("r",5)
             .style("fill", sequential_color_divergent_from_blue[0])
-            legend.append("text").attr("x",0+20).attr("y", 10).text(parseInt(2*1024/3)+"< Overall rank").style("font-size", "15px").attr("alignment-baseline","middle")
+            legend.append("text").attr("x",0+20).attr("y", 10).text(parseInt(2*1024/3)+"< Rank").style("font-size", "15px").attr("alignment-baseline","middle")
          
             legend.append("circle")
             .attr("cx",0+5).attr("cy",10+20-10+5)    
             .attr("r",5)
             .style("fill", sequential_color_divergent_from_blue[1])
-            legend.append("text").attr("x", 0+20).attr("y", 10+20).text(+parseInt(1024/3) +"< Overal Score <"+parseInt(2*1024/3)).style("font-size", "15px").attr("alignment-baseline","middle")
+            legend.append("text").attr("x", 0+20).attr("y", 10+20).text(+parseInt(1024/3) +"< Rank <"+parseInt(2*1024/3)).style("font-size", "15px").attr("alignment-baseline","middle")
             
             legend.append("circle")
             .attr("cx",0+5).attr("cy",10-10+40+5)    
             .attr("r",5)
             .style("fill", sequential_color_divergent_from_blue[2])
-            legend.append("text").attr("x", 0+20).attr("y", 10+40).text(" Overal Score<"+parseInt(1024/3)).style("font-size", "15px").attr("alignment-baseline","middle")
+            legend.append("text").attr("x", 0+20).attr("y", 10+40).text("Rank<"+parseInt(1024/3)).style("font-size", "15px").attr("alignment-baseline","middle")
           
                }
         
