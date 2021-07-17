@@ -11,7 +11,7 @@ h=height
     .attr("width",200)
     .attr("height",90)  
     .attr("id","leggendinapiccolina")
-    .attr("transform", "translate(" + w*0.8 + "," +20 + ")")
+    .attr("transform", "translate(" + w*0.8 + "," +(h-90-20) + ")")
    ;
  
    legend.append("rect")
@@ -62,6 +62,7 @@ h=height
 
 
 function createHorizontalLegend(ghgh,kk,classDefined){
+
   ghgh.append("g")
   .attr("class", "legendLinear")
   .attr("id",classDefined)
@@ -72,7 +73,24 @@ var legendLinear = d3.legendColor()
   .orient('horizontal')
   .scale(kk);
 
+  ghgh.select("#"+classDefined).append("rect")
+  .attr("x",-5)
+  .attr("y",-5)
+    .attr("width", 270+"px")
+    .attr("height",  45+"px")
+    .attr("fill", "white")
+    .style("stroke","black")
+    .style("stroke-width","3px")
+    .style( "stroke-linecap","round")
+    .style("opacity","0.8")
+    .attr("rx", 5)
+    .attr("ry", 5);
+
+
   ghgh.select("#"+classDefined).call(legendLinear);
+
+
+
 }
        
 

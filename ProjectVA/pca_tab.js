@@ -545,6 +545,22 @@ svg_map_pca.append("g")
 .attr("id","ciao")
 .attr("transform", "translate(20,20)");
 
+
+
+svg_map_pca.select("#"+"ciao").append("rect")
+.attr("x",-5)
+.attr("y",-5)
+  .attr("width", 270+"px")
+  .attr("height",  45+"px")
+  .attr("fill", "white")
+  .style("stroke","black")
+  .style("stroke-width","3px")
+  .style( "stroke-linecap","round")
+  .style("opacity","0.8")
+  .attr("rx", 5)
+  .attr("ry", 5)
+  .attr("id","culocane");
+  
 var legendLinear2 = d3.legendColor()
 .shapeWidth(50)
 .orient('horizontal')
@@ -557,4 +573,7 @@ var c=d3.select("#ciao").selectAll(".cell").attr("transform", function(d,i){
 })
 
 
+
+
 d3.select("#ciao").selectAll("text").attr("transform","translate(25,33)")
+
