@@ -472,6 +472,7 @@ if(names.length===0){
 
   d3.select("#title_timestarplot").style("visibility","visible");
     d3.select("#title_tool_overall").style("visibility","visible");
+    no_one=true;
   starPlot(); return;}
 
     var svgT= d3.select("#data1")
@@ -1663,10 +1664,7 @@ svgLeggends.selectAll("mylabelsS")
           }
           supp_data.push(CallS[delx])
         }
-        if(supp_data.length==0){
-          no_one=true;
-        }
-        var this_rect="";
+       var this_rect="";
         var slice = svgB2.selectAll(".slice")
             .data(supp_data)
             .enter().append("g")
@@ -1713,7 +1711,7 @@ svgLeggends.selectAll("mylabelsS")
                 svgB2.append("text").style("fill",function(){
                   if(h.type=="A"){
                     var selectedU=categoriesNames.indexOf(h.cat);
-                    return h.rate=="new"?d3.rgb(colorNew[selectedU]):d3.rgb(colorOri[selectedU])
+                    return h.rate=="new"?d3.rgb(colorNew[selectedU]).darker(2):d3.rgb(colorOri[selectedU]).darker(2)
                   }
                   else{
                     var selectedU=new2Remove.indexOf(h.cat);
@@ -1748,6 +1746,7 @@ svgLeggends.selectAll("mylabelsS")
             .attr("transform",function(d){return "rotate(-90,"+this.getAttribute("x")+","+(heightBAR - 50)+")"})
             .style("stroke","black")
             .style("stroke-width","0.3px")
+            .style("visibility",function(d){return parseFloat(d.values[0].value)>19.0?"visible":"hidden";})
 
 
             slice
@@ -1761,6 +1760,7 @@ svgLeggends.selectAll("mylabelsS")
             .attr("transform",function(d){return "rotate(-90,"+this.getAttribute("x")+","+(heightBAR - 50)+")"})
             .style("stroke","black")
             .style("stroke-width","0.3px")
+           .style("visibility",function(d){console.log(d.values);return parseFloat(d.values[1].value)>19.0?"visible":"hidden";})
 
         slice.selectAll("rect")
             .transition()
@@ -1997,6 +1997,7 @@ var res=0;
  if(c_initial){
    
   createAnalytic(true) 
+ 
   d3.select("#SVGSLID").attr("transform","translate(-50,-90) scale(0.8)")
  }
  else{

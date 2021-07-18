@@ -231,7 +231,7 @@ var stroke_color="black"
 
                 <div class="col" id="selectmapyea" style="margin-left: 5%;">
               </div>
-              <span id="mybuttonnav" style="font-size:30px;cursor:pointer ;visibility: hidden" onclick="openNav()">&#9776; Compute New Overall Score</span>
+              <span id="mybuttonnav" class= "text-primary" style="font-size:30px;cursor:pointer ;visibility: hidden" onclick="openNav()">&#10148; Compute New Overall Score</span>
             </div>
 
             <div class="row" style="margin-top: 1px">
@@ -241,7 +241,7 @@ var stroke_color="black"
 
             </div>
 
-            <div class="row justify-content-center">
+            <div class="row justify-content-center" style="margin-top: 30px;">
               <p class="text-center fw-bolder text-primary" id="title_timestarplot" style="visibility: hidden">Timeseries and Starplot</p>
               <div id="mySidenav" class="sidenav2 " style="width: 0px; display:none">
                 <div class="row justify-content-center">
@@ -375,13 +375,14 @@ function openNav() {
     setTimeout(function(){   document.getElementById("mySidenav").style.display="none"; }, 500);
     document.getElementById("title_timestarplot").innerHTML="Timeseries and Starplot"
     //document.getElementById("mySidenav").style.display = "none"
+    console.log(no_one)
     if(!no_one){
        document.getElementById("timeseries").setAttribute("width","100%")
        
     }
      document.getElementById("data1").style.display="block"; 
      document.getElementById("data2").style.display="block"; 
-     no_one=false;
+     
     return
   }
  // document.getElementById("mySidenav").style.display = "block"
