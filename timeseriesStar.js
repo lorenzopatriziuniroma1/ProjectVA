@@ -924,6 +924,8 @@ function showOnlyClicked(institutions){
       return false;
     }).remove()
   
+    createAnalytic(false);
+   d3.select("#SVGSLID").attr("transform","translate(-50,-90) scale(0.8)")
   
 }
 
@@ -1822,7 +1824,7 @@ svgLeggends.selectAll("mylabelsS")
     .style("alignment-baseline", "middle")
             */
     threhlen=3;
-      c_initial=false
+      //c_initial=false
     }
 
 
@@ -1999,6 +2001,7 @@ var res=0;
   createAnalytic(true) 
  
   d3.select("#SVGSLID").attr("transform","translate(-50,-90) scale(0.8)")
+  c_initial=false
  }
  else{
    createAnalytic(false);
