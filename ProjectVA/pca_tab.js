@@ -511,7 +511,7 @@ d3.json("https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/
   var old;
 var zoom = d3.zoom()
 .scaleExtent([0.5, 85])
-.translateExtent([[-width+width/2, -height+height/2], [width+width/2, height+height/2]])
+.translateExtent([[0, -height+height/2], [width+width/2, height+height/2]])
 .on('zoom', function(event) {
     old=event.transform
    g_map_pca.attr("transform",event.transform);
