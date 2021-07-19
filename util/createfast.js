@@ -1,5 +1,5 @@
 function create_legend(svg ,w,h){
-console.log(w)
+
 if(w == undefined){
   w=container_width
 }

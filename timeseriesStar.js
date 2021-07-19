@@ -2,7 +2,7 @@
 // ArrOfMEANS = array with all the (time) means of scores in decreasing order
 // d_means = dictionary with keys = name of university, value = mean
 let ArrOfMEANS;let d_mean;  var arr_sorted=[]; var threhlen=3;var delayO1=500;var delayO2=1300;
-var d_2016,d_2018,d_2019,d_2020;
+var d_2016,d_2018,d_2019,d_2020; var leg_sel=false;
 var what_miss={};let data_all_time;
 let clicked_label=[], newRemove;
 var sliders_val,sliders_list;let xCoords=[];
@@ -132,7 +132,9 @@ function format_number(s){
 }
 
 function format_etichetta(s){
- 
+  if(s.toUpperCase().includes("VERGATA")){
+    return "UNI. T.VERGATA";
+  }
  
   var r=s.toUpperCase().split(" ");
   var c=""
@@ -891,8 +893,9 @@ function make_graph_possible(arr){
 }
 
 function showOnlyClicked(institutions){
+  leg_sel=true;
   updateStar([])
-  
+  leg_sel=false;
   var to_be_hidden=[...institutions]
   
   for(var j=0;j<clicked_label.length;j++){
@@ -924,8 +927,7 @@ function showOnlyClicked(institutions){
       return false;
     }).remove()
   
-    createAnalytic(false);
-   d3.select("#SVGSLID").attr("transform","translate(-50,-90) scale(0.8)")
+    
   
 }
 
@@ -1496,7 +1498,7 @@ svgLeggends.selectAll("mylabelsS")
     
 
     //console.log(names,newRemove, selected_year_data);
-    function bargraph(overalls){
+    function bargraph(overalls,in_selection=false){
       threhlen=2;
       d3.select("#BARsvg2").remove()
       function map_usage_unidata(){
@@ -1650,8 +1652,8 @@ svgLeggends.selectAll("mylabelsS")
           }
           if(co){
             co=false;
-
-
+            
+           if(!leg_sel){
             var sorry_sorry ='';
             sorry_sorry=CallS[delx].categorie +" has not enough values to compute new overall.";
 
@@ -1662,6 +1664,7 @@ svgLeggends.selectAll("mylabelsS")
           toast.setAttribute('id',sorry_sorry.replace(/[^a-zA-Z]/g, ""));
           document.getElementById("toastlist").appendChild(toast); 
             $('#'+sorry_sorry.replace(/[^a-zA-Z]/g, "")).toast('show');
+           }
             continue;
           }
           supp_data.push(CallS[delx])
@@ -1762,7 +1765,7 @@ svgLeggends.selectAll("mylabelsS")
             .attr("transform",function(d){return "rotate(-90,"+this.getAttribute("x")+","+(heightBAR - 50)+")"})
             .style("stroke","black")
             .style("stroke-width","0.3px")
-           .style("visibility",function(d){console.log(d.values);return parseFloat(d.values[1].value)>19.0?"visible":"hidden";})
+           .style("visibility",function(d){return parseFloat(d.values[1].value)>19.0?"visible":"hidden";})
 
         slice.selectAll("rect")
             .transition()
@@ -1829,7 +1832,7 @@ svgLeggends.selectAll("mylabelsS")
 
 
 
-    function createAnalytic(initial){
+    function createAnalytic(initial,in_selection=false){
       
       function compute_overall(name_arr,vals){
         var res={}
@@ -1974,7 +1977,7 @@ var res=0;
         }
         else{
           var overalls = compute_overall(names.concat(newRemove),sliders_val);
-          bargraph(overalls);
+          bargraph(overalls,in_selection);
         }
       }
 
@@ -1990,7 +1993,7 @@ var res=0;
    
     var overalls = compute_overall(names.concat(newRemove),sliders_val);
     delayO1=0;delayO2=0;
-          bargraph(overalls);
+          bargraph(overalls,in_selection);
 
   }
 }
